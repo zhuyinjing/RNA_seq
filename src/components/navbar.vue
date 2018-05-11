@@ -1,31 +1,46 @@
 <template>
   <div>
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
-      <el-menu-item index="1" @click="a">首页</el-menu-item>
-      <el-menu-item index="2">项目列表</el-menu-item>
-      <el-menu-item index="3">基因组浏览器</el-menu-item>
-      <el-menu-item index="4">关于</el-menu-item>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="home">首页</el-menu-item>
+      <el-menu-item index="project">项目列表</el-menu-item>
+      <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
+      <el-menu-item index="about">关于</el-menu-item>
     </el-menu>
+    <home v-if="homeShow"></home>
+    <project v-if="projectShow"></project>
   </div>
 </template>
 
 <script>
+import home from '@/components/home'
+import project from '@/components/project_list'
 export default {
   data () {
     return {
-      activeIndex: '1',
+      activeIndex: 'home',
+      homeShow: true,
+      projectShow: false,
     }
   },
   components: {
+    home,
+    project
   },
   mounted () {
   },
   methods: {
-    a () {
-      this.axios.get('/get_file').then((res) => {
-        console.log(res.data)
-      })
-    },
+    handleSelect(key, keyPath) {
+      switch (key) {
+        case 'home':
+          this.projectShow = false
+          this.homeShow = true
+          break
+        case 'project':
+          this.homeShow = false
+          this.projectShow = true
+          break
+      }
+    }
   }
 }
 </script>
