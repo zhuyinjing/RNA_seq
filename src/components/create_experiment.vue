@@ -60,7 +60,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="step1Dialog = true;step2Dialog = false">上一步</el-button>
-        <el-button type="danger" @click="nextStepClick()">完成</el-button>
+        <el-button type="danger" @click="createExperiment()">完成</el-button>
       </div>
     </el-dialog>
 
@@ -74,79 +74,12 @@ export default {
       step1Dialog: false,
       step2Dialog: false,
       projectName: '',
+      projectId: '',
       condition: [],
       conditionNumMap: {},
       conditionList: [],
       experiments: [],
-      message: {
-        "projectId": 16,
-        "conditionNumMap": {
-          "A": 3,
-          "B": 3,
-          "C": 3
-        },
-        "nameSampleMap": {
-          "A_1": {
-            "name": "A_1",
-            "condition": "A",
-            "readPairList": []
-          },
-          "A_2": {
-            "name": "A_2",
-            "condition": "A",
-            "readPairList": []
-          },
-          "A_3": {
-            "name": "A_3",
-            "condition": "A",
-            "readPairList": []
-          },
-          "B_1": {
-            "name": "B_1",
-            "condition": "B",
-            "readPairList": []
-          },
-          "B_2": {
-            "name": "B_2",
-            "condition": "B",
-            "readPairList": []
-          },
-          "B_3": {
-            "name": "B_3",
-            "condition": "B",
-            "readPairList": []
-          },
-          "C_1": {
-            "name": "C_1",
-            "condition": "C",
-            "readPairList": []
-          },
-          "C_2": {
-            "name": "C_2",
-            "condition": "C",
-            "readPairList": []
-          },
-          "C_3": {
-            "name": "C_3",
-            "condition": "C",
-            "readPairList": []
-          }
-        },
-        "experiments": [
-          {
-            "_case": "A",
-            "_control": "B"
-          },
-          {
-            "_case": "A",
-            "_control": "C"
-          },
-          {
-            "_case": "B",
-            "_control": "C"
-          }
-        ]
-      }
+      message: {}
     }
   },
   components: {
@@ -167,9 +100,17 @@ export default {
       this.condition.push({})
     },
     nextStepClick () {
+      if (this.condition.length < 2) {
+        this.$message.error('实验条件的数量需要大于2个!');
+        return
+      }
       this.conditionList = []
       this.experiments = []
       for (let i = 0;i < this.condition.length;i++) {
+        if(!this.condition[i].option || !this.condition[i].number) {
+          this.$message.error('请将实验条件和样本数目填写完整!');
+          return
+        }
         this.conditionNumMap[this.condition[i].option] = this.condition[i].number
         this.conditionList.push(this.condition[i].option)
       }
@@ -195,6 +136,42 @@ export default {
     deleteVs (item) {
       let index = this.experiments.indexOf(item)
       this.experiments.splice(index, 1)
+    },
+    createExperiment () {
+      if (this.experiments.length === 0) {
+        this.$message.error('对比条件不能为空，请返回上一步重新选择！');
+        return
+      }
+      let obj = {}
+      obj.projectId = this.projectId
+      obj.conditionNumMap = {}
+      for (let i in this.condition) {
+        obj.conditionNumMap[this.condition[i]['option']] = this.condition[i]['number']
+      }
+      obj.nameSampleMap = {}
+      for(let i = 0; i < this.condition.length; i++) {
+        for(let j = 1; j <= this.condition[i]['number']; j++) {
+          let key = this.condition[i]['option'] + '_' + j
+          obj.nameSampleMap[key] = {
+            'name': key,
+            'condition': this.condition[i]['option'],
+            'readPairList': []
+          }
+        }
+      }
+      obj.experiments = this.experiments
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.projectId)
+      formData.append('experimentObjectString', JSON.stringify(obj))
+      this.axios.post('/server/create_experiment', formData).then((res) => {
+        if(res.data.message_type === 'success') {
+          this.message = res.data.message
+        } else {
+          this.$message.error('请求异常！');
+        }
+        this.step2Dialog = false
+      })
     }
   }
 }

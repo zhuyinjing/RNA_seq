@@ -15,10 +15,10 @@
       <div class="tableDiv">
         <div class="table-item" v-for="item in projectList">
           <div class="titleDiv">
-            {{item.name}}
+            项目名称：{{item.name}} 创建时间：{{item.openTime}}
           </div>
           <div class="btnDiv">
-            <el-button @click="createExperiment(item.name)">查看/编辑 实验设计<i class="el-icon-menu el-icon--right"></i></el-button>
+            <el-button @click="createExperiment(item)">查看/编辑 实验设计<i class="el-icon-menu el-icon--right"></i></el-button>
             <el-button>上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
             <el-button>运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
             <el-button>查看报告<i class="el-icon-document el-icon--right"></i></el-button>
@@ -112,12 +112,20 @@ export default {
     getProjects () {
       this.axios.get('/server/projects?username=' + this.$store.state.username).then((res) => {
         this.projectList = res.data.projects
+        for (let i in this.projectList) {
+          let d = new Date(this.projectList[i]['openTime'])
+          this.projectList[i]['openTime'] = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        }
       })
     },
     login () {
       this.$refs.loginDiv.loginDialog = true
     },
     createClick () {
+      if (!this.form.name) {
+        this.$message.error('项目名不能为空!')
+        return
+      }
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('name', this.form.name)
@@ -125,8 +133,14 @@ export default {
       formData.append('species', this.form.species)
       formData.append('type', this.form.type)
       this.axios.post('/server/create_project', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.getProjects()
+        } else {
+          this.$message.error('请求错误!');
+        }
+        this.form.name = ''
+        this.form.description = ''
         this.createProjectDialog = false
-        this.getProjects()
       })
     },
     deleteDialogOpen (id) {
@@ -142,10 +156,11 @@ export default {
         this.getProjects()
       })
     },
-    createExperiment (name) {
+    createExperiment (item) {
       this.projectShow = false
       this.editShow = true
-      this.$refs.editDiv.projectName = name
+      this.$refs.editDiv.projectName = item.name
+      this.$refs.editDiv.projectId = item.id
     }
   }
 }
