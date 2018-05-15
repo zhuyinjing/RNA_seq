@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="textStyle" v-show="loginBtnShow">
+    <div class="textStyle" v-if="loginBtnShow">
       <el-card class="box-card">
         <div class="text item">
           请先登录后再查看！
@@ -8,7 +8,7 @@
         <el-button type="danger" @click="login()">登录</el-button>
       </el-card>
     </div>
-    <div class="" v-show="projectShow">
+    <div class="" v-if="projectShow">
       <div class="createbtn">
         <el-button type="primary" plain @click="createProjectDialog = true">+ 新建项目</el-button>
       </div>
@@ -19,8 +19,8 @@
           </div>
           <div class="btnDiv">
             <el-button @click="createExperiment(item)">查看/编辑 实验设计<i class="el-icon-menu el-icon--right"></i></el-button>
-            <el-button>上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
-            <el-button>运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
+            <el-button @click="upload(item)">上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
+            <el-button @click="runTask(item)">运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
             <el-button>查看报告<i class="el-icon-document el-icon--right"></i></el-button>
             <el-button class="float-right" type="danger" @click="deleteDialogOpen(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
@@ -66,19 +66,24 @@
     </div>
   </el-dialog>
 
-  <edit v-show="editShow" ref="editDiv"></edit>
+  <edit v-if="editShow" @backProjectList="backProjectList"></edit>
+  <uploadFile v-if="uploadShow" @backProjectList="backProjectList"></uploadFile>
+  <runTask v-if="runTaskShow" @backProjectList="backProjectList"></runTask>
   </div>
 </template>
-
 <script>
 import login from '@/components/login'
 import edit from '@/components/create_experiment'
+import uploadFile from '@/components/upload_file'
+import runTask from '@/components/run_task'
 export default {
   data () {
     return {
       loginBtnShow: false,
       projectShow: false,
+      uploadShow: false,
       editShow: false,
+      runTaskShow: false,
       projectList: [],
       createProjectDialog: false,
       form: {
@@ -96,7 +101,9 @@ export default {
   },
   components: {
     login,
-    edit
+    edit,
+    uploadFile,
+    runTask
   },
   mounted () {
     if (!this.$store.state.username) {
@@ -157,10 +164,29 @@ export default {
       })
     },
     createExperiment (item) {
+      this.commitStore(item)
       this.projectShow = false
       this.editShow = true
-      this.$refs.editDiv.projectName = item.name
-      this.$refs.editDiv.projectId = item.id
+    },
+    upload (item) {
+      this.commitStore(item)
+      this.projectShow = false
+      this.uploadShow = true
+    },
+    runTask (item) {
+      this.commitStore(item)
+      this.projectShow = false
+      this.runTaskShow = true
+    },
+    commitStore (item) {
+      this.$store.commit('setprojectName', item.name)
+      this.$store.commit('setprojectId', item.id)
+    },
+    backProjectList () {
+      this.projectShow = true
+      this.editShow = false
+      this.uploadShow = false
+      this.runTaskShow = false
     }
   }
 }

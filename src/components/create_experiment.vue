@@ -1,11 +1,14 @@
 <template>
   <div class="content">
-    <p>项目名称: {{projectName}}</p>
+    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
+      <i class="el-icon-back" @click="backProjectList"></i>
+    </el-tooltip>
+    <p>项目名称: {{this.$store.state.projectName}}</p>
     <div class="">
       <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>编辑/更新实验设计</el-button>
       <el-button type=""><i class="el-icon-delete"></i>清空实验设计</el-button>
     </div>
-    <div class="" style="display:inline-block;width:40%;margin-right:50px;">
+    <div class="tableStyle">
       <p class="p-font-style">实验条件一览</p>
       <table class="gridtable">
         <tr>
@@ -56,7 +59,7 @@
 
     <el-dialog title="第二步：填写需要进行差异表达基因对比的条件对" :visible.sync="step2Dialog" width="30%">
       <div style="padding:10px 5px" v-for="item in experiments">
-        {{item['_case']}} vs {{item['_control']}} &nbsp;&nbsp;&nbsp;<i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>
+        {{item['_case']}} <i class="el-icon-refresh cursor-poiter" @click="refresh(item)"></i> {{item['_control']}} &nbsp;&nbsp;&nbsp;<i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="step1Dialog = true;step2Dialog = false">上一步</el-button>
@@ -73,8 +76,6 @@ export default {
     return {
       step1Dialog: false,
       step2Dialog: false,
-      projectName: '',
-      projectId: '',
       condition: [],
       conditionNumMap: {},
       conditionList: [],
@@ -85,9 +86,18 @@ export default {
   components: {
   },
   mounted () {
-
+    this.getExperiment()
   },
   methods: {
+    getExperiment () {
+      this.axios.get('/server/experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        if (!res.data.message) {
+          this.message = {}
+        } else {
+          this.message = res.data.message
+        }
+      })
+    },
     editDesign () {
       this.condition = []
       for (let k in this.message.conditionNumMap) {
@@ -137,13 +147,19 @@ export default {
       let index = this.experiments.indexOf(item)
       this.experiments.splice(index, 1)
     },
+    refresh (item) {
+      let k = item['_case']
+      let v = item['_control']
+      item['_case'] = v
+      item['_control'] = k
+    },
     createExperiment () {
       if (this.experiments.length === 0) {
         this.$message.error('对比条件不能为空，请返回上一步重新选择！');
         return
       }
       let obj = {}
-      obj.projectId = this.projectId
+      obj.projectId = this.$store.state.projectId
       obj.conditionNumMap = {}
       for (let i in this.condition) {
         obj.conditionNumMap[this.condition[i]['option']] = this.condition[i]['number']
@@ -162,7 +178,7 @@ export default {
       obj.experiments = this.experiments
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
-      formData.append('p', this.projectId)
+      formData.append('p', this.$store.state.projectId)
       formData.append('experimentObjectString', JSON.stringify(obj))
       this.axios.post('/server/create_experiment', formData).then((res) => {
         if(res.data.message_type === 'success') {
@@ -172,6 +188,9 @@ export default {
         }
         this.step2Dialog = false
       })
+    },
+    backProjectList () {
+      this.$emit('backProjectList')
     }
   }
 }
@@ -209,6 +228,21 @@ table.gridtable td {
   color: #666;
 }
 .cursor-poiter{
+  cursor: pointer;
+}
+.tableStyle {
+  display:inline-block;
+  width:40%;
+  margin-right:50px;
+}
+.right {
+  float: right;
+  width: 60px;
+}
+.item {
+  margin: 4px;
+}
+.cursor-pointer {
   cursor: pointer;
 }
 </style>
