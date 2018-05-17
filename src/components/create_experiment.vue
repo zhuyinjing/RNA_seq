@@ -190,7 +190,7 @@ export default {
       })
     },
     backProjectList () {
-      this.$emit('backProjectList')
+      this.$router.push({'name': 'project_list'})
     }
   }
 }

@@ -8,7 +8,7 @@
     <div class="">
       <el-button v-if="runBtnShow" type="primary" @click="startTask()">运行分析任务</el-button>
       <transition name="fade">
-        <el-button v-if="refreshBtnShow" type="danger" @click="runTask()">刷新任务状态</el-button>
+        <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">刷新任务状态</el-button>
       </transition>
       <el-button v-show="reportBtnShow" type="success" @click="report()">生成报告</el-button>
       <el-button v-show="resultBtnShow" type="success" @click="result()">结果导入ABrowse</el-button>
@@ -22,27 +22,50 @@ import * as d3 from 'd3'
 export default {
   data () {
     return {
-      runBtnShow: true,
+      runBtnShow: false,
       refreshBtnShow: false,
       reportBtnShow: false,
       resultBtnShow: false,
+      currentStepSn: null,
+      status: null
     }
   },
   components: {
   },
   mounted () {
-    this.runTask(-1)
+    this.selectTask()
   },
   methods: {
-    runTask (step) {
+    selectTask () {
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+
+      this.axios.post('/server/task_status', formData).then((res) => {
+        if (res.data.message.currentStepSn > -1) {
+          this.runBtnShow = false
+          this.refreshBtnShow = true
+        } else {
+          this.runBtnShow = true
+          this.refreshBtnShow = false
+        }
+        this.currentStepSn = res.data.message.currentStepSn
+        this.status = res.data.message.status
+        this.runTask()
+      })
+    },
+    runTask () {
       let hassvg = d3.selectAll('svg')
       if (hassvg) {
         d3.selectAll('svg').remove()
       }
-      var FINISHED = 300;
 
       var processMessage = {};
-      processMessage.currentStepSn = step
+      processMessage.currentStepSn = this.currentStepSn
+      processMessage.status = this.status
+
+      var FINISHED = 300;
+
       var pipeline = [
               "FastQC", "Mapping", "Assembling", "Quantification", "DEG"
           ];
@@ -204,9 +227,22 @@ export default {
       }
     },
     startTask () {
-      this.runBtnShow = false
-      this.refreshBtnShow = true
-      this.runTask(0)
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+
+      this.axios.post('/server/task_run', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.runBtnShow = false
+          this.refreshBtnShow = true
+          this.currentStepSn = res.data.message.currentStepSn
+          this.currentStepSn = res.data.message.status
+        } else {
+          this.$message.error('请求错误!')
+        }
+      }).catch((e) => {
+        this.$message.error('请求错误!')
+      })
     },
     report () {
 
@@ -215,7 +251,7 @@ export default {
 
     },
     backProjectList () {
-      this.$emit('backProjectList')
+      this.$router.push({'name': 'project_list'})
     }
   }
 }

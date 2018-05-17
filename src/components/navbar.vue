@@ -6,38 +6,53 @@
       <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
       <el-menu-item index="about">关于</el-menu-item>
     </el-menu>
-    <home v-if="homeShow"></home>
-    <project v-if="projectShow"></project>
+    <div class="userDiv" v-show="$store.state.username">
+      <!-- <img src="../assets/img/avatar.png" alt=""> -->
+      <span class="nameStyle">{{$store.state.username}}</span>
+      <el-button type="text" @click="logoutDialog = true">退出账号</el-button>
+    </div>
+
+    <el-dialog title="" :visible.sync="logoutDialog" width="30%">
+      <h2><i class="el-icon-warning delete-font-color"> 确认退出账号吗？</i></h2>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="logoutDialog = false">取消</el-button>
+        <el-button type="danger" @click="logoutDialog = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import home from '@/components/home'
-import project from '@/components/project_list'
 export default {
   data () {
     return {
-      activeIndex: 'home',
-      homeShow: true,
-      projectShow: false,
+      activeIndex: '',
+      logoutDialog: false
     }
   },
   components: {
-    home,
-    project
   },
   mounted () {
+    if (!sessionStorage.navbarItem) {
+      this.activeIndex = 'home'
+    } else {
+      this.activeIndex = sessionStorage.navbarItem
+    }
   },
   methods: {
     handleSelect(key, keyPath) {
       switch (key) {
         case 'home':
-          this.projectShow = false
-          this.homeShow = true
+          sessionStorage.setItem('navbarItem', 'home')
+          this.$router.push({'path': '/'})
           break
         case 'project':
-          this.homeShow = false
-          this.projectShow = true
+          sessionStorage.setItem('navbarItem', 'project')
+          this.$router.push({'name': 'project_list'})
+          break
+        case 'about':
+          sessionStorage.setItem('navbarItem', 'about')
+          this.$router.push({'name': 'about'})
           break
       }
     }
@@ -46,4 +61,13 @@ export default {
 </script>
 
 <style scoped="true">
+.userDiv {
+  position: absolute;
+  top: 18px;
+  right: 50px;
+}
+.nameStyle {
+  margin-right: 30px;
+  color: #b5a199;
+}
 </style>

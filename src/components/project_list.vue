@@ -66,26 +66,17 @@
     </div>
   </el-dialog>
 
-  <edit v-if="editShow" @backProjectList="backProjectList"></edit>
-  <uploadFile v-if="uploadShow" @backProjectList="backProjectList"></uploadFile>
-  <runTask v-if="runTaskShow" @backProjectList="backProjectList"></runTask>
   </div>
 </template>
 <script>
 import login from '@/components/login'
-import edit from '@/components/create_experiment'
-import uploadFile from '@/components/upload_file'
-import runTask from '@/components/run_task'
 export default {
   data () {
     return {
       loginBtnShow: false,
       projectShow: false,
-      uploadShow: false,
-      editShow: false,
-      runTaskShow: false,
-      projectList: [],
       createProjectDialog: false,
+      projectList: null,
       form: {
         id: '',
         name: '',
@@ -100,10 +91,7 @@ export default {
     }
   },
   components: {
-    login,
-    edit,
-    uploadFile,
-    runTask
+    login
   },
   mounted () {
     if (!this.$store.state.username) {
@@ -165,29 +153,20 @@ export default {
     },
     createExperiment (item) {
       this.commitStore(item)
-      this.projectShow = false
-      this.editShow = true
+      this.$router.push({'name': 'create_experiment'})
     },
     upload (item) {
       this.commitStore(item)
-      this.projectShow = false
-      this.uploadShow = true
+      this.$router.push({'name': 'upload_file'})
     },
     runTask (item) {
       this.commitStore(item)
-      this.projectShow = false
-      this.runTaskShow = true
+      this.$router.push({'name': 'run_task'})
     },
     commitStore (item) {
       this.$store.commit('setprojectName', item.name)
       this.$store.commit('setprojectId', item.id)
     },
-    backProjectList () {
-      this.projectShow = true
-      this.editShow = false
-      this.uploadShow = false
-      this.runTaskShow = false
-    }
   }
 }
 </script>

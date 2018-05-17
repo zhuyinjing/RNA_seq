@@ -31,7 +31,7 @@
             <td>
               <p v-for="fileList in item.readPairList">
                 <span v-for="file in fileList">{{file}} &nbsp;&nbsp;</span>
-                <i class="el-icon-delete cursor-pointer" @click="openDialog(item, fileList)"></i>
+                <i class="el-icon-delete cursor-pointer icon-style" @click="openDialog(item, fileList)"></i>
               </p>
             </td>
         </tr>
@@ -126,7 +126,7 @@ export default {
       })
     },
     backProjectList () {
-      this.$emit('backProjectList')
+      this.$router.push({'name': 'project_list'})
     }
   }
 }
@@ -178,5 +178,8 @@ table.gridtable td {
 }
 .margin-top-10 {
   margin-top: 10px;
+}
+.icon-style {
+  color: #f56b6c;
 }
 </style>
