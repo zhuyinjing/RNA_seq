@@ -11,6 +11,8 @@ import report from '@/components/report'
 import report_deg from '@/components/report_deg'
 import heatmap_input from '@/components/heatmap_input'
 import heatmap from '@/components/heatmap'
+import ppi_chord_plot_input from '@/components/ppi_chord_plot_input'
+import ppi_chord_plot from '@/components/ppi_chord_plot'
 
 Vue.use(Router)
 
@@ -76,6 +78,16 @@ export default new Router({
       path: '/heatmap',
       name: 'heatmap',
       component: heatmap
+    },
+    {
+      path: '/ppi_chord_plot_input',
+      name: 'ppi_chord_plot_input',
+      component: ppi_chord_plot_input
+    },
+    {
+      path: '/ppi_chord_plot',
+      name: 'ppi_chord_plot',
+      component: ppi_chord_plot
     }
   ]
 })

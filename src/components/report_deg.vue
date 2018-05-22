@@ -22,7 +22,8 @@
     </div>
     <br>
     <div style="margin-bottom: 20px">
-      <el-button type="primary" @click="getCheckedId()">Heat Map</el-button>
+      <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
+      <el-button type="primary" @click="ppiClick()">ppi</el-button>
     </div>
     <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
@@ -71,7 +72,7 @@ export default {
     this.getTabelValue()
   },
   methods: {
-    getCheckedId () {
+    heatmapClick () {
       if (this.checked.length === 0) {
         if (this.data.length < 100) {
           this.$store.commit('setgeneList', this.data)
@@ -85,6 +86,21 @@ export default {
         this.$store.commit('setgeneList', this.checked)
       }
       this.$router.push({'name': 'heatmap_input'})
+    },
+    ppiClick () {
+      if (this.checked.length === 0) {
+        if (this.data.length < 100) {
+          this.$store.commit('setgeneList', this.data)
+        } else {
+          for(let i = 0;i < 100;i++) {
+            this.checked.push(this.data[i])
+          }
+          this.$store.commit('setgeneList', this.checked)
+        }
+      } else {
+        this.$store.commit('setgeneList', this.checked)
+      }
+      this.$router.push({'name': 'ppi_chord_plot_input'})
     },
     filterTable () {
       let self = this
