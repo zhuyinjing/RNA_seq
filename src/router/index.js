@@ -1,12 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import home from '@/components/home'
+import login from '@/components/login'
 import about from '@/components/about'
 import project_list from '@/components/project_list'
 import create_experiment from '@/components/create_experiment'
 import upload_file from '@/components/upload_file'
 import run_task from '@/components/run_task'
-import login from '@/components/login'
+import report from '@/components/report'
+import report_deg from '@/components/report_deg'
+import heatmap_input from '@/components/heatmap_input'
+import heatmap from '@/components/heatmap'
 
 Vue.use(Router)
 
@@ -52,6 +56,26 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: report
+    },
+    {
+      path: '/report_deg',
+      name: 'report_deg',
+      component: report_deg
+    },
+    {
+      path: '/heatmap_input',
+      name: 'heatmap_input',
+      component: heatmap_input
+    },
+    {
+      path: '/heatmap',
+      name: 'heatmap',
+      component: heatmap
     }
   ]
 })

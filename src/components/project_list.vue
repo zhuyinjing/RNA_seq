@@ -21,7 +21,7 @@
             <el-button @click="createExperiment(item)">查看/编辑 实验设计<i class="el-icon-menu el-icon--right"></i></el-button>
             <el-button @click="upload(item)">上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
             <el-button @click="runTask(item)">运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
-            <el-button>查看报告<i class="el-icon-document el-icon--right"></i></el-button>
+            <el-button @click="report(item)">查看报告<i class="el-icon-document el-icon--right"></i></el-button>
             <el-button class="float-right" type="danger" @click="deleteDialogOpen(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
         </div>
@@ -162,6 +162,10 @@ export default {
     runTask (item) {
       this.commitStore(item)
       this.$router.push({'name': 'run_task'})
+    },
+    report (item) {
+      this.commitStore(item)
+      this.$router.push({'name': 'report'})
     },
     commitStore (item) {
       this.$store.commit('setprojectName', item.name)

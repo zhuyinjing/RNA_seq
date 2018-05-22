@@ -117,6 +117,10 @@ export default {
       this.conditionList = []
       this.experiments = []
       for (let i = 0;i < this.condition.length;i++) {
+        if (/[,.!\u3002\uff0c]/.test(this.condition[i].option)) {
+          this.$message.error('请将实验条件包含不规则字符，请重新填写!');
+          return
+        }
         if(!this.condition[i].option || !this.condition[i].number) {
           this.$message.error('请将实验条件和样本数目填写完整!');
           return

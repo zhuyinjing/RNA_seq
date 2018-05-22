@@ -7,7 +7,9 @@ export default new Vuex.Store({
   state: {
     username: 'test',
     projectId: '',
-    projectName: ''
+    projectName: '',
+    geneList: [],
+    heatmapJson: null
   },
   mutations: {
     setusername: (state, data) => {
@@ -18,6 +20,12 @@ export default new Vuex.Store({
     },
     setprojectName: (state, data) => {
       state.projectName = data
+    },
+    setgeneList: (state, data) => {
+      state.geneList = data
+    },
+    setheatmapJson: (state, data) => {
+      state.heatmapJson = data
     },
   }
 })
