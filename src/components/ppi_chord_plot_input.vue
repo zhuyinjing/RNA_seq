@@ -41,91 +41,6 @@
         </el-select>
       </td>
       </tr> -->
-      <!-- <tr>
-        <td>基因距离计算方法</td>
-        <td>
-          <el-select v-model="row_distance" placeholder="请选择">
-            <el-option value="euclidean">euclidean</el-option>
-            <el-option value="dice">dice</el-option>
-            <el-option value="hamming">hamming</el-option>
-            <el-option value="jaccard">jaccard</el-option>
-            <el-option value="kulsinski">kulsinski</el-option>
-            <el-option value="matching">matching</el-option>
-            <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-            <el-option value="russellrao">russellrao</el-option>
-            <el-option value="sokalmichener">sokalmichener</el-option>
-            <el-option value="sokalsneath">sokalsneath</el-option>
-            <el-option value="yule">yule</el-option>
-            <el-option value="braycurtis">braycurtis</el-option>
-            <el-option value="canberra">canberra</el-option>
-            <el-option value="chebyshev">chebyshev</el-option>
-            <el-option value="cityblock">cityblock</el-option>
-            <el-option value="correlation">correlation</el-option>
-            <el-option value="cosine">cosine</el-option>
-            <el-option value="mahalanobis">mahalanobis</el-option>
-            <el-option value="minkowski">minkowski</el-option>
-            <el-option value="seuclidean">seuclidean</el-option>
-            <el-option value="sqeuclidean">sqeuclidean</el-option>
-        </el-select>
-      </td>
-      </tr>
-      <tr>
-        <td>基因linkage计算方法</td>
-        <td>
-          <el-select v-model="row_linkage" placeholder="请选择">
-            <el-option value="ward">ward</el-option>
-            <el-option value="single">single</el-option>
-            <el-option value="complete">complete</el-option>
-            <el-option value="average">average</el-option>
-            <el-option value="weighted">weighted</el-option>
-            <el-option value="centroid">centroid</el-option>
-            <el-option value="median">median</el-option>
-        </el-select>
-      </td>
-      </tr>
-      <tr>
-        <td>样本距离计算方法</td>
-        <td>
-          <el-select v-model="column_distance" placeholder="请选择">
-            <el-option value="euclidean">euclidean</el-option>
-            <el-option value="dice">dice</el-option>
-            <el-option value="hamming">hamming</el-option>
-            <el-option value="jaccard">jaccard</el-option>
-            <el-option value="kulsinski">kulsinski</el-option>
-            <el-option value="matching">matching</el-option>
-            <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-            <el-option value="russellrao">russellrao</el-option>
-            <el-option value="sokalmichener">sokalmichener</el-option>
-            <el-option value="sokalsneath">sokalsneath</el-option>
-            <el-option value="yule">yule</el-option>
-            <el-option value="braycurtis">braycurtis</el-option>
-            <el-option value="canberra">canberra</el-option>
-            <el-option value="chebyshev">chebyshev</el-option>
-            <el-option value="cityblock">cityblock</el-option>
-            <el-option value="correlation">correlation</el-option>
-            <el-option value="cosine">cosine</el-option>
-            <el-option value="mahalanobis">mahalanobis</el-option>
-            <el-option value="minkowski">minkowski</el-option>
-            <el-option value="seuclidean">seuclidean</el-option>
-            <el-option value="sqeuclidean">sqeuclidean</el-option>
-        </el-select>
-      </td>
-      </tr>
-      <tr>
-        <td>样本linkage计算方法</td>
-        <td>
-          <el-select v-model="column_linkage" placeholder="请选择">
-            <el-option value="ward">ward</el-option>
-            <el-option value="single">single</el-option>
-            <el-option value="complete">complete</el-option>
-            <el-option value="average">average</el-option>
-            <el-option value="weighted">weighted</el-option>
-            <el-option value="centroid">centroid</el-option>
-            <el-option value="median">median</el-option>
-        </el-select>
-      </td>
-      </tr>
-      <tr> -->
         <td></td>
         <td>
           <el-button type="primary" @click="submit()">提交</el-button>
@@ -156,24 +71,19 @@ export default {
   },
   methods: {
     submit () {
-      // let temp = []
-      // for(let i =0;i < this.$store.state.geneList.length;i++) {
-      //   temp.push(this.$store.state.geneList[i]['target_id'])
-      // }
-      // temp = temp.join('\n')
-      // let formData = new FormData()
-      // formData.append('username', this.$store.state.username)
-      // formData.append('p', this.$store.state.projectId)
-      // formData.append('genelist', temp)
-      // formData.append('row_distance', this.row_distance)
-      // formData.append('row_linkage', this.row_linkage)
-      // formData.append('column_distance', this.column_distance)
-      // formData.append('column_linkage', this.column_linkage)
-      // this.axios.post('/server/heatmap.app', formData).then((res) => {
-      //   this.$store.commit('setheatmapJson', res.data.message)
-      //   this.$router.push({'name': 'heatmap'})
-      // })
-      this.$router.push({'name': 'ppi_chord_plot'})
+      let temp = []
+      for(let i =0;i < this.$store.state.geneList.length;i++) {
+        temp.push(this.$store.state.geneList[i]['target_id'])
+      }
+      temp = temp.join('\n')
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('genelist', temp)
+      this.axios.post('/server/ppi_chord_plot.app', formData).then((res) => {
+        this.$store.commit('setppiJson', res.data.message)
+        this.$router.push({'name': 'ppi_chord_plot'})
+      })
     },
     handleClose(tag) {
         this.$store.state.geneList.splice(this.$store.state.geneList.indexOf(tag), 1);

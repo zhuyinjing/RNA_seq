@@ -3,6 +3,20 @@
     <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
       <i class="el-icon-back" @click="backHeatmapInput"></i>
     </el-tooltip>
+
+    <div class="icon-func-div">
+      <span style="font-size:12px;">ID显示</span>
+      <el-switch
+        v-model="idShow"
+        active-text=""
+        inactive-text=""
+        @change="idShowChange"
+        >
+      </el-switch>
+    </div>
+
+    <div id="chart"></div>
+
     <div class="container">
       <el-row>
         <el-col :span="16">
@@ -14,20 +28,26 @@
           </div>
         </el-col>
       </el-row>
-        <!-- <div id="microarrays_dendrogram" class="" style="display:inline-block;width:60%;vertical-align:top"></div>
-        <div id="microarrays" class="" style="display:inline-block;width:30%;vertical-align:top;margin-top:200px;">
-            <div id="boxplot" ></div>
-        </div> -->
     </div>
 </div>
   </div>
 </template>
 
 <script>
+import * as d3 from 'd3'
+import 'd3-color'
+import 'd3-interpolate'
+import 'd3-scale-chromatic'
+
 import Highcharts from 'highcharts/highstock';
 export default {
   data () {
     return {
+      arr: [],
+      temp: [],
+      value: [],
+      sortValue: [],
+      idShow: true
     }
   },
   components: {
@@ -36,9 +56,105 @@ export default {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
     setTimeout(() => {
       this.initchart()
+      this.d3heatmap()
     }, 500)
   },
   methods: {
+    idShowChange () {
+      if (this.idShow === true) {
+        d3.selectAll('.ySum').style('visibility', 'visible')
+      } else {
+        d3.selectAll('.ySum').style('visibility', 'hidden')
+      }
+    },
+    d3heatmap () {
+      let self = this
+      for (let k in this.$store.state.heatmapJson.heatmap_json_string.data.nodes) {
+        let node = this.$store.state.heatmapJson.heatmap_json_string.data.nodes[k]
+        if (('parent' in node) === false) {
+          preOrder(node)
+        }
+      }
+      function preOrder(node){
+         if(node.distance === 0){
+           self.temp.push(node.objects[0]);  // y 轴的gene名称
+           for(let i = 0;i < node.features.length;i++) {
+             self.value.push(node.features[i])   // 每一行的值
+             self.sortValue.push(node.features[i])  // 用来排序的数组
+           }
+         } else {
+           preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['left_child']]);
+           preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
+         }
+       }
+      let yData = self.temp
+      let xData = this.$store.state.heatmapJson.heatmap_json_string.data.feature_names
+
+      var array_data = [];
+      var margin = { top: 50, right: 0, bottom: 100, left: 200 },
+          width = 800 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
+          height = 12 * yData.length ,
+          gridSize = Math.floor(width / xData.length)     // 求地板，即去掉小数部分，width分成24份
+
+              function sortNumber (a, b) {
+                return a - b
+              }
+              self.sortValue.sort(sortNumber)   //  排序后的数组
+              let min = self.sortValue[Math.ceil(0.1 * self.sortValue.length)]
+              let middle = self.sortValue[Math.ceil(self.sortValue.length/2)]
+              let max = self.sortValue[self.sortValue.length - Math.ceil(0.1 * self.sortValue.length) - 1]
+
+              var linear = d3.scaleLinear()
+              				.domain([min, middle, max])
+              				.range([(d3.rgb(255,0,0)).darker(0.7), (d3.rgb(19,3,3)).darker(1), (d3.rgb(0,255,0)).darker(1)]);
+
+              // 设置chart，svg
+              var svg = d3.select("#chart").append("svg") // 选择“chart”（就是div），加入一个svg，设置属性跟div一样大
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")    // 在svg内加入一个g（group组），并设置元素g的显示位置
+                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+              var timeLabels = svg.selectAll(".testLabel")
+                  .data(xData)
+                  .enter().append("text")
+                  .text(function(d) { return d; })
+                  .attr("x", function(d, i) { return i * gridSize; })
+                  .attr("y", 0)
+                  .style("text-anchor", "middle")
+                  .style("font-size", "10px")
+                  .style("font-family", "Consolas, Monaco, monospace")
+                  .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+
+             var dayLabels = svg.selectAll(".nameLabel")
+                 .data(yData)
+                 .enter()    // 为data中每一项创建一个".dayLabel"
+                 .append("text")    // 为days中每一项创建一的".dayLabel"添加文本，下面全是设置文本的属性
+                 .text(function (d) { return d; })
+                 .attr("x", 0)
+                 .attr("y", function (d, i) { return i * 12; })
+                 .style("text-anchor", "end")
+                 .style("font-size", "10px")
+                 .style("line-height", "12px")
+                 .style("font-family", "Consolas, Monaco, monospace")
+                 .attr("transform", "translate(-6," + "10)")
+                 .attr('class', 'ySum')
+
+              var heatMap = svg.selectAll(".score")
+                  .data(self.value)
+                  .enter()
+                  .append("rect")
+                  .attr("x", function(d, i){ return (i % 12)*gridSize;})
+                  .attr("y", function(d, i){ return parseInt(i / 12) * 12;})
+                  .attr("width", gridSize)
+                  .attr("height", 12)
+                  .style("fill", "#FFFFFF");
+              // duration(1000) 在1000ns也就是1s内将格子图上色
+              heatMap.transition().duration(1000)
+                  .style("fill", function(d) { return linear(d) });
+              // 鼠标停留显示value
+              heatMap.append("title").text(function(d) { return d; });
+    },
     initchart () {
       let stages = this.$store.state.heatmapJson.stages
       let genes = this.$store.state.heatmapJson.genes
@@ -117,7 +233,7 @@ export default {
                       metadata_colors: "RdLrBu", //set color scale for metadata
                       column_dendrogram: true,
                       max_percentile: 90,
-                      middle_percentile: 50,
+                      // middle_percentile: 50,
                       min_percentile: 10,
                       independent_columns: false
               });
@@ -258,5 +374,8 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.icon-func-div {
+  margin-top: 10px;
 }
 </style>

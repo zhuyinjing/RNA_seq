@@ -9,7 +9,8 @@ export default new Vuex.Store({
     projectId: '',
     projectName: '',
     geneList: [],
-    heatmapJson: null
+    heatmapJson: null,
+    ppiJson: null
   },
   mutations: {
     setusername: (state, data) => {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     },
     setheatmapJson: (state, data) => {
       state.heatmapJson = data
+    },
+    setppiJson: (state, data) => {
+      state.ppiJson = data
     },
   }
 })

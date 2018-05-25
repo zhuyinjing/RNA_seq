@@ -23,6 +23,10 @@ Highcharts3D(Highcharts);
 Highmaps(Highcharts);
 
 Vue.use(ElementUI)
+// 请求发送前
+// axios.interceptors.request.use((config) => {
+//   return config
+// })
 Vue.use(vueAxios, axios)
 
 Vue.config.productionTip = false
