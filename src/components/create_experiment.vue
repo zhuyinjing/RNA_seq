@@ -6,7 +6,7 @@
     <p>项目名称: {{this.$store.state.projectName}}</p>
     <div class="">
       <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>编辑/更新实验设计</el-button>
-      <el-button type=""><i class="el-icon-delete"></i>清空实验设计</el-button>
+      <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>清空实验设计</el-button>
     </div>
     <div class="tableStyle">
       <p class="p-font-style">实验条件一览</p>
@@ -14,8 +14,9 @@
         <tr>
             <th>实验条件</th><th>样本名称</th>
         </tr>
-        <tr v-for="item in message.nameSampleMap">
-            <td>{{item.condition}}</td><td>{{item.name}}</td>
+        <tr v-for="(item, value, index) in message.nameSampleMap">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
         </tr>
       </table>
     </div>
@@ -25,8 +26,9 @@
         <tr>
             <th>实验条件</th><th>样本名称</th>
         </tr>
-        <tr v-for="item in message.experiments">
-            <td>{{item._case}}</td><td>{{item._control}}</td>
+        <tr v-for="(item, index) in message.experiments">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
         </tr>
       </table>
     </div>
@@ -193,6 +195,9 @@ export default {
         this.step2Dialog = false
       })
     },
+    clearDesign () {
+      this.message = {}
+    },
     backProjectList () {
       this.$router.push({'name': 'project_list'})
     }
@@ -248,5 +253,8 @@ table.gridtable td {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.bgcolor {
+  background-color: #f9f9f9 !important;
 }
 </style>

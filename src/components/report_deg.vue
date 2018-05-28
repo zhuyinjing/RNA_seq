@@ -5,12 +5,12 @@
     </el-tooltip>
     <h3 class="p-font-style">项目名称：{{$store.state.projectName}}</h3>
     <div>
-        <label for="maxpval">pvalue &le;</label>
-        <input type="text" id="maxpval" placeholder="0.05"/>
-        <label for="maxfdr">FDR &le;</label>
-        <input type="text" id="maxfdr" placeholder="0.05"/>
-        <label for="minfc">log2FoldChange(绝对值) &ge;</label>
-        <input type="text" id="minfc" placeholder="0"/>
+        <label for="maxpval" class="label-font">pvalue &le;</label>
+        <input type="text" id="maxpval" placeholder="0.05" class="input-style"/>
+        <label for="maxfdr" class="label-font">FDR &le;</label>
+        <input type="text" id="maxfdr" placeholder="0.05" class="input-style"/>
+        <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+        <input type="text" id="minfc" placeholder="0" class="input-style"/>
         <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
     </div>
     <br>
@@ -92,7 +92,7 @@ export default {
         if (this.data.length < 100) {
           this.$store.commit('setgeneList', this.data)
         } else {
-          for(let i = 0;i < 100;i++) {
+          for(let i = 0;i < 50;i++) {
             this.checked.push(this.data[i])
           }
           this.$store.commit('setgeneList', this.checked)
@@ -209,5 +209,12 @@ export default {
 }
 .cursor-pointer{
   cursor: pointer;
+}
+.label-font {
+  font-size: 14px;
+}
+.input-style{
+  height: 16px;
+  margin-right: 20px;
 }
 </style>

@@ -20,6 +20,7 @@
     "es6-promise": "^4.2.4",
     "highcharts": "^6.1.0",
     "jquery": "^3.3.1",
+    "plotly.js": "^1.38.0",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.1",
     "vue-router": "^3.0.1",

@@ -75,6 +75,10 @@ export default {
       })
     },
     upload () {
+      if (!this.$refs.file1.files[0] && !this.$refs.file2.files[0]) {
+        this.$message.error('请选择要上传的文件!');
+        return
+      }
       if (!this.sample_name) {
         this.$message.error('请选择样本数据!');
         return

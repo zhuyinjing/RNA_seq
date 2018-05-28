@@ -13,6 +13,9 @@ import heatmap_input from '@/components/heatmap_input'
 import heatmap from '@/components/heatmap'
 import ppi_chord_plot_input from '@/components/ppi_chord_plot_input'
 import ppi_chord_plot from '@/components/ppi_chord_plot'
+import report_fastqc from '@/components/report_fastqc'
+import report_mappingqc from '@/components/report_mappingqc'
+import report_new_trans from '@/components/report_new_trans'
 
 Vue.use(Router)
 
@@ -88,6 +91,21 @@ export default new Router({
       path: '/ppi_chord_plot',
       name: 'ppi_chord_plot',
       component: ppi_chord_plot
+    },
+    {
+      path: '/report_fastqc',
+      name: 'report_fastqc',
+      component: report_fastqc
+    },
+    {
+      path: '/report_mappingqc',
+      name: 'report_mappingqc',
+      component: report_mappingqc
+    },
+    {
+      path: '/report_new_trans',
+      name: 'report_new_trans',
+      component: report_new_trans
     }
   ]
 })

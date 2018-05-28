@@ -10,7 +10,7 @@
         <td>
           <div class="tagsDiv">
             <div class="tag" v-for="item in $store.state.geneList">
-              <span style='font-family:"Times New Roman",Georgia,monospace;'>{{item.target_id}}</span> <span style="margin-left:20px;font-family:'Times New Roman',Georgia,monospace;">{{item.name}}</span>
+              <span>{{item.target_id}}</span> <span style="margin-left:20px;">{{item.name}}</span>
               <i style="float:right;margin-top:8px;"class="el-icon-close cursor-pointer" @click="handleClose(item)"></i>
             </div>
           </div>

@@ -7,14 +7,14 @@
     <!-- <el-card class="box-card"> -->
     <h3>质量控制</h3>
     <ul>
-      <li><el-button type="text">测序质检</el-button></li>
-      <li><el-button type="text">比对结果质检</el-button></li>
+      <li><el-button type="text" @click="report_fastqc">测序质检</el-button></li>
+      <li><el-button type="text" @click="report_mappingqc">比对结果质检</el-button></li>
     </ul>
     <h3>转录本拼接概况</h3>
     <ul>
       <li><el-button type="text" disabled>基因数目：0</el-button></li>
       <li><el-button type="text" disabled>转录本数目：0</el-button></li>
-      <li><el-button type="text">新转录本概况</el-button></li>
+      <li><el-button type="text" @click="report_new_trans">新转录本概况</el-button></li>
     </ul>
     <h3>基因表达量</h3>
     <ul>
@@ -53,6 +53,15 @@ export default {
     },
     backProjectList () {
       this.$router.push({'name': 'project_list'})
+    },
+    report_fastqc () {
+      this.$router.push({'name': 'report_fastqc'})
+    },
+    report_mappingqc () {
+      this.$router.push({'name': 'report_mappingqc'})
+    },
+    report_new_trans () {
+      this.$router.push({'name': 'report_new_trans'})
     }
   }
 }
