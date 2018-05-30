@@ -10,7 +10,8 @@
       <h1>专业、深度、可视化的高通量生物数据分析平台</h1>
     </div>
     <div class="textStyle">
-      <el-button type="danger" @click="login()">登录/注册</el-button>
+      <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
+      <el-button type="danger" @click="project_list()">查看项目列表</el-button>
     </div>
     <login ref="loginDiv"></login>
   </div>
@@ -37,8 +38,11 @@ export default {
   mounted () {
   },
   methods: {
-    login () {
-      this.$refs.loginDiv.loginDialog = true
+    // login () {
+    //   this.$refs.loginDiv.loginDialog = true
+    // },
+    project_list () {
+      this.$router.push({'name': 'project_list'})
     }
   }
 }

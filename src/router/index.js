@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import home from '@/components/home'
-import login from '@/components/login'
+// import login from '@/components/login'
 import about from '@/components/about'
 import project_list from '@/components/project_list'
 import create_experiment from '@/components/create_experiment'
@@ -57,11 +57,11 @@ export default new Router({
       name: 'run_task',
       component: run_task
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: login
-    },
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: login
+    // },
     {
       path: '/report',
       name: 'report',

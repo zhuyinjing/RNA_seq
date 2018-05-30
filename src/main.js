@@ -27,6 +27,11 @@ Vue.use(ElementUI)
 // axios.interceptors.request.use((config) => {
 //   return config
 // })
+
+axios.get('/getUser').then((res) => {
+  store.commit('setusername', res.data)
+})
+
 Vue.use(vueAxios, axios)
 
 Vue.config.productionTip = false

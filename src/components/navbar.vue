@@ -12,12 +12,12 @@
       <el-button type="text" @click="logoutDialog = true">退出账号</el-button>
     </div>
 
-    <el-dialog title="" :visible.sync="logoutDialog" width="30%">
-      <h2><i class="el-icon-warning delete-font-color"> 确认退出账号吗？</i></h2>
-      <div slot="footer" class="dialog-footer">
+    <el-dialog title="" :visible.sync="logoutDialog" width="25%" center>
+      <h2 class="text-center"><i class="el-icon-warning delete-font-color"> 确认退出账号吗？</i></h2>
+      <span slot="footer" class="dialog-footer" center>
         <el-button @click="logoutDialog = false">取消</el-button>
-        <el-button type="danger" @click="logoutDialog = false">确定</el-button>
-      </div>
+        <el-button type="danger" @click="logout">确定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -55,7 +55,11 @@ export default {
           this.$router.push({'name': 'about'})
           break
       }
-    }
+    },
+    logout () {
+      this.logoutDialog = false
+      window.location.href = 'http://10.10.10.34:1025/logout'
+    },
   }
 }
 </script>
@@ -69,5 +73,8 @@ export default {
 .nameStyle {
   margin-right: 30px;
   color: #b5a199;
+}
+.text-center {
+  text-align: center;
 }
 </style>
