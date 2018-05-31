@@ -4,8 +4,13 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var MemoryStore = require('session-memory-store')(session);
+var history = require('connect-history-api-fallback');
+let cors = require('cors');
+const http = require('http')
+const fs = require('fs')
 
 var app = express();
+app.use(cors());
 
 app.use(cookieParser());
 app.use(session({

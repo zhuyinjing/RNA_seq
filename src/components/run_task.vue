@@ -3,15 +3,15 @@
     <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
-    <p>项目：{{this.$store.state.projectName}}</p>
+    <h3>项目：{{this.$store.state.projectName}}</h3>
     <div id="container"></div>
     <div class="">
       <el-button v-if="runBtnShow" type="primary" @click="startTask()">运行分析任务</el-button>
       <transition name="fade">
         <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">刷新任务状态</el-button>
       </transition>
-      <el-button v-show="reportBtnShow" type="success" @click="report()">生成报告</el-button>
-      <el-button v-show="resultBtnShow" type="success" @click="result()">结果导入ABrowse</el-button>
+      <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> 生成报告</el-button>
+      <el-button v-show="reportBtnShow" type="" @click="result()" plain><i class="el-icon-printer"></i> 结果导入ABrowse</el-button>
     </div>
   </div>
 </template>
@@ -25,7 +25,6 @@ export default {
       runBtnShow: false,
       refreshBtnShow: false,
       reportBtnShow: false,
-      resultBtnShow: false,
       currentStepSn: null,
       status: null
     }
@@ -51,6 +50,11 @@ export default {
         }
         this.currentStepSn = res.data.message.currentStepSn
         this.status = res.data.message.status
+        if (this.status === 300) {
+          this.runBtnShow = false
+          this.refreshBtnShow = false
+          this.reportBtnShow = true
+        }
         this.runTask()
       })
     },
@@ -245,7 +249,17 @@ export default {
       })
     },
     report () {
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
 
+      this.axios.post('/server/create_report', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.$message.success('导入成功!')
+        } else {
+          this.$message.error('请求错误!')
+        }
+      })
     },
     result () {
 

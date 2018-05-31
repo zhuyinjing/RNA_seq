@@ -94,71 +94,20 @@
 export default {
   data () {
     return {
-      tableData: [
-        {
-          fileName: 'fq_file',
-          basicStatistics: 'PASS',
-          perBaseSequenceQuality: 'PASS',
-          perTileSequenceQuality: 'WARN',
-          perSequenceQualityScores: 'FAIL',
-          perBaseSequenceContent: 'PASS',
-          perSequenceGcContent: 'PASS',
-          perBaseNContent: 'PASS',
-          sequenceLengthDistribution: 'PASS',
-          sequenceDuplicationLevels: 'PASS',
-          overrepresentedSequences: 'PASS',
-          adapterContent: 'PASS',
-        },
-        {
-          fileName: 'Normal_3.L1.2',
-          basicStatistics: 'PASS',
-          perBaseSequenceQuality: 'PASS',
-          perTileSequenceQuality: 'WARN',
-          perSequenceQualityScores: 'FAIL',
-          perBaseSequenceContent: 'PASS',
-          perSequenceGcContent: 'PASS',
-          perBaseNContent: 'WARN',
-          sequenceLengthDistribution: 'PASS',
-          sequenceDuplicationLevels: 'PASS',
-          overrepresentedSequences: 'WARN',
-          adapterContent: 'FAIL',
-        },
-        {
-          fileName: 'fq_file',
-          basicStatistics: 'PASS',
-          perBaseSequenceQuality: 'PASS',
-          perTileSequenceQuality: 'WARN',
-          perSequenceQualityScores: 'FAIL',
-          perBaseSequenceContent: 'PASS',
-          perSequenceGcContent: 'PASS',
-          perBaseNContent: 'PASS',
-          sequenceLengthDistribution: 'PASS',
-          sequenceDuplicationLevels: 'PASS',
-          overrepresentedSequences: 'PASS',
-          adapterContent: 'PASS',
-        },
-        {
-          fileName: 'fq_file',
-          basicStatistics: 'gfdgfg',
-          perBaseSequenceQuality: 'gfdgfg',
-          perTileSequenceQuality: 'gfdgfg',
-          perSequenceQualityScores: 'gfdgfg',
-          perBaseSequenceContent: 'gfdgfg',
-          perSequenceGcContent: '',
-          // perBaseNContent: 'PASS',
-          sequenceLengthDistribution: 'PASS',
-          sequenceDuplicationLevels: 'PASS',
-          overrepresentedSequences: 'PASS',
-          // adapterContent: 'PASS',
-        },
-      ],
+      tableData: [],
     }
   },
   components: {
   },
   mounted () {
+    this.initTable()
   },
   methods: {
+    initTable () {
+      this.axios.get('/server/fastqc?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        this.tableData = res.data
+      })
+    },
     backReport () {
       this.$router.push({'name': 'report'})
     },

@@ -18,7 +18,7 @@
     </ul>
     <h3>基因表达量</h3>
     <ul>
-      <li><el-button type="text">基因表达量表格（counts）</el-button></li>
+      <li><el-button type="text" @click="report_expr_matrix">基因表达量表格（counts）</el-button></li>
     </ul>
     <h3>样本聚类概览</h3>
     <ul>
@@ -62,6 +62,9 @@ export default {
     },
     report_new_trans () {
       this.$router.push({'name': 'report_new_trans'})
+    },
+    report_expr_matrix () {
+      this.$router.push({'name': 'report_expr_matrix'})
     }
   }
 }

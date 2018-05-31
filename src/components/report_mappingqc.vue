@@ -41,33 +41,34 @@ import Plotly from 'plotly.js'
 export default {
   data () {
     return {
-      traces: [{
-          x: ['总碱基数', '核糖体碱基数', '编码区碱基数', 'UTR碱基数', '内含子碱基数', '基因间区碱基数'],
-          y: [20, 14, 23, 10, 130, 66],
-          name: 'A_1',
-          type: 'bar',
-        },
-        {
-          x: ['总碱基数', '核糖体碱基数', '编码区碱基数', 'UTR碱基数', '内含子碱基数', '基因间区碱基数'],
-          y: [22, 16, 25, 12, 132, 68],
-          name: 'A_2',
-          type: 'bar',
-        }
-      ],
-      tableData: [
-        ['A_1','12231614750','11877633810','579974250','7157013396','3085766437','822239585','233981122','0','0','0','2','92','31160793','0.021277','0.978723','0.048829','0.602562','0.259796','0.069226','0.019699','0.862359','0.837402','0','0.48982','0.32894','0.62552','0.524526'],
-        ['A_1','12231614750','11877633810','579974250','7157013396','3085766437','822239585','233981122','0','0','0','2','92','31160793','0.021277','0.978723','0.048829','0.602562','0.259796','0.069226','0.019699','0.862359','0.837402','0','0.48982','0.32894','0.62552','0.524526'],
-      ]
+      traces: [],
+      tableData: []
     }
   },
   components: {
   },
   mounted () {
-    var data = this.traces
-    var layout = {barmode: 'group'};
-    Plotly.newPlot('metrics_bar', data, layout);
+    this.initTable()
   },
   methods: {
+    initTable () {
+      this.axios.get('/server/mappingqc?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        this.tableData = res.data.slice(1)
+        for (let i = 0;i < this.tableData.length;i++) {
+          let data = this.tableData[i]
+          let obj = {
+            x: ['总碱基数', '核糖体碱基数', '编码区碱基数', 'UTR碱基数', '内含子碱基数', '基因间区碱基数'],
+            y: [data[1]-0, data[3]-0, data[4]-0, data[5]-0, data[6]-0, data[7]-0],
+            name: data[0],
+            type: 'bar'
+          }
+          console.log(obj)
+          this.traces.push(obj)
+        }
+        var layout = {barmode: 'group'};
+        Plotly.newPlot('metrics_bar', this.traces, layout);
+      })
+    },
     backReport () {
       this.$router.push({'name': 'report'})
     }

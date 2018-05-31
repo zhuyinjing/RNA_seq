@@ -57,6 +57,7 @@ export default {
       }
     },
     logout () {
+      sessionStorage.removeItem('navbarItem')
       this.logoutDialog = false
       window.location.href = 'http://10.10.10.34:1025/logout'
     },

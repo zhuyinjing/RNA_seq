@@ -12,6 +12,7 @@
     <div class="textStyle">
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
       <el-button type="danger" @click="project_list()">查看项目列表</el-button>
+      <img src="http://10.10.10.34:1025/server/username" alt="">
     </div>
     <login ref="loginDiv"></login>
   </div>

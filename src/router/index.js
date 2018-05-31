@@ -16,11 +16,12 @@ import ppi_chord_plot from '@/components/ppi_chord_plot'
 import report_fastqc from '@/components/report_fastqc'
 import report_mappingqc from '@/components/report_mappingqc'
 import report_new_trans from '@/components/report_new_trans'
+import report_expr_matrix from '@/components/report_expr_matrix'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     // {
     //   path: '*',
@@ -106,6 +107,11 @@ export default new Router({
       path: '/report_new_trans',
       name: 'report_new_trans',
       component: report_new_trans
+    },
+    {
+      path: '/report_expr_matrix',
+      name: 'report_expr_matrix',
+      component: report_expr_matrix
     }
   ]
 })
