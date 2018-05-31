@@ -9,16 +9,8 @@
     <div class="userDiv" v-show="$store.state.username">
       <!-- <img src="../assets/img/avatar.png" alt=""> -->
       <span class="nameStyle">{{$store.state.username}}</span>
-      <el-button type="text" @click="logoutDialog = true">退出账号</el-button>
+      <el-button type="text" @click="logout">退出账号</el-button>
     </div>
-
-    <el-dialog title="" :visible.sync="logoutDialog" width="25%" center>
-      <h2 class="text-center"><i class="el-icon-warning delete-font-color"> 确认退出账号吗？</i></h2>
-      <span slot="footer" class="dialog-footer" center>
-        <el-button @click="logoutDialog = false">取消</el-button>
-        <el-button type="danger" @click="logout">确定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -27,7 +19,6 @@ export default {
   data () {
     return {
       activeIndex: '',
-      logoutDialog: false
     }
   },
   components: {
@@ -57,9 +48,15 @@ export default {
       }
     },
     logout () {
-      sessionStorage.removeItem('navbarItem')
-      this.logoutDialog = false
-      window.location.href = 'http://10.10.10.34:1025/logout'
+      this.$confirm('确认退出该账号吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          sessionStorage.removeItem('navbarItem')
+          window.location.href = 'http://10.10.10.34:1025/logout'
+        }).catch(() => {});
     },
   }
 }

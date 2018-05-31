@@ -68,7 +68,6 @@ export default {
   components: {
   },
   mounted () {
-    let self = this
     this.getTabelValue()
   },
   methods: {
@@ -174,12 +173,18 @@ export default {
              }
             } else {
               self.checked.push(self.data[this.value]);
+              //  手动选择所有 thead input checkbox 为选中状态
+              if (self.checked.length === self.data.length) {
+                $('#example-select-all').get(0).checked = true
+              }
             }
          });
       } );
     },
     getTabelValue () {
-      this.axios.get('/server/deg?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + 'A' + '&_control=' + 'Normal' + '&sig_only=true').then((res) => {
+      let _case = sessionStorage.getItem('_case')
+      let _control = sessionStorage.getItem('_control')
+      this.axios.get('/server/deg?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&sig_only=true').then((res) => {
         if (res.data.message_type === 'success') {
           for (let i = 0;i < res.data.message.data.length;i++) {
             res.data.message.data[i].baseMean = parseFloat(res.data.message.data[i].baseMean).toFixed(3) - 0
@@ -187,8 +192,9 @@ export default {
             res.data.message.data[i].pvalue = parseFloat(res.data.message.data[i].pvalue).toFixed(3) - 0
             res.data.message.data[i].padj = parseFloat(res.data.message.data[i].padj).toFixed(3) - 0
           }
-          // this.data = res.data.message.data
           this.initTable(res.data.message.data)
+        } else {
+          this.$message.error(res.data.message);
         }
       })
     },

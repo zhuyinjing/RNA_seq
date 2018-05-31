@@ -5,7 +5,7 @@
     </el-tooltip>
     <div class="margin-top-10">
       <span class="p-font-style">样本数据：</span>
-        <el-select v-model="sample_name" placeholder="请选择" @change="change()">
+        <el-select v-model="sample_name" placeholder="请选择" @change="change()" :disabled="disabled">
           <el-option v-for="item in message.nameSampleMap" :key="item.name" :value="item.name"></el-option>
         </el-select>
     </div>
@@ -17,7 +17,7 @@
         <span class="p-font-style">文件2:</span>
         <input type="file" name="" ref="file2">
       </div>
-      <el-button type="primary" @click="upload()">上 传</el-button>
+      <el-button type="primary" @click="upload()" :disabled="disabled">上 传</el-button>
       <p class="p-font-style">上传进度：</p>
       <el-progress :percentage="progress"></el-progress>
     <div class="">
@@ -31,19 +31,12 @@
             <td>
               <p v-for="fileList in item.readPairList">
                 <span v-for="file in fileList">{{file}} &nbsp;&nbsp;</span>
-                <i class="el-icon-delete cursor-pointer icon-style" @click="openDialog(item, fileList)"></i>
+                <i class="el-icon-delete cursor-pointer icon-style" @click="deleteFile(item, fileList)"></i>
               </p>
             </td>
         </tr>
       </table>
     </div>
-    <el-dialog title="" :visible.sync="deleteDialog" width="30%">
-      <h2 style="text-align:center"><i class="el-icon-warning delete-font-color"> 确认删除该样本的fastq文件吗？</i></h2>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="deleteDialog = false">取消</el-button>
-        <el-button type="danger" @click="deleteFile()">确定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -54,9 +47,9 @@ export default {
       sample_name: '',
       message: {},
       progress: 0,
-      deleteDialog: false,
       currentItem: null,
-      fileObj: {}
+      fileObj: {},
+      disabled: false
     }
   },
   components: {
@@ -83,6 +76,7 @@ export default {
         this.$message.error('请选择样本数据!');
         return
       }
+      this.disabled = true
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('p', this.$store.state.projectId)
@@ -97,6 +91,7 @@ export default {
       }
       this.axios.post('/server/upload_rnaseq_paired_fastq', formData, config).then((res) => {
         if (res.data.message_type === 'success') {
+          this.disabled = false
           this.$message.success('上传成功!');
           this.getFile()
         }
@@ -106,28 +101,32 @@ export default {
       this.$refs.file1.value = ''
       this.$refs.file2.value  = ''
       this.progress = 0
+      this.disabled = false
     },
-    openDialog (item, fileObj) {
-      this.deleteDialog = true
+    deleteFile (item, fileObj) {
       this.currentItem = item
       this.fileObj = fileObj
-    },
-    deleteFile () {
-      let formData = new FormData()
-      formData.append('username', this.$store.state.username)
-      formData.append('p', this.$store.state.projectId)
-      formData.append('sample_name', this.currentItem.name)
-      formData.append('r1', this.fileObj['r1'])
-      formData.append('r2', this.fileObj['r2'])
-      this.axios.post('/server/delete_rnaseq_paired_fastq',formData).then((res) => {
-        if (res.data.message_type === 'success') {
-          this.getFile()
-          this.$message.success('删除成功！');
-        } else {
-          this.$message.error('删除失败！');
-        }
-        this.deleteDialog = false
-      })
+      this.$confirm('此操作将永久删除该样本的fastq文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let formData = new FormData()
+          formData.append('username', this.$store.state.username)
+          formData.append('p', this.$store.state.projectId)
+          formData.append('sample_name', this.currentItem.name)
+          formData.append('r1', this.fileObj['r1'])
+          formData.append('r2', this.fileObj['r2'])
+          this.axios.post('/server/delete_rnaseq_paired_fastq',formData).then((res) => {
+            if (res.data.message_type === 'success') {
+              this.getFile()
+              this.$message.success('删除成功！');
+            } else {
+              this.$message.error('删除失败！');
+            }
+          })
+        }).catch(() => {});
     },
     backProjectList () {
       this.$router.push({'name': 'project_list'})

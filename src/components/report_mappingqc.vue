@@ -62,7 +62,6 @@ export default {
             name: data[0],
             type: 'bar'
           }
-          console.log(obj)
           this.traces.push(obj)
         }
         var layout = {barmode: 'group'};

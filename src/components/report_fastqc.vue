@@ -105,7 +105,7 @@ export default {
   methods: {
     initTable () {
       this.axios.get('/server/fastqc?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        this.tableData = res.data
+        this.tableData = res.data.slice(1)
       })
     },
     backReport () {

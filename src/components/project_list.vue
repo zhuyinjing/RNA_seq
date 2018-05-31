@@ -22,7 +22,7 @@
             <el-button @click="upload(item)">上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
             <el-button @click="runTask(item)">运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
             <el-button @click="report(item)">查看报告<i class="el-icon-document el-icon--right"></i></el-button>
-            <el-button class="float-right" type="danger" @click="deleteDialogOpen(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
+            <el-button class="float-right" type="danger" @click="deleteProject(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
         </div>
       </div>
@@ -57,15 +57,6 @@
       </div>
   </el-dialog>
 
-  <el-dialog title="" :visible.sync="deleteDialog" width="30%">
-    <h2><i class="el-icon-warning delete-font-color"> 确认删除该项目吗？</i></h2>
-    删除操作将删除项目所有相关文件并且 不可恢复 , 您确定要删除此项目吗？
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="deleteDialog = false">取消</el-button>
-      <el-button type="danger" @click="deleteProject()">确定</el-button>
-    </div>
-  </el-dialog>
-
   </div>
 </template>
 <script>
@@ -86,7 +77,6 @@ export default {
       },
       speciesList: ['homo_sapiens', 'ictidomys_tridecemlineatus', 'glycine_max'],
       typeList: ['rnaseq'],
-      deleteDialog: false,
       deleteId: ''
     }
   },
@@ -138,18 +128,21 @@ export default {
         this.createProjectDialog = false
       })
     },
-    deleteDialogOpen (id) {
+    deleteProject (id) {
       this.deleteId = id
-      this.deleteDialog = true
-    },
-    deleteProject () {
-      let formData = new FormData()
-      formData.append('username', this.$store.state.username)
-      formData.append('p', this.deleteId)
-      this.axios.post('/server/delete_project', formData).then((res) => {
-        this.deleteDialog = false
-        this.getProjects()
-      })
+      this.$confirm('确认删除该项目吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let formData = new FormData()
+          formData.append('username', this.$store.state.username)
+          formData.append('p', this.deleteId)
+          this.axios.post('/server/delete_project', formData).then((res) => {
+            this.getProjects()
+          })
+        }).catch(() => {});
     },
     createExperiment (item) {
       this.commitStore(item)
