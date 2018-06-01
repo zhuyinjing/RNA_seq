@@ -6,8 +6,8 @@
     <h3>项目：{{this.$store.state.projectName}}</h3>
     <div id="container"></div>
     <div class="">
-      <el-button v-if="runBtnShow" type="primary" @click="startTask()">运行分析任务</el-button>
       <transition name="fade">
+        <el-button v-if="runBtnShow" type="primary" @click="startTask()">运行分析任务</el-button>
         <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">刷新任务状态</el-button>
       </transition>
       <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> 生成报告</el-button>
@@ -86,8 +86,6 @@ export default {
       var rectStep = 30;
       var rectWidth = 200;
       var rectHeight = 30;
-
-      // var svg = d3.select("svg");
 
       let svg = d3.select('#container')
         .append('svg')
@@ -240,7 +238,8 @@ export default {
           this.runBtnShow = false
           this.refreshBtnShow = true
           this.currentStepSn = res.data.message.currentStepSn
-          this.currentStepSn = res.data.message.status
+          this.status = res.data.message.status
+          this.runTask()
         } else {
           this.$message.error('请求错误!')
         }
@@ -249,17 +248,46 @@ export default {
       })
     },
     report () {
-      let formData = new FormData()
-      formData.append('username', this.$store.state.username)
-      formData.append('p', this.$store.state.projectId)
+      const h = this.$createElement;
+        this.$msgbox({
+          title: '提示',
+          message: h('div', { style: 'text-align: center' }, '确认生成报告，是否继续？'),
+          closeOnClickModal: false, // modal click close
+          closeOnPressEscape: false, // esc  click close
+          showCancelButton: true,   //  cancel button show
+          confirmButtonText: '确定',
+          cancelButtonText: '返回',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              instance.confirmButtonLoading = true
+              instance.confirmButtonText = '生成中...'
 
-      this.axios.post('/server/create_report', formData).then((res) => {
-        if (res.data.message_type === 'success') {
-          this.$message.success('导入成功!')
-        } else {
-          this.$message.error('请求错误!')
-        }
-      })
+              let formData = new FormData()
+              formData.append('username', this.$store.state.username)
+              formData.append('p', this.$store.state.projectId)
+
+              this.axios.post('/server/create_report', formData).then((res) => {
+                if (res.data.message_type === 'success') {
+                  this.$message({
+                    type: 'success',
+                    message: '导入成功!',
+                    duration: 1000
+                  })
+                  instance.confirmButtonLoading = false
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: '导入失败!',
+                    duration: 1000
+                  })
+                }
+                done();
+              })
+            } else {
+              done()
+            }
+          }
+        }).then(action => {}).catch((e) => {})
     },
     result () {
 

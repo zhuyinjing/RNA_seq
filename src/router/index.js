@@ -17,6 +17,7 @@ import report_fastqc from '@/components/report_fastqc'
 import report_mappingqc from '@/components/report_mappingqc'
 import report_new_trans from '@/components/report_new_trans'
 import report_expr_matrix from '@/components/report_expr_matrix'
+import report_volcano_plot from '@/components/report_volcano_plot'
 
 Vue.use(Router)
 
@@ -112,6 +113,11 @@ export default new Router({
       path: '/report_expr_matrix',
       name: 'report_expr_matrix',
       component: report_expr_matrix
+    },
+    {
+      path: '/report_volcano_plot',
+      name: 'report_volcano_plot',
+      component: report_volcano_plot
     }
   ]
 })

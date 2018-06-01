@@ -140,7 +140,20 @@ export default {
           formData.append('username', this.$store.state.username)
           formData.append('p', this.deleteId)
           this.axios.post('/server/delete_project', formData).then((res) => {
-            this.getProjects()
+            if (res.data.message_type === 'success') {
+              this.$message({
+                type: 'success',
+                message: '删除成功!',
+                duration: 1000
+              })
+              this.getProjects()
+            } else {
+              this.$message({
+                type: 'error',
+                message: '删除失败!',
+                duration: 1000
+              });
+            }
           })
         }).catch(() => {});
     },
