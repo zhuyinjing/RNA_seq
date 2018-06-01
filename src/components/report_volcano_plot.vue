@@ -4,22 +4,37 @@
       <i class="el-icon-back" @click="backReport"></i>
     </el-tooltip>
 
-    <div class="text-align-center">
-        <div id="canvas"></div>
-          <div>
-            <vueSliderComp class="margin-0-auto" v-model="xLeft" v-bind="xLeftOptions" @callback="xLeftChange()"></vueSliderComp>
-            <p>{{xLeft}}</p>
+    <div class="">
+          <div class="" style="width:5px;display:inline-block">
+            <el-slider
+            v-model="yTop"
+            :step="0.1"
+            :min="xRightOptions.min"
+            :max="xRightOptions.max"
+             vertical
+            :style="{marginTop: '-50px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
+            @change="xLeftChange()"
+            >
+          </el-slider>
           </div>
-          <div>
-            <vueSliderComp class="margin-0-auto" v-model="yTop" v-bind="xRightOptions" @callback="xLeftChange()"></vueSliderComp>
-            <p>{{yTop}}</p>
+          <div id="canvas" style="display:inline-block"></div>
+          <div class="">
+              <el-slider
+              v-model="xLeft"
+              :step="0.1"
+              :min="xLeftOptions.min"
+              :max="xLeftOptions.max"
+              :style="{width: xLeftOptions.width + 'px', marginLeft: '30px'}"
+              @change="xLeftChange()"
+              >
+            </el-slider>
           </div>
           <div class="">
             <el-switch
               style="display: block"
               v-model="xvalueShow"
-              active-color="#13ce66"
-              inactive-color="#13ce66"
+              active-color="#409EFF"
+              inactive-color="#409EFF"
               active-text="x轴:pvalue"
               inactive-text="x轴:padj"
               @change="xvaluechange"
@@ -28,9 +43,12 @@
           </div>
           <br>
           <div class="">
-            <el-input-number v-model="showNum" @change="getData" :min="1"  label="描述文字"></el-input-number>
-
-            <!-- 显示基因个数:<el-input-number size="mini" :min="0" :step="1" :max="geneSum" v-model="showNum" @change="getData"></el-input-number> <span class="geneSumStyle">(总数：{{this.geneSum}})</span> -->
+            显示基因个数:<el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number><span class="geneSumStyle"> (总数：{{this.geneSum}})</span>
+          </div>
+          <br>
+          <div class="">
+            Log2FoldChange:<el-input-number size="mini" :min="1" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
+            -log10(pvalue):<el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
           </div>
           <br>
           <div class="">
@@ -72,21 +90,21 @@ export default {
       toolDivShow: false,
       xLeft: 0,
       yTop: 0,
-      xmin: -4,
-      xmax: 4,
+      xmin: -3,
+      xmax: 3,
       ymin: 0,
       ymax: 12,
       radius: 1,
-      width: 600,
-      height: 400,
+      width: 800,
+      height: 600,
       xLeftOptions: {
         eventType: 'auto',
-        width: 570,
+        width: 750,
         height: 6,
         dotSize: 16,
         dotHeight: null,
         dotWidth: null,
-        min: 0,
+        min: 1,
         max: 4,
         interval: 0.1,
         show: true,
@@ -114,12 +132,12 @@ export default {
       },
       xRightOptions: {
         eventType: 'auto',
-        width: 570,
-        height: 6,
+        width: 5,
+        height: 550,
         dotSize: 16,
         dotHeight: null,
         dotWidth: null,
-        min: 0,
+        min: 2,
         max: 4,
         interval: 0.1,
         show: true,
@@ -164,6 +182,8 @@ export default {
       let _control = sessionStorage.getItem('_control')
       this.axios.get('/server/volcano?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&gene_num=' + this.showNum).then((res) => {
         if (res.data.length > 0) {
+          this.pvalueArr = []
+          this.padjArr = []
           res.data = res.data.slice(1)
           for (let i = 0;i< res.data.length; i++) {
             let val = res.data[i]
@@ -193,7 +213,6 @@ export default {
       all.attr('class', 'green')
     },
     initD3 () {
-      console.log(33)
       let hassvg = d3.selectAll('svg')
       if (hassvg) {
         d3.selectAll('svg').remove()
@@ -205,8 +224,8 @@ export default {
       this.xLeftOptions.max = this.xmax
       this.xRightOptions.min = this.ymin
       this.xRightOptions.max = this.ymax
-      // this.xLeftOptions.width = this.width  - padding.left
-      // this.xRightOptions.width = this.width  - padding.left
+      this.xLeftOptions.width = this.width  - 50
+      this.xRightOptions.height = this.height  - 50
       let svg = d3.select('#canvas')
         .append('svg')
         .attr('id', 'svg')
@@ -255,35 +274,39 @@ export default {
         .attr('class', 'axis')
         .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
         .call(xAxis)
-        // .append('text')
-        // .text('Log2FoldChange')
-        // .attr('stroke', '#808080')
-        // .attr('transform', 'translate('+ width/2.2 + ', 28)')
+        .append('text')
+        .text('Log2FoldChange')
+        .attr('stroke', '#808080')
+        .attr('transform', 'translate('+ width/2.2 + ', 28)')
       svg.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
         .call(yAxis)
-        // .append('text')
-        // .text('-log10(padj)')
-        // .attr('stroke', '#808080')
-        // .attr('transform', 'translate(' + padding.left + ', -10)')
-      // svg.selectAll('text')
-      //   .data(data)
-      //   .enter()
-      //   .append('text')
-      //   .filter((d) => {
-      //     return d[1] > 9 && d[0] < 0
-      //   })
-      //   .text((d) => {
-      //     return d[2]
-      //   })
-      //   .attr('x', (d) => {
-      //     return padding.left + xScale(d[0])
-      //   })
-      //   .attr('y', (d) => {
-      //     return padding.bottom + yScale(d[1])
-      //   })
-      //   .attr('fill', '#3497db')
+        .append('text')
+        .text('-log10(pvalue)')
+        .attr('stroke', '#808080')
+        .attr('transform', 'translate(' + padding.left + ', -10)')
+      svg.selectAll('text')
+        .data(self.arr)
+        .enter()
+        .append('text')
+        .filter((d) => {
+          return d[1] > 2 && d[0] < -1
+        })
+        .text((d) => {
+          return d[2]
+        })
+        .attr('x', (d) => {
+          return padding.left + xScale(d[0])
+        })
+        .attr('y', (d) => {
+          return padding.bottom + yScale(d[1])
+        })
+        .attr('fill', '#3497db')
+      	.style('color', '#3497db')
+        .style('visibility', 'visible')
+        .style('font-size', '6px')
+      	.style('font-weight', 'bold')
       if (self.xLeft !== 0 || self.yTop !== 0) {
         self.xLeftChange()
       }
@@ -345,5 +368,8 @@ path{
 .geneSumStyle {
   font-size: 12px;
   color: #999;
+}
+.el-slider.is-vertical .el-slider__runway{
+  margin-top: -25px;
 }
 </style>

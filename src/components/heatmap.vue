@@ -90,7 +90,7 @@ export default {
       var array_data = [];
       var margin = { top: 50, right: 0, bottom: 100, left: 200 },
           width = 800 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
-          height = 5 * yData.length ,
+          height = 9 * yData.length ,
           gridSize = Math.floor(width / xData.length)     // 求地板，即去掉小数部分，width分成24份
 
               function sortNumber (a, b) {
@@ -120,7 +120,7 @@ export default {
                   .attr("y", 0)
                   .attr("class", 'xText')
                   .style("text-anchor", "middle")
-                  .style("font-size", "10px")
+                  .style("font-size", "9px")
                   .style("font-family", "Consolas, Monaco, monospace")
                   .attr("transform", "translate(" + gridSize / 2 + ", -6)")
 
@@ -130,12 +130,11 @@ export default {
                  .append("text")    // 为days中每一项创建一的".dayLabel"添加文本，下面全是设置文本的属性
                  .text(function (d) { return d; })
                  .attr("x", 0)
-                 .attr("y", function (d, i) { return i * 5; })
+                 .attr("y", function (d, i) { return i * 9; })
                  .style("text-anchor", "end")
-                 .style("font-size", "5px")
-                 // .style("line-height", "5px")
+                 .style("font-size", "9px")
                  .style("font-family", "Consolas, Monaco, monospace")
-                 .attr("transform", "translate(-6," + "5)")
+                 .attr("transform", "translate(-6," + "9)")
                  .attr('class', 'ySum')
 
               var heatMap = svg.selectAll(".score")
@@ -143,9 +142,9 @@ export default {
                   .enter()
                   .append("rect")
                   .attr("x", function(d, i){ return (i % 12)*gridSize;})
-                  .attr("y", function(d, i){ return parseInt(i / 12) * 5;})
+                  .attr("y", function(d, i){ return parseInt(i / 12) * 9;})
                   .attr("width", gridSize)
-                  .attr("height", 5)
+                  .attr("height", 9)
                   .style("fill", "#FFFFFF");
               // duration(1000) 在1000ns也就是1s内将格子图上色
               heatMap.transition().duration(1000)

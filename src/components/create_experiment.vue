@@ -196,7 +196,13 @@ export default {
       })
     },
     clearDesign () {
-      this.message = {}
+      this.axios.get('/server/clear_experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        if (res.data === 'success') {
+          this.message = {}
+        } else {
+          this.$message.error('清空失败!');
+        }
+      })
     },
     backProjectList () {
       this.$router.push({'name': 'project_list'})

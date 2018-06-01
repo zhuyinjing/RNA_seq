@@ -11,7 +11,7 @@
         <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">刷新任务状态</el-button>
       </transition>
       <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> 生成报告</el-button>
-      <el-button v-show="reportBtnShow" type="" @click="result()" plain><i class="el-icon-printer"></i> 结果导入ABrowse</el-button>
+      <!-- <el-button v-show="reportBtnShow" type="" @click="result()" plain><i class="el-icon-printer"></i> 结果导入ABrowse</el-button> -->
     </div>
   </div>
 </template>
