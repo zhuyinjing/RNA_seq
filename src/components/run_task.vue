@@ -26,13 +26,18 @@ export default {
       refreshBtnShow: false,
       reportBtnShow: false,
       currentStepSn: null,
-      status: null
+      status: null,
+      timer: null,
+      loading: null,
     }
   },
   components: {
   },
   mounted () {
     this.selectTask()
+  },
+  destroyed () {
+    window.clearInterval(this.timer)
   },
   methods: {
     selectTask () {
@@ -248,46 +253,34 @@ export default {
       })
     },
     report () {
-      const h = this.$createElement;
-        this.$msgbox({
-          title: '提示',
-          message: h('div', { style: 'text-align: center' }, '确认生成报告，是否继续？'),
-          closeOnClickModal: false, // modal click close
-          closeOnPressEscape: false, // esc  click close
-          showCancelButton: true,   //  cancel button show
-          confirmButtonText: '确定',
-          cancelButtonText: '返回',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              instance.confirmButtonLoading = true
-              instance.confirmButtonText = '生成中...'
-
-              let formData = new FormData()
-              formData.append('username', this.$store.state.username)
-              formData.append('p', this.$store.state.projectId)
-
-              this.axios.post('/server/create_report', formData).then((res) => {
-                if (res.data.message_type === 'success') {
-                  this.$message({
-                    type: 'success',
-                    message: '导入成功!',
-                    duration: 1000
-                  })
-                  instance.confirmButtonLoading = false
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: '导入失败!',
-                    duration: 1000
-                  })
-                }
-                done();
-              })
-            } else {
-              done()
-            }
+      this.loading = this.$loading({
+        lock: true,
+        text: '报告正在生成中...请稍等...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      this.axios.get('/server/create_report?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        if (res.data.message === 200) {
+          this.getReportStatus()
+        } else {
+          this.loading.close()
+          this.$message.error('请求错误!')
+        }
+      }).catch((e) => {
+        this.loading.close()
+        this.$message.error('请求错误!')
+      })
+    },
+    getReportStatus () {
+      this.timer = setInterval(() => {
+        this.axios.get('/server/create_report_status?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+          if (res.data === 300) {
+            this.loading.close()
+            this.$message.success('报告已生成!')
+            window.clearInterval(this.timer)
           }
-        }).then(action => {}).catch((e) => {})
+        })
+      }, 1000)
     },
     result () {
 

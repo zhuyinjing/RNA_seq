@@ -44,13 +44,36 @@ export default {
       temp: [],
       value: [],
       sortValue: [],
-      idShow: true
+      idShow: false,
+      visible: 'hidden',
+      height: 5,
     }
   },
   components: {
   },
   mounted () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
+
+    let self = this
+    for (let k in this.$store.state.heatmapJson.heatmap_json_string.data.nodes) {
+      let node = this.$store.state.heatmapJson.heatmap_json_string.data.nodes[k]
+      if (('parent' in node) === false) {
+        preOrder(node)
+      }
+    }
+    function preOrder(node){
+       if(node.distance === 0){
+         self.temp.push(node.objects[0]);  // y 轴的gene名称
+         for(let i = 0;i < node.features.length;i++) {
+           self.value.push(node.features[i])   // 每一行的值
+           self.sortValue.push(node.features[i])  // 用来排序的数组
+         }
+       } else {
+         preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['left_child']]);
+         preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
+       }
+     }
+
     setTimeout(() => {
       this.initchart()
       this.d3heatmap()
@@ -59,38 +82,30 @@ export default {
   methods: {
     idShowChange () {
       if (this.idShow === true) {
-        d3.selectAll('.ySum').style('visibility', 'visible')
+        this.height = 9
+        this.visible = 'visible'
       } else {
-        d3.selectAll('.ySum').style('visibility', 'hidden')
+        this.height = 5
+        this.visible = 'hidden'
+        // d3.selectAll('.ySum').style('visibility', 'hidden')
       }
+      this.d3heatmap()
     },
     d3heatmap () {
-      let self = this
-      for (let k in this.$store.state.heatmapJson.heatmap_json_string.data.nodes) {
-        let node = this.$store.state.heatmapJson.heatmap_json_string.data.nodes[k]
-        if (('parent' in node) === false) {
-          preOrder(node)
-        }
+      let hassvg = d3.selectAll('.d3svg')
+      if (hassvg) {
+        d3.selectAll('.d3svg').remove()
       }
-      function preOrder(node){
-         if(node.distance === 0){
-           self.temp.push(node.objects[0]);  // y 轴的gene名称
-           for(let i = 0;i < node.features.length;i++) {
-             self.value.push(node.features[i])   // 每一行的值
-             self.sortValue.push(node.features[i])  // 用来排序的数组
-           }
-         } else {
-           preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['left_child']]);
-           preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
-         }
-       }
+
+      let self = this
+
       let yData = self.temp
       let xData = this.$store.state.heatmapJson.heatmap_json_string.data.feature_names
 
       var array_data = [];
-      var margin = { top: 50, right: 0, bottom: 100, left: 200 },
+      var margin = { top: 50, right: 0, bottom: 100, left: 100 },
           width = 800 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
-          height = 9 * yData.length ,
+          height = self.height * yData.length ,
           gridSize = Math.floor(width / xData.length)     // 求地板，即去掉小数部分，width分成24份
 
               function sortNumber (a, b) {
@@ -109,6 +124,7 @@ export default {
               var svg = d3.select("#chart").append("svg") // 选择“chart”（就是div），加入一个svg，设置属性跟div一样大
                   .attr("width", width + margin.left + margin.right)
                   .attr("height", height + margin.top + margin.bottom)
+                  .attr("class", "d3svg")
                   .append("g")    // 在svg内加入一个g（group组），并设置元素g的显示位置
                   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
@@ -136,15 +152,16 @@ export default {
                  .style("font-family", "Consolas, Monaco, monospace")
                  .attr("transform", "translate(-6," + "9)")
                  .attr('class', 'ySum')
+                 .style('visibility', self.visible)
 
               var heatMap = svg.selectAll(".score")
                   .data(self.value)
                   .enter()
                   .append("rect")
                   .attr("x", function(d, i){ return (i % 12)*gridSize;})
-                  .attr("y", function(d, i){ return parseInt(i / 12) * 9;})
+                  .attr("y", function(d, i){ return parseInt(i / 12) * self.height;})
                   .attr("width", gridSize)
-                  .attr("height", 9)
+                  .attr("height", self.height)
                   .style("fill", "#FFFFFF");
               // duration(1000) 在1000ns也就是1s内将格子图上色
               heatMap.transition().duration(1000)

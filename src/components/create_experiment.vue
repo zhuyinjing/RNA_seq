@@ -196,13 +196,22 @@ export default {
       })
     },
     clearDesign () {
-      this.axios.get('/server/clear_experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (res.data === 'success') {
-          this.message = {}
-        } else {
-          this.$message.error('清空失败!');
-        }
-      })
+      this.$confirm('确认清空该实验设计吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          this.axios.get('/server/clear_experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+            if (res.data === 'success') {
+              this.$message.success('已清空!');
+              this.message = {}
+            } else {
+              this.$message.error('清空失败!');
+            }
+          })
+        }).catch(() => {});
+
     },
     backProjectList () {
       this.$router.push({'name': 'project_list'})

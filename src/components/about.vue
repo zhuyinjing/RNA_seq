@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
+    <!-- <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
       <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
+    </el-tooltip> -->
   </div>
 </template>
 
