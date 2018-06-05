@@ -3,7 +3,7 @@
     <!-- <el-card class="box-card"> -->
       <!-- <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/" style="color:#999">项目列表</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a href="/">项目列表</a></el-breadcrumb-item>
         <el-breadcrumb-item>活动列表</el-breadcrumb-item>
         <el-breadcrumb-item>活动详情</el-breadcrumb-item>
       </el-breadcrumb> -->
@@ -13,7 +13,6 @@
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
     <h3 class="p-font-style">项目名称：{{$store.state.projectName}}</h3>
-    <!-- <el-card class="box-card"> -->
     <h3>质量控制</h3>
     <ul>
       <li><el-button type="text" @click="report_fastqc">测序质检</el-button></li>
@@ -42,7 +41,6 @@
         <li><el-button type="text" @click="report_volcano_plot(item['_case'], item['_control'])">火山图</el-button></li>
       </ul>
     </div>
-  <!-- </el-card> -->
   </div>
 </template>
 
@@ -115,7 +113,4 @@ export default {
 .cursor-pointer{
   cursor: pointer;
 }
-.box-card {
-    width: 500px;
-  }
 </style>

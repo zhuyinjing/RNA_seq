@@ -28,6 +28,16 @@ Vue.use(ElementUI)
 //   return config
 // })
 
+if (sessionStorage.username) {
+  store.state.username = sessionStorage.username
+}
+if (sessionStorage.projectId) {
+  store.state.projectId = sessionStorage.projectId
+}
+if (sessionStorage.projectName) {
+  store.state.projectName = sessionStorage.projectName
+}
+
 axios.get('/getUser').then((res) => {
   store.commit('setusername', res.data)
 })

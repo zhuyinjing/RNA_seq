@@ -6,11 +6,11 @@
     <h3 class="p-font-style">项目名称：{{$store.state.projectName}}</h3>
     <div>
         <label for="maxpval" class="label-font">pvalue &le;</label>
-        <input type="text" id="maxpval" placeholder="0.05" class="input-style"/>
+        <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
         <label for="maxfdr" class="label-font">FDR &le;</label>
-        <input type="text" id="maxfdr" placeholder="0.05" class="input-style"/>
+        <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
         <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
-        <input type="text" id="minfc" placeholder="0" class="input-style"/>
+        <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
         <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
     </div>
     <br>
@@ -21,11 +21,12 @@
         <el-radio v-model="displayByFC" label="0">所有上调和下调基因</el-radio>
     </div>
     <br>
-    <div style="margin-bottom: 20px">
+    <div class="margin-bottom-20">
       <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
       <el-button type="primary" @click="ppiClick()">ppi</el-button>
     </div>
-    <table id="example" class="display" cellspacing="0" width="100%">
+    <transition name="fade">
+    <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
         <thead>
           <tr>
             <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
@@ -53,6 +54,7 @@
           </tr>
         </tbody>
     </table>
+  </transition>
   </div>
 </template>
 
@@ -63,6 +65,10 @@ export default {
       data: [],
       checked:[],
       displayByFC: '0',
+      maxpval: null,
+      maxfdr: null,
+      minfc: null,
+      tableShow: false,
     }
   },
   components: {
@@ -70,6 +76,13 @@ export default {
   mounted () {
     this.getTabelValue()
   },
+  // destroyed () {
+  //   this.maxpval = null
+  //   this.maxfdr = null
+  //   this.minfc = null
+  //   this.displayByFC = '0'
+  //   this.filterTable()
+  // },
   methods: {
     heatmapClick () {
       if (this.checked.length === 0) {
@@ -105,9 +118,9 @@ export default {
       let self = this
       $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                var maxPVAL = parseFloat($('#maxpval').val());
-                var maxFDR = parseFloat($('#maxfdr').val());
-                var minFC = parseFloat($('#minfc').val());
+                var maxPVAL = parseFloat(self.maxpval);
+                var maxFDR = parseFloat(self.maxfdr);
+                var minFC = parseFloat(self.minfc);
                 var pval = parseFloat(data[7]);
                 var fc = parseFloat(data[6]);
                 var fdr = parseFloat(data[8]);
@@ -150,6 +163,7 @@ export default {
               }],
               order: [],
           } );
+          self.tableShow = true
           var table = $('#example').DataTable();
           $('#example-select-all').on('click', function(){
             var rows = table.rows({ 'search': 'applied' }).nodes();
@@ -222,5 +236,14 @@ export default {
 .input-style{
   height: 16px;
   margin-right: 20px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.margin-bottom-20 {
+  margin-bottom: 20px;
 }
 </style>

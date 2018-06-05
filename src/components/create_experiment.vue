@@ -20,7 +20,7 @@
         </tr>
       </table>
     </div>
-    <div class="" style="display:inline-block;width:40%">
+    <div class="degtable">
       <p class="p-font-style">差异表达基因比对条件</p>
       <table class="gridtable">
         <tr>
@@ -38,16 +38,16 @@
         <i class="el-icon-circle-plus"></i>
         增加实验条件
       </el-button>
-      <div style="padding:10px 5px" v-for="item in condition">
+      <div class="padding-10-5" v-for="item in condition">
         实验条件
         <el-input
-          style="width:30%;margin-right:20px"
+          class="conditioninput"
           v-model="item.option"
           clearable>
         </el-input>
         样本数目
         <el-input
-          style="width:20%;margin-right:20px"
+          class="numberinput"
           v-model="item.number"
           clearable>
         </el-input>
@@ -60,7 +60,7 @@
     </el-dialog>
 
     <el-dialog title="第二步：填写需要进行差异表达基因对比的条件对" :visible.sync="step2Dialog" width="30%">
-      <div style="padding:10px 5px" v-for="item in experiments">
+      <div class="padding-10-5" v-for="item in experiments">
         {{item['_case']}} <i class="el-icon-refresh cursor-poiter" @click="refresh(item)"></i> {{item['_control']}} &nbsp;&nbsp;&nbsp;<i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -88,6 +88,9 @@ export default {
   components: {
   },
   mounted () {
+    // if (sessionStorage.projectId) {
+    //   this.$store.state.projectId = sessionStorage.projectId
+    // }
     this.getExperiment()
   },
   methods: {
@@ -271,5 +274,20 @@ table.gridtable td {
 }
 .bgcolor {
   background-color: #f9f9f9 !important;
+}
+.degtable {
+  display: inline-block;
+  width: 40%;
+}
+.padding-10-5 {
+  padding: 10px 5px;
+}
+.conditioninput {
+  width: 30%;
+  margin-right: 20px;
+}
+.numberinput {
+  width: 20%;
+  margin-right: 20px;
 }
 </style>

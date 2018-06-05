@@ -5,7 +5,7 @@
     </el-tooltip>
 
     <div class="icon-func-div">
-      <span style="font-size:12px;">ID显示</span>
+      <span class="font-size-12">ID显示</span>
       <el-switch
         v-model="idShow"
         active-text=""
@@ -23,7 +23,7 @@
           <div id="microarrays_dendrogram" class=""></div>
         </el-col>
         <el-col :span="8">
-          <div id="microarrays" class="" style="margin-top:200px;">
+          <div id="microarrays" class="margin-top-200">
               <div id="boxplot"></div>
           </div>
         </el-col>
@@ -87,7 +87,6 @@ export default {
       } else {
         this.height = 5
         this.visible = 'hidden'
-        // d3.selectAll('.ySum').style('visibility', 'hidden')
       }
       this.d3heatmap()
     },
@@ -96,9 +95,7 @@ export default {
       if (hassvg) {
         d3.selectAll('.d3svg').remove()
       }
-
       let self = this
-
       let yData = self.temp
       let xData = this.$store.state.heatmapJson.heatmap_json_string.data.feature_names
 
@@ -391,5 +388,11 @@ export default {
 }
 .icon-func-div {
   margin-top: 10px;
+}
+.font-size-12 {
+  font-size: 12px;
+}
+.margin-top-200 {
+  margin-top: 200px;
 }
 </style>

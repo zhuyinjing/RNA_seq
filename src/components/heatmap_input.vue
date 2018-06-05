@@ -6,18 +6,18 @@
     <h3>绘制基因Heat Map图</h3>
     <table>
       <tr>
-        <td style="">基因列表</td>
+        <td>基因列表</td>
         <td>
           <div class="tagsDiv">
             <div class="tag" v-for="item in $store.state.geneList">
-              <span>{{item.target_id}}</span> <span style="margin-left:20px;">{{item.name}}</span>
-              <i style="float:right;margin-top:8px;"class="el-icon-close cursor-pointer" @click="handleClose(item)"></i>
+              <span>{{item.target_id}}</span> <span class="margin-left-20">{{item.name}}</span>
+              <i class="el-icon-close cursor-pointer delete-icon" @click="handleClose(item)"></i>
             </div>
           </div>
       </td>
       </tr>
       <tr>
-        <td style="">新增基因</td>
+        <td>新增基因</td>
         <td>
           <el-input
             class="input-new-tag"
@@ -32,15 +32,6 @@
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Gene</el-button>
       </td>
       </tr>
-      <!-- <tr>
-        <td style="">选择项目</td>
-        <td>
-          <el-select v-model="project" placeholder="请选择">
-          <el-option v-for="item in optionProject" :key="item" :value="item">
-          </el-option>
-        </el-select>
-      </td>
-      </tr> -->
       <tr>
         <td>基因距离计算方法</td>
         <td>
@@ -152,7 +143,7 @@ export default {
   components: {
   },
   mounted () {
-    console.log(this.$store.state.geneList.length)
+    console.log(this.$store.state.geneList)
   },
   methods: {
     submit () {
@@ -245,5 +236,12 @@ export default {
 .input-new-tag {
   width: 90px;
   vertical-align: bottom;
+}
+.margin-left-20 {
+  margin-left: 20px;
+}
+.delete-icon {
+  float: right;
+  margin-top: 8px;
 }
 </style>

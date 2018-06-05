@@ -14,6 +14,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setusername: (state, data) => {
+      sessionStorage.setItem('username', data)
       state.username = data
     },
     setprojectId: (state, data) => {
@@ -21,6 +22,7 @@ export default new Vuex.Store({
       state.projectId = data
     },
     setprojectName: (state, data) => {
+      sessionStorage.setItem('projectName', data)
       state.projectName = data
     },
     setgeneList: (state, data) => {

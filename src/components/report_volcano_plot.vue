@@ -5,7 +5,7 @@
     </el-tooltip>
 
     <div class="">
-          <div class="" style="width:5px;display:inline-block">
+          <div class="yrange display-inline-block" v-show="rangeShow">
             <el-slider
             v-model="yTop"
             :step="0.1"
@@ -17,9 +17,10 @@
             >
           </el-slider>
           </div>
-          <div id="canvas" style="display:inline-block"></div>
 
-          <div class="">
+          <div id="canvas" class="display-inline-block"></div>
+
+          <div class="" v-show="rangeShow">
               <el-slider
               v-model="xLeft"
               :step="0.1"
@@ -31,7 +32,7 @@
             </el-slider>
           </div>
 
-          <table class="gridtable">
+          <table class="gridtable" v-show="rangeShow">
             <tr>
                 <th>参数</th><th>操作</th>
             </tr>
@@ -135,11 +136,11 @@ import * as d3 from 'd3'
 export default {
   data () {
     return {
+      rangeShow: false,
       showNum: 3000,
       arr: [],
       xvalueShow: true,
       geneSum: null,
-      toolDivShow: false,
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
@@ -158,30 +159,7 @@ export default {
         dotHeight: null,
         dotWidth: null,
         min: 0,
-        max: 3,
-        interval: 0.1,
-        show: true,
-        speed: 0.5,
-        disabled: false,
-        piecewise: false,
-        piecewiseStyle: false,
-        piecewiseLabel: false,
-        tooltip: false,
-        tooltipDir: 'top',
-        reverse: false,
-        data: null,
-        clickable: true,
-        realTime: false,
-        lazy: false,
-        formatter: null,
-        bgStyle: null,
-        sliderStyle: null,
-        processStyle: null,
-        piecewiseActiveStyle: null,
-        piecewiseStyle: null,
-        tooltipStyle: null,
-        labelStyle: null,
-        labelActiveStyle: null
+        max: 3
       },
       xRightOptions: {
         eventType: 'auto',
@@ -191,30 +169,7 @@ export default {
         dotHeight: null,
         dotWidth: null,
         min: 2,
-        max: 4,
-        interval: 0.1,
-        show: true,
-        speed: 0.5,
-        disabled: false,
-        piecewise: false,
-        piecewiseStyle: false,
-        piecewiseLabel: false,
-        tooltip: false,
-        tooltipDir: 'top',
-        reverse: false,
-        data: null,
-        clickable: true,
-        realTime: false,
-        lazy: false,
-        formatter: null,
-        bgStyle: null,
-        sliderStyle: null,
-        processStyle: null,
-        piecewiseActiveStyle: null,
-        piecewiseStyle: null,
-        tooltipStyle: null,
-        labelStyle: null,
-        labelActiveStyle: null
+        max: 4
       },
       pvalueArr: [],
       padjArr: []
@@ -247,7 +202,7 @@ export default {
           } else {
             this.arr = this.padjArr
           }
-          this.toolDivShow = true
+          this.rangeShow = true
           this.initD3()
           this.xLeftChange()
         } else {
@@ -456,5 +411,11 @@ path{
 }
 .el-slider.is-vertical .el-slider__runway{
   margin-top: -25px;
+}
+.yrange {
+  width:5px;
+}
+.display-inline-block {
+  display:inline-block;
 }
 </style>
