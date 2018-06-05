@@ -4,13 +4,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var MemoryStore = require('session-memory-store')(session);
-var history = require('connect-history-api-fallback');
-let cors = require('cors');
-const http = require('http')
-const fs = require('fs')
 
 var app = express();
-app.use(cors());
 
 app.use(cookieParser());
 app.use(session({
@@ -23,7 +18,7 @@ var casClient = new CasClient({
     debug: false,
     ignore: [],
     match: [],
-    servicePrefix: 'http://127.0.0.1:3000',
+    servicePrefix: 'http://10.10.10.34:1025',
     serverPath: 'https://cas.spark.com:8443',
     paths: {
       // validate: '',
@@ -73,4 +68,4 @@ app.get('/logout', function(req, res, next) {
   casClient.logout()(req, res, next);
 });
 
-app.listen(3000);
+app.listen(7001);

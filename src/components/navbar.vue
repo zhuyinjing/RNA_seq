@@ -3,8 +3,8 @@
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="home">首页</el-menu-item>
       <el-menu-item index="project">项目列表</el-menu-item>
-      <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
-      <el-menu-item index="about">关于</el-menu-item>
+      <!-- <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
+      <el-menu-item index="about">关于</el-menu-item> -->
     </el-menu>
     <div class="userDiv" v-show="$store.state.username">
       <!-- <img src="../assets/img/avatar.png" alt=""> -->
@@ -40,6 +40,10 @@ export default {
         case 'project':
           sessionStorage.setItem('navbarItem', 'project')
           this.$router.push({'name': 'project_list'})
+          break
+        case 'abrowse':
+          sessionStorage.setItem('navbarItem', 'about')
+          this.$router.push({'name': 'about'})
           break
         case 'about':
           sessionStorage.setItem('navbarItem', 'about')
