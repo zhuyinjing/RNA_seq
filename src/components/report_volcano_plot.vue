@@ -12,13 +12,13 @@
             :min="xRightOptions.min"
             :max="xRightOptions.max"
              vertical
-            :style="{marginTop: '-50px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
+            :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
             @change="xLeftChange()"
             >
           </el-slider>
           </div>
 
-          <div id="canvas" class="display-inline-block"></div>
+          <div id="canvas" class="display-inline-block vertical-align-top"></div>
 
           <div class="" v-show="rangeShow">
               <el-slider
@@ -428,5 +428,8 @@ path{
 }
 .display-inline-block {
   display:inline-block;
+}
+.vertical-align-top {
+  vertical-align: top;
 }
 </style>

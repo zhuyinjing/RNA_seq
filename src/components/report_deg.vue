@@ -77,13 +77,13 @@ export default {
   mounted () {
     this.getTabelValue()
   },
-  // destroyed () {
-  //   this.maxpval = null
-  //   this.maxfdr = null
-  //   this.minfc = null
-  //   this.displayByFC = '0'
-  //   this.filterTable()
-  // },
+  destroyed () {
+    this.maxpval = null
+    this.maxfdr = null
+    this.minfc = null
+    this.displayByFC = '0'
+    this.filterTable()
+  },
   methods: {
     heatmapClick () {
       if (this.checked.length === 0) {
@@ -163,7 +163,7 @@ export default {
         );
         var table = $('#example').DataTable();
 
-        table.draw();
+        table.draw()
     },
     initTable (data) {
       let self = this
