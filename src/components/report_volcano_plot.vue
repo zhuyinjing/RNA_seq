@@ -148,7 +148,7 @@ export default {
       xmax: 3,
       ymin: 0,
       ymax: 12,
-      radius: 1,
+      radius: 1.5,
       width: 800,
       height: 600,
       xLeftOptions: {
@@ -316,9 +316,9 @@ export default {
           .style('font-size', '6px')
         	.style('font-weight', 'bold')
       }
-      // if (self.xLeft !== 0 || self.yTop !== 0) {
-      //   self.xLeftChange()
-      // }
+      if (self.xLeft !== 0 || self.yTop !== 0) {
+        self.circleColor()
+      }
     },
     xLeftChange () {
       let self = this
@@ -332,6 +332,17 @@ export default {
       if (this.geneNameShow === true) {
         this.initD3()
       }
+    },
+    // 基因名显示的时候 circle颜色不变
+    circleColor () {
+      let self = this
+      let svg = d3.selectAll('circle')
+        .classed('green', (d, i) => {
+          return d[0] < -self.xLeft && d[1] > self.yTop
+        })
+        .classed('red', (d, i) => {
+          return d[0] > self.xLeft && d[1] > self.yTop
+        })
     },
     xvaluechange () {
       if (this.xvalueShow === true) {
@@ -382,13 +393,13 @@ table.gridtable td {
     border-color: #ebeef5;
     background-color: #ffffff;
 }
-</style>
-<style>
 path{
     fill: none;
     stroke: cornflowerblue;
     stroke-width: 2px;
 }
+</style>
+<style>
 .domain,.tick line {
     stroke: gray;
     stroke-width: 1px;
