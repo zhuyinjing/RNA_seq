@@ -24,6 +24,7 @@
     <div class="margin-bottom-20">
       <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
       <el-button type="primary" @click="ppiClick()">ppi</el-button>
+      <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
     </div>
     <transition name="fade">
     <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
@@ -98,6 +99,21 @@ export default {
         this.$store.commit('setgeneList', this.checked)
       }
       this.$router.push({'name': 'heatmap_input'})
+    },
+    heatmapsvgClick () {
+      if (this.checked.length === 0) {
+        if (this.data.length < 100) {
+          this.$store.commit('setgeneList', this.data)
+        } else {
+          for(let i = 0;i < 100;i++) {
+            this.checked.push(this.data[i])
+          }
+          this.$store.commit('setgeneList', this.checked)
+        }
+      } else {
+        this.$store.commit('setgeneList', this.checked)
+      }
+      this.$router.push({'name': 'heatmapsvg_input'})
     },
     ppiClick () {
       if (this.checked.length === 0) {

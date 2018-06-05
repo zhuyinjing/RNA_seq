@@ -18,6 +18,8 @@ import report_mappingqc from '@/components/report_mappingqc'
 import report_new_trans from '@/components/report_new_trans'
 import report_expr_matrix from '@/components/report_expr_matrix'
 import report_volcano_plot from '@/components/report_volcano_plot'
+import heatmapsvg from '@/components/heatmapsvg'
+import heatmapsvg_input from '@/components/heatmapsvg_input'
 
 Vue.use(Router)
 
@@ -118,6 +120,16 @@ export default new Router({
       path: '/report_volcano_plot',
       name: 'report_volcano_plot',
       component: report_volcano_plot
+    },
+    {
+      path: '/heatmapsvg_input',
+      name: 'heatmapsvg_input',
+      component: heatmapsvg_input
+    },
+    {
+      path: '/heatmapsvg',
+      name: 'heatmapsvg',
+      component: heatmapsvg
     }
   ]
 })
