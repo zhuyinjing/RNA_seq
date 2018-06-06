@@ -294,6 +294,32 @@ export default {
         .text('-log10(pvalue)')
         .attr('fill', '#000')
         .attr('transform', 'translate(' + padding.left + ', -10)')
+
+      svg.append('line')
+        .attr('x1', padding.left + xScale(self.xLeft))
+        .attr('y1', padding.bottom + yScale(0))
+        .attr('x2', padding.left + xScale(self.xLeft))
+        .attr('y2', padding.bottom + yScale(self.ymax))
+        .attr("stroke","#999")
+        .style("stroke-dasharray", "5")
+
+      svg.append('line')
+        .attr('x1', padding.left + xScale(-self.xLeft))
+        .attr('y1', padding.bottom + yScale(0))
+        .attr('x2', padding.left + xScale(-self.xLeft))
+        .attr('y2', padding.bottom + yScale(self.ymax))
+        .attr("stroke","#999")
+        .style("stroke-dasharray", "5")
+
+      svg.append('line')
+        .attr('x1', padding.left + xScale(self.xmin))
+        .attr('y1', padding.bottom + yScale(self.yTop))
+        .attr('x2', padding.left + xScale(self.xmax))
+        .attr('y2', padding.bottom + yScale(self.yTop))
+        .attr("stroke","#999")
+        .style("stroke-dasharray", "5")
+
+
       //  显示满足条件的gene名称
       if (self.geneNameShow === true) {
         svg.selectAll('text')
@@ -329,9 +355,9 @@ export default {
         .classed('red', (d, i) => {
           return d[0] > self.xLeft && d[1] > self.yTop
         })
-      if (this.geneNameShow === true) {
+      // if (this.geneNameShow === true) {
         this.initD3()
-      }
+      // }
     },
     // 基因名显示的时候 circle颜色不变
     circleColor () {
