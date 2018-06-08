@@ -1,27 +1,39 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backHeatmapsvgInput"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <div class="icon-func-div">
-      <span class="font-size-12">ID显示</span>
-      <el-switch
-        v-model="idShow"
-        active-text=""
-        inactive-text=""
-        @change="idShowChange"
-        >
-      </el-switch>
-    </div>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制蛋白蛋白相互作用图</el-breadcrumb-item>
+        <el-breadcrumb-item>Heat Map(svg)</el-breadcrumb-item>
+      </el-breadcrumb>
 
-    <div id="chart"></div>
+      <h2>基因Heat Map(svg) {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-</div>
+
+      <div class="icon-func-div">
+        <span class="font-size-12">ID显示</span>
+        <el-switch
+          v-model="idShow"
+          active-text=""
+          inactive-text=""
+          @change="idShowChange"
+          >
+        </el-switch>
+      </div>
+
+      <div id="chart"></div>
+
+      </div>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 import * as d3 from 'd3'
 
 import Highcharts from 'highcharts/highstock';
@@ -38,6 +50,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
@@ -162,7 +175,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

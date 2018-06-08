@@ -11,6 +11,7 @@
       <span class="nameStyle">{{$store.state.username}}</span>
       <el-button type="text" @click="logout">退出账号</el-button>
     </div>
+
   </div>
 </template>
 
@@ -59,7 +60,7 @@ export default {
           center: true
         }).then(() => {
           sessionStorage.removeItem('navbarItem')
-          window.location.href = 'http://10.10.10.34:1025/logout'
+          window.location.href = 'https://colorseq.com/logout'
         }).catch(() => {});
     },
   }

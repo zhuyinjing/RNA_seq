@@ -1,26 +1,35 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backHeatmapInput"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <div class="container">
-      <el-row>
-        <el-col :span="16">
-          <div id="microarrays_dendrogram" class=""></div>
-        </el-col>
-        <el-col :span="8">
-          <div id="microarrays" class="margin-top-200">
-              <div id="boxplot"></div>
-          </div>
-        </el-col>
-      </el-row>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item>
+        <el-breadcrumb-item>基因热图</el-breadcrumb-item>
+      </el-breadcrumb>
+
+      <div class="container">
+        <h2>基因差异表达热图 {{$store.state._case}} vs {{$store.state._control}} </h2>
+        <el-row>
+          <el-col :span="16">
+            <div id="microarrays_dendrogram" class=""></div>
+          </el-col>
+          <el-col :span="8">
+            <div id="microarrays" class="margin-top-200">
+                <div id="boxplot"></div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
     </div>
-</div>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
 import * as d3 from 'd3'
 
 import Highcharts from 'highcharts/highstock';
@@ -37,6 +46,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
@@ -280,7 +290,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

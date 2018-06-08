@@ -1,23 +1,31 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <h3>项目：{{$store.state.projectName}}</h3>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>基因表达量表格</el-breadcrumb-item>
+      </el-breadcrumb>
 
-    <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
-        <caption>基因表达量表格</caption>
-        <thead>
-        <tr>
-            <th v-for="item in tpmsArray">{{item}}</th>
-        </tr>
-        </thead>
-    </table>
+      <h2>基因表达量表格</h2>
+
+      <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
+          <caption>基因表达量表格</caption>
+          <thead>
+          <tr>
+              <th v-for="item in tpmsArray">{{item}}</th>
+          </tr>
+          </thead>
+      </table>
+    </div>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 export default {
   data () {
     return {
@@ -30,6 +38,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.getTpms()
@@ -86,7 +95,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

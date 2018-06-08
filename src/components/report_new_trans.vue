@@ -1,45 +1,54 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <h3>项目：{{$store.state.projectName}}</h3>
-    <h4>新转录本概况</h4>
-    <el-button type="text" @click="classcodeShow = true">查看classcode说明</el-button>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>新转录本概况</el-breadcrumb-item>
+      </el-breadcrumb>
 
-    <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th></th>
-            <th>gene</th>
-            <th>transcriptId</th>
-            <th>referenceTranscriptId</th>
-            <th>exonNum</th>
-            <th>classCode</th>
-            <th>transcriptLength</th>
-            <th>peptideLength</th>
-            <th>codingProbability</th>
-            <th>coding</th>
-        </tr>
-        </thead>
-    </table>
+      <h2>新转录本概况</h2>
 
-    <el-dialog
-      title="说明"
-      :visible.sync="classcodeShow"
-      width="30%"
-      center>
-      <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
-      </span>
-    </el-dialog>
+      <el-button type="text" @click="classcodeShow = true">查看classcode说明</el-button>
 
+      <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
+          <caption>新转录本概况表</caption>
+          <thead>
+          <tr>
+              <th></th>
+              <th>gene</th>
+              <th>transcriptId</th>
+              <th>referenceTranscriptId</th>
+              <th>exonNum</th>
+              <th>classCode</th>
+              <th>transcriptLength</th>
+              <th>peptideLength</th>
+              <th>codingProbability</th>
+              <th>coding</th>
+          </tr>
+          </thead>
+      </table>
+
+      <el-dialog
+        title="说明"
+        :visible.sync="classcodeShow"
+        width="30%"
+        center>
+        <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
+        </span>
+      </el-dialog>
+
+    </div>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 export default {
   data () {
     return {
@@ -47,6 +56,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.initTable()
@@ -169,7 +179,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

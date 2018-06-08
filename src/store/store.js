@@ -10,7 +10,19 @@ export default new Vuex.Store({
     projectName: '',
     geneList: [],
     heatmapJson: null,
-    ppiJson: null
+    ppiJson: null,
+    leftMenuIndex: '0-0',
+    info: {
+      rnaSeqReportSummary: {
+        geneNum: null,
+        transcriptNum: null
+      },
+      experimentDesign: {
+        experiments: []
+      }
+    },
+    _case: '',
+    _control: ''
   },
   mutations: {
     setusername: (state, data) => {
@@ -26,13 +38,32 @@ export default new Vuex.Store({
       state.projectName = data
     },
     setgeneList: (state, data) => {
+      sessionStorage.setItem('geneList', JSON.stringify(data))
       state.geneList = data
     },
     setheatmapJson: (state, data) => {
+      sessionStorage.setItem('heatmapJson', JSON.stringify(data))
       state.heatmapJson = data
     },
     setppiJson: (state, data) => {
+      sessionStorage.setItem('ppiJson', JSON.stringify(data))
       state.ppiJson = data
+    },
+    setleftMenuIndex: (state, data) => {
+      sessionStorage.setItem('leftMenuIndex', data)
+      state.leftMenuIndex = data
+    },
+    setinfo: (state, data) => {
+      sessionStorage.setItem('info', JSON.stringify(data))
+      state.info = data
+    },
+    set_case: (state, data) => {
+      sessionStorage.setItem('_case', data)
+      state._case = data
+    },
+    set_control: (state, data) => {
+      sessionStorage.setItem('_control', data)
+      state._control = data
     },
   }
 })

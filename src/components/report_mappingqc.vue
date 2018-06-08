@@ -1,42 +1,50 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
-    <h3>项目：{{$store.state.projectName}}</h3>
-    <h4>序列比对结果统计图</h4>
-    <p>图中每种颜色代表一个样本，纵坐标为碱基数目，横坐标分别是比对到基因组各种区域上的碱基数。</p>
+  <div class="" style="width:100%;">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <div id="metrics_bar"></div>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>比对结果质检</el-breadcrumb-item>
+      </el-breadcrumb>
 
-    <table class="gridtable">
-      <caption>序列比对结果统计表</caption>
-      <thead>
-        <tr>
-          <th>样本</th>
-          <th>总碱基数</th>
-          <th>核糖体占比</th>
-          <th>编码区占比</th>
-          <th>UTR占比</th>
-          <th>内含子区占比</th>
-          <th>基因间区占比</th>
+      <h2>序列比对结果统计图</h2>
+
+      <p>图中每种颜色代表一个样本，纵坐标为碱基数目，横坐标分别是比对到基因组各种区域上的碱基数。</p>
+
+      <div id="metrics_bar"></div>
+
+      <table class="gridtable">
+        <caption>序列比对结果统计表</caption>
+        <thead>
+          <tr>
+            <th>样本</th>
+            <th>总碱基数</th>
+            <th>核糖体占比</th>
+            <th>编码区占比</th>
+            <th>UTR占比</th>
+            <th>内含子区占比</th>
+            <th>基因间区占比</th>
+          </tr>
+        </thead>
+        <tr v-for="(item, index) in tableData">
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[0]}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[1]}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[16] - 0).toFixed(3)}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[17] - 0).toFixed(3)}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[18] - 0).toFixed(3)}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[19] - 0).toFixed(3)}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[20] - 0).toFixed(3)}}</td>
         </tr>
-      </thead>
-      <tr v-for="(item, index) in tableData">
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[0]}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[1]}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[16] - 0).toFixed(3)}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[17] - 0).toFixed(3)}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[18] - 0).toFixed(3)}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[19] - 0).toFixed(3)}}</td>
-        <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[20] - 0).toFixed(3)}}</td>
-      </tr>
-    </table>
+      </table>
 
+    </div>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
 import Plotly from 'plotly.js'
 export default {
   data () {
@@ -46,6 +54,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.initTable()
@@ -78,7 +87,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

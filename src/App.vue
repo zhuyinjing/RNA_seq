@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <navbar></navbar>
+  <div class="main">
+    <navbar class="navbar"></navbar>
     <router-view/>
   </div>
 </template>
@@ -19,7 +19,11 @@ export default {
 </script>
 
 <style>
-/* * {
-  margin: 0;
-} */
+.main {
+  width: 100%;
+  height: 100%;
+}
+.navbar {
+  height: 60px;
+}
 </style>

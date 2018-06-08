@@ -1,65 +1,80 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backProjectList"></i>
-    </el-tooltip>
-    <h3 class="p-font-style">项目名称：{{$store.state.projectName}}</h3>
-    <div>
-        <label for="maxpval" class="label-font">pvalue &le;</label>
-        <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
-        <label for="maxfdr" class="label-font">FDR &le;</label>
-        <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
-        <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
-        <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
-        <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:2px;margin-top:10px;"></leftMenu>
+
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>差异表达基因</el-breadcrumb-item>
+      </el-breadcrumb>
+
+      <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2>
+
+      <div class="margin-bottom-20">
+        <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
+        <el-button type="primary" @click="ppiClick()">ppi</el-button>
+        <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
+      </div>
+
+      <div>
+          <label for="maxpval" class="label-font">pvalue &le;</label>
+          <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
+          <label for="maxfdr" class="label-font">FDR &le;</label>
+          <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
+          <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+          <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
+          <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
+      </div>
+      <br>
+      <div class="form-group">
+          <label class="radio-inline control-label">显示：</label>
+          <el-radio v-model="displayByFC" label="1">在 Normal 中表达量上调基因</el-radio>
+          <el-radio v-model="displayByFC" label="-1">在 Normal 中表达量下调基因</el-radio>
+          <el-radio v-model="displayByFC" label="0">所有上调和下调基因</el-radio>
+      </div>
+      <br>
+      <transition name="fade">
+        <div class="" style="">
+          <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
+              <caption>差异表达基因表</caption>
+              <thead>
+                <tr>
+                  <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th>
+                  <th>target_id</th>
+                  <th>name</th>
+                  <th>description</th>
+                  <th>type</th>
+                  <th>baseMean</th>
+                  <th>log2FoldChange</th>
+                  <th>pvalue</th>
+                  <th>FDR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for='(item, index) in data'>
+                  <td> <input type="checkbox" class="inputcheckbox" name="" v-model="checked" :value="data[index]"> </td>
+                  <td>{{item.target_id}}</td>
+                  <td>{{item.name}}</td>
+                  <td>{{item.description}}</td>
+                  <td>{{item.type}}</td>
+                  <td>{{item.baseMean}}</td>
+                  <td>{{item.log2FoldChange}}</td>
+                  <td>{{item.pvalue}}</td>
+                  <td>{{item.padj}}</td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
+
+    </transition>
     </div>
-    <br>
-    <div class="form-group">
-        <label class="radio-inline control-label">显示：</label>
-        <el-radio v-model="displayByFC" label="1">在 Normal 中表达量上调基因</el-radio>
-        <el-radio v-model="displayByFC" label="-1">在 Normal 中表达量下调基因</el-radio>
-        <el-radio v-model="displayByFC" label="0">所有上调和下调基因</el-radio>
-    </div>
-    <br>
-    <div class="margin-bottom-20">
-      <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
-      <el-button type="primary" @click="ppiClick()">ppi</el-button>
-      <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
-    </div>
-    <transition name="fade">
-    <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
-        <thead>
-          <tr>
-            <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
-            <th>target_id</th>
-            <th>name</th>
-            <th>description</th>
-            <th>type</th>
-            <th>baseMean</th>
-            <th>log2FoldChange</th>
-            <th>pvalue</th>
-            <th>FDR</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for='(item, index) in data'>
-            <td> <input type="checkbox" name="" :value="index"> </td>
-            <td>{{item.target_id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.description}}</td>
-            <td>{{item.type}}</td>
-            <td>{{item.baseMean}}</td>
-            <td>{{item.log2FoldChange}}</td>
-            <td>{{item.pvalue}}</td>
-            <td>{{item.padj}}</td>
-          </tr>
-        </tbody>
-    </table>
-  </transition>
   </div>
+
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 export default {
   data () {
     return {
@@ -70,21 +85,61 @@ export default {
       maxfdr: null,
       minfc: null,
       tableShow: false,
+      isCheckedAll: false,
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.getTabelValue()
   },
   destroyed () {
-    this.maxpval = null
-    this.maxfdr = null
-    this.minfc = null
-    this.displayByFC = '0'
-    this.filterTable()
+    this.resetFilter()
+  },
+  watch: {
+    '$route': 'getTabelValueReset'
   },
   methods: {
+    // 全选 or 取消全选
+    checkedAll () {
+      if (this.data.length !== this.checked.length && this.isCheckedAll === true) {
+        this.isCheckedAll = true
+      } else {
+        this.isCheckedAll = !this.isCheckedAll
+      }
+      if(this.isCheckedAll) {
+        this.checked = []
+        this.data.forEach(function (data) {
+          this.checked.push(data)
+        }, this)
+      } else {
+        this.checked = []
+      }
+    },
+    resetFilter () {
+      this.maxpval = null
+      this.maxfdr = null
+      this.minfc = null
+      this.displayByFC = '0'
+      this.checked = []
+      this.filterTable()
+    },
+    getTabelValueReset () {
+      let checkboxs = document.getElementsByClassName('inputcheckbox')
+      for (let i = 0;i < checkboxs.length;i++) {
+        checkboxs[i].checked = false
+      }
+      this.data = []
+      this.checked = []
+      this.tableShow = false
+      this.resetFilter()
+      if ( $.fn.dataTable.isDataTable( '#example' ) ) {
+        var dt = $('#example').DataTable();
+        dt.destroy()
+      }
+      this.getTabelValue()
+    },
     heatmapClick () {
       if (this.checked.length === 0) {
         if (this.data.length < 100) {
@@ -98,7 +153,7 @@ export default {
       } else {
         this.$store.commit('setgeneList', this.checked)
       }
-      this.$router.push({'name': 'heatmap_input'})
+      this.$router.push({'name': 'heatmap_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
     },
     heatmapsvgClick () {
       if (this.checked.length === 0) {
@@ -113,7 +168,7 @@ export default {
       } else {
         this.$store.commit('setgeneList', this.checked)
       }
-      this.$router.push({'name': 'heatmapsvg_input'})
+      this.$router.push({'name': 'heatmapsvg_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
     },
     ppiClick () {
       if (this.checked.length === 0) {
@@ -128,7 +183,7 @@ export default {
       } else {
         this.$store.commit('setgeneList', this.checked)
       }
-      this.$router.push({'name': 'ppi_chord_plot_input'})
+      this.$router.push({'name': 'ppi_chord_plot_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
     },
     filterTable () {
       let self = this
@@ -170,6 +225,7 @@ export default {
       this.data = data
       $(document).ready(function() {
           $('#example').DataTable( {
+              // destroy:true,
               lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
               pageLength: 25,
               columnDefs: [{
@@ -180,36 +236,7 @@ export default {
               order: [],
           } );
           self.tableShow = true
-          var table = $('#example').DataTable();
-          $('#example-select-all').on('click', function(){
-            var rows = table.rows({ 'search': 'applied' }).nodes();
-            $('input[type="checkbox"]', rows).prop('checked', this.checked);
-            if (this.checked) {
-              self.checked = []
-              for(let i = 0; i < self.data.length; i++) {
-                self.checked.push(self.data[i])
-              }
-            } else {
-              self.checked = []
-            }
-         });
-         $('#example tbody').on('change', 'input[type="checkbox"]', function(){
-          if(!this.checked){
-            let index = self.checked.indexOf(self.data[this.value])
-            self.checked.splice(index, 1)
-             var el = $('#example-select-all').get(0);
-             if(el && el.checked && ('indeterminate' in el)){
-                el.indeterminate = true;
-             }
-            } else {
-              self.checked.push(self.data[this.value]);
-              //  手动选择所有 thead input checkbox 为选中状态
-              if (self.checked.length === self.data.length) {
-                $('#example-select-all').get(0).checked = true
-              }
-            }
-         });
-      } );
+      });
     },
     getTabelValue () {
       let _case = sessionStorage.getItem('_case')
@@ -237,7 +264,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .p-font-style{

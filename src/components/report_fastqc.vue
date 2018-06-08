@@ -1,10 +1,13 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <h3>项目：{{$store.state.projectName}}</h3>
+  <div class="content">
+    <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+      <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+      <el-breadcrumb-item>测序质检</el-breadcrumb-item>
+    </el-breadcrumb>
+    <h2>测序数据质量评估简报</h2>
     <table class="gridtable">
       <caption>测序数据质量评估简报</caption>
       <thead>
@@ -88,9 +91,12 @@
     </table>
 
   </div>
+  </div>
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 export default {
   data () {
     return {
@@ -98,6 +104,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.initTable()
@@ -117,7 +124,9 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

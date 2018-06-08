@@ -1,136 +1,145 @@
 <template>
-  <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
-      <i class="el-icon-back" @click="backReport"></i>
-    </el-tooltip>
+  <div class="">
+    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
 
-    <div class="">
-          <div class="yrange display-inline-block" v-show="rangeShow">
-            <el-slider
-            v-model="yTop"
-            :step="0.1"
-            :min="xRightOptions.min"
-            :max="xRightOptions.max"
-             vertical
-            :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
-            @change="xLeftChange()"
-            >
-          </el-slider>
-          </div>
+    <div class="content">
+      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>火山图</el-breadcrumb-item>
+      </el-breadcrumb>
 
-          <div id="canvas" class="display-inline-block vertical-align-top"></div>
+      <h2>基因差异表达火山图 {{$route.query._case}} vs {{$route.query._control}} </h2>
 
-          <div class="" v-show="rangeShow">
+      <div class="">
+            <div class="yrange display-inline-block" v-show="rangeShow">
               <el-slider
-              v-model="xLeft"
+              v-model="yTop"
               :step="0.1"
-              :min="xLeftOptions.min"
-              :max="xLeftOptions.max"
-              :style="{width: xLeftOptions.width + 'px', marginLeft: (xLeftOptions.width + 50) + 'px'}"
+              :min="xRightOptions.min"
+              :max="xRightOptions.max"
+               vertical
+              :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
               @change="xLeftChange()"
               >
             </el-slider>
-          </div>
+            </div>
 
-          <table class="gridtable" v-show="rangeShow">
-            <tr>
-                <th>参数</th><th>操作</th>
-            </tr>
-            <tr>
-              <td>x轴显示</td>
-              <td>
-                <el-switch
-                  style="display: block"
-                  v-model="xvalueShow"
-                  active-color="#409EFF"
-                  inactive-color="#409EFF"
-                  active-text="pvalue"
-                  inactive-text="padj"
-                  @change="xvaluechange"
+            <div id="canvas" class="display-inline-block vertical-align-top"></div>
+
+            <div class="" v-show="rangeShow">
+                <el-slider
+                v-model="xLeft"
+                :step="0.1"
+                :min="xLeftOptions.min"
+                :max="xLeftOptions.max"
+                :style="{width: xLeftOptions.width + 'px', marginLeft: (xLeftOptions.width + 50) + 'px'}"
+                @change="xLeftChange()"
                 >
-                </el-switch>
-              </td>
-            </tr>
-            <tr>
-              <td>是否显示基因名</td>
-              <td>
-                <el-switch
-                  style="display: block"
-                  v-model="geneNameShow"
-                  active-color="#409EFF"
-                  inactive-color="#e4e7ed"
-                  @change="initD3"
-                >
-                </el-switch>
-              </td>
-            </tr>
-            <tr>
-              <td>显示基因个数</td>
-              <td>
-                <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number><span class="geneSumStyle"></span>
-              </td>
-            </tr>
-            <tr>
-              <td>Log2FoldChange</td>
-              <td>
-                <el-input-number size="mini" :min="0" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>-log10(pvalue)</td>
-              <td>
-                <el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>x轴最小值</td>
-              <td>
-                <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>x轴最大值</td>
-              <td>
-                <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>y轴最小值</td>
-              <td>
-                <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>y轴最大值</td>
-              <td>
-                <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>宽</td>
-              <td>
-                <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>高</td>
-              <td>
-                <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-            <tr>
-              <td>点的半径</td>
-              <td>
-                <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
-              </td>
-            </tr>
-          </table>
-    </div>
+              </el-slider>
+            </div>
+
+            <table class="gridtable" v-show="rangeShow">
+              <tr>
+                  <th>参数</th><th>操作</th>
+              </tr>
+              <tr>
+                <td>x轴显示</td>
+                <td>
+                  <el-switch
+                    style="display: block"
+                    v-model="xvalueShow"
+                    active-color="#409EFF"
+                    inactive-color="#409EFF"
+                    active-text="pvalue"
+                    inactive-text="padj"
+                    @change="xvaluechange"
+                  >
+                  </el-switch>
+                </td>
+              </tr>
+              <tr>
+                <td>是否显示基因名</td>
+                <td>
+                  <el-switch
+                    style="display: block"
+                    v-model="geneNameShow"
+                    active-color="#409EFF"
+                    inactive-color="#e4e7ed"
+                    @change="initD3"
+                  >
+                  </el-switch>
+                </td>
+              </tr>
+              <tr>
+                <td>显示基因个数</td>
+                <td>
+                  <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number><span class="geneSumStyle"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>Log2FoldChange</td>
+                <td>
+                  <el-input-number size="mini" :min="0" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>-log10(pvalue)</td>
+                <td>
+                  <el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>x轴最小值</td>
+                <td>
+                  <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>x轴最大值</td>
+                <td>
+                  <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>y轴最小值</td>
+                <td>
+                  <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>y轴最大值</td>
+                <td>
+                  <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>宽</td>
+                <td>
+                  <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>高</td>
+                <td>
+                  <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+              <tr>
+                <td>点的半径</td>
+                <td>
+                  <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
+                </td>
+              </tr>
+            </table>
+      </div>
+  </div>
 
   </div>
 </template>
 
 <script>
+import leftMenu from './leftMenu.vue'
+
 import * as d3 from 'd3'
 
 export default {
@@ -176,6 +185,7 @@ export default {
     }
   },
   components: {
+    leftMenu
   },
   mounted () {
     this.getData()
@@ -183,7 +193,25 @@ export default {
       this.geneSum = sessionStorage.getItem('geneSum') - 0
     }
   },
+  watch: {
+    '$route': 'getDataReset'
+  },
   methods: {
+    getDataReset () {
+      this.xvalueShow = true
+      this.geneNameShow = false
+      this.showNum = 3000
+      this.xLeft = 1
+      this.yTop = 2
+      this.xmin = -3
+      this.xmax = 3
+      this.ymin = 0
+      this.ymax = 12
+      this.width = 800
+      this.height = 600
+      this.radius = 1.5
+      this.getData()
+    },
     getData () {
       let _case = sessionStorage.getItem('_case')
       let _control = sessionStorage.getItem('_control')
@@ -294,7 +322,7 @@ export default {
         .text('-log10(pvalue)')
         .attr('fill', '#000')
         .attr('transform', 'translate(' + padding.left + ', -10)')
-
+      // 阈值分割线
       svg.append('line')
         .attr('x1', padding.left + xScale(self.xLeft))
         .attr('y1', padding.bottom + yScale(0))
@@ -318,7 +346,6 @@ export default {
         .attr('y2', padding.bottom + yScale(self.yTop))
         .attr("stroke","#999")
         .style("stroke-dasharray", "5")
-
 
       //  显示满足条件的gene名称
       if (self.geneNameShow === true) {
@@ -385,7 +412,10 @@ export default {
 
 <style scoped="true">
 .content {
+  float:left;
   width: 60%;
+  min-width: 900px;
+  padding: 0 20px;
   margin: 19px auto;
 }
 .cursor-pointer {

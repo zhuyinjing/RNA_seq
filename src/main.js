@@ -37,6 +37,32 @@ if (sessionStorage.projectId) {
 if (sessionStorage.projectName) {
   store.state.projectName = sessionStorage.projectName
 }
+// 侧边栏li的点击颜色
+if (sessionStorage.leftMenuIndex) {
+  store.state.leftMenuIndex = sessionStorage.leftMenuIndex
+}
+// 侧边栏动态内容
+if (sessionStorage.info) {
+  store.state.info = JSON.parse(sessionStorage.info)
+}
+// heatmap,ppi, geneList 输入
+if (sessionStorage.geneList) {
+  store.state.geneList = JSON.parse(sessionStorage.geneList)
+}
+// heatmap json
+if (sessionStorage.heatmapJson) {
+  store.state.heatmapJson = JSON.parse(sessionStorage.heatmapJson)
+}
+// ppi json
+if (sessionStorage.ppiJson) {
+  store.state.ppiJson = JSON.parse(sessionStorage.ppiJson)
+}
+if (sessionStorage._case) {
+  store.state._case = sessionStorage._case
+}
+if (sessionStorage._control) {
+  store.state._control = sessionStorage._control
+}
 
 axios.get('/getUser').then((res) => {
   store.commit('setusername', res.data)

@@ -12,7 +12,7 @@
     <div class="textStyle">
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
       <el-button type="danger" @click="project_list()">查看项目列表</el-button>
-      <img src="http://10.10.10.34:1025/server/username" alt="">
+      <img src="https://colorseq.com/server/username" alt="" class='display-none'>
     </div>
     <login ref="loginDiv"></login>
   </div>
@@ -53,9 +53,13 @@ export default {
 .imgStyle {
   width: 200px;
   height: 200px;
-  margin: 20px auto;
+  margin: 0 auto;
 }
 .textStyle {
   text-align: center;
+}
+.display-none {
+  width: 0;
+  height: 0;
 }
 </style>

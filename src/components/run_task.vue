@@ -255,7 +255,7 @@ export default {
     report () {
       this.loading = this.$loading({
         lock: true,
-        text: '报告正在生成中...请稍等...',
+        text: '报告正在生成中...请稍等...可能需要等待10分钟左右的时间...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
