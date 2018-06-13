@@ -73,7 +73,7 @@
               <tr>
                 <td>显示基因个数</td>
                 <td>
-                  <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number><span class="geneSumStyle"></span>
+                  <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
                 </td>
               </tr>
               <tr>
@@ -149,7 +149,6 @@ export default {
       showNum: 3000,
       arr: [],
       xvalueShow: true,
-      geneSum: null,
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
@@ -189,9 +188,6 @@ export default {
   },
   mounted () {
     this.getData()
-    if (sessionStorage.getItem('geneSum')) {
-      this.geneSum = sessionStorage.getItem('geneSum') - 0
-    }
   },
   watch: {
     '$route': 'getDataReset'
@@ -471,10 +467,6 @@ path{
 }
 .text-align-center {
   text-align: center;
-}
-.geneSumStyle {
-  font-size: 12px;
-  color: #999;
 }
 .el-slider.is-vertical .el-slider__runway{
   margin-top: -25px;

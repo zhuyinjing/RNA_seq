@@ -11,7 +11,6 @@
       <h2>基因表达量表格</h2>
 
       <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
-          <caption>基因表达量表格</caption>
           <thead>
           <tr>
               <th v-for="item in tpmsArray">{{item}}</th>
@@ -53,7 +52,7 @@ export default {
             this.arr.push({
                 "mDataProp" : "tpms",
                 "mRender" : function(data, type, full) {
-                    return data[k]
+                    return Math.ceil(data[k])
                 }
             })
           }
@@ -83,6 +82,9 @@ export default {
               //通过ajax实现分页的url路径
               "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username,
               "aoColumns" : self.arr,
+              // "aoColumnDefs":[{"aTargets":[2][1],"mRender":function(){
+              //        return "<a href=#>1441</a>"}
+              // }]
           });
         })
       },

@@ -15,7 +15,6 @@
       <div id="metrics_bar"></div>
 
       <table class="gridtable">
-        <caption>序列比对结果统计表</caption>
         <thead>
           <tr>
             <th>样本</th>
@@ -29,12 +28,12 @@
         </thead>
         <tr v-for="(item, index) in tableData">
           <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[0]}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[1]}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[16] - 0).toFixed(3)}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[17] - 0).toFixed(3)}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[18] - 0).toFixed(3)}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[19] - 0).toFixed(3)}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(item[20] - 0).toFixed(3)}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{numFormat(item[1])}}</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[16])* 100).toFixed(1)}}%</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[17])* 100).toFixed(1)}}%</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[18])* 100).toFixed(1)}}%</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[19])* 100).toFixed(1)}}%</td>
+          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[20])* 100).toFixed(1)}}%</td>
         </tr>
       </table>
 
@@ -44,8 +43,8 @@
 </template>
 
 <script>
-import leftMenu from './leftMenu.vue'
 import Plotly from 'plotly.js'
+import leftMenu from './leftMenu.vue'
 export default {
   data () {
     return {
@@ -60,6 +59,24 @@ export default {
     this.initTable()
   },
   methods: {
+    numFormat (num) {
+        num=num.toString().split(".");  // 分隔小数点
+        var arr=num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+        var res=[];
+        for(var i=0,len=arr.length;i<len;i++){
+          if(i%3===0&&i!==0){
+             res.push(",");   // 添加分隔符
+          }
+          res.push(arr[i]);
+        }
+        res.reverse(); // 再次倒序成为正确的顺序
+        if(num[1]){  // 如果有小数的话添加小数部分
+          res=res.join("").concat("."+num[1]);
+        }else{
+          res=res.join("");
+        }
+        return res;
+    },
     initTable () {
       this.axios.get('/server/mappingqc?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
         this.tableData = res.data.slice(1)
@@ -80,7 +97,6 @@ export default {
     backReport () {
       this.$router.push({'name': 'report'})
     }
-
   }
 }
 </script>

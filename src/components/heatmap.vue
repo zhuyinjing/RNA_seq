@@ -84,9 +84,11 @@ export default {
                   chart: {
                       renderTo: "boxplot",
                       type: 'boxplot',
-                      height: 400
+                      height: 400,
                   },
-
+                  credits: {
+                    enabled: false //不显示LOGO
+                  },
                   title: {
                       text: "当前基因表达量"
                   },

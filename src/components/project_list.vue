@@ -22,7 +22,7 @@
             <el-button @click="upload(item)">上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
             <el-button @click="runTask(item)">运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
             <el-button @click="report(item)">查看报告<i class="el-icon-document el-icon--right"></i></el-button>
-            <el-button class="float-right" type="danger" @click="deleteProject(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
+            <el-button disabled class="float-right" type="danger" @click="deleteProject(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
         </div>
       </div>

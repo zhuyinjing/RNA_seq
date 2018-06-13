@@ -1,30 +1,31 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import home from '@/components/home'
-// import login from '@/components/login'
-import about from '@/components/about'
-import project_list from '@/components/project_list'
-import create_experiment from '@/components/create_experiment'
-import upload_file from '@/components/upload_file'
-import run_task from '@/components/run_task'
-import report from '@/components/report'
-import report_deg from '@/components/report_deg'
-import heatmap_input from '@/components/heatmap_input'
-import heatmap from '@/components/heatmap'
-import ppi_chord_plot_input from '@/components/ppi_chord_plot_input'
-import ppi_chord_plot from '@/components/ppi_chord_plot'
-import report_fastqc from '@/components/report_fastqc'
-import report_mappingqc from '@/components/report_mappingqc'
-import report_new_trans from '@/components/report_new_trans'
-import report_expr_matrix from '@/components/report_expr_matrix'
-import report_volcano_plot from '@/components/report_volcano_plot'
-import heatmapsvg from '@/components/heatmapsvg'
-import heatmapsvg_input from '@/components/heatmapsvg_input'
+const home = resolve => require(['@/components/home'], resolve)
+const about = resolve => require(['@/components/about'], resolve)
+const project_list = resolve => require(['@/components/project_list'], resolve)
+const create_experiment = resolve => require(['@/components/create_experiment'], resolve)
+const upload_file = resolve => require(['@/components/upload_file'], resolve)
+const run_task = resolve => require(['@/components/run_task'], resolve)
+const report = resolve => require(['@/components/report'], resolve)
+const report_deg = resolve => require(['@/components/report_deg'], resolve)
+const heatmap_input = resolve => require(['@/components/heatmap_input'], resolve)
+const heatmap = resolve => require(['@/components/heatmap'], resolve)
+const ppi_chord_plot_input = resolve => require(['@/components/ppi_chord_plot_input'], resolve)
+const ppi_chord_plot = resolve => require(['@/components/ppi_chord_plot'], resolve)
+const report_fastqc = resolve => require(['@/components/report_fastqc'], resolve)
+const report_mappingqc = resolve => require(['@/components/report_mappingqc'], resolve)
+const report_new_trans = resolve => require(['@/components/report_new_trans'], resolve)
+const report_expr_matrix = resolve => require(['@/components/report_expr_matrix'], resolve)
+const report_volcano_plot = resolve => require(['@/components/report_volcano_plot'], resolve)
+const heatmapsvg = resolve => require(['@/components/heatmapsvg'], resolve)
+const heatmapsvg_input = resolve => require(['@/components/heatmapsvg_input'], resolve)
+const enrichment_analysis_input = resolve => require(['@/components/enrichment_analysis_input'], resolve)
+const enrichment_analysis = resolve => require(['@/components/enrichment_analysis'], resolve)
 
 Vue.use(Router)
 
 export default new Router({
-  // mode: 'history',
+  mode: 'history',
   routes: [
     // {
     //   path: '*',
@@ -61,11 +62,6 @@ export default new Router({
       name: 'run_task',
       component: run_task
     },
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: login
-    // },
     {
       path: '/report',
       name: 'report',
@@ -130,6 +126,16 @@ export default new Router({
       path: '/heatmapsvg',
       name: 'heatmapsvg',
       component: heatmapsvg
-    }
+    },
+    {
+      path: '/enrichment_analysis_input',
+      name: 'enrichment_analysis_input',
+      component: enrichment_analysis_input
+    },
+    {
+      path: '/enrichment_analysis',
+      name: 'enrichment_analysis',
+      component: enrichment_analysis
+    },
   ]
 })

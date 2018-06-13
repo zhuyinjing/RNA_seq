@@ -255,12 +255,12 @@ export default {
     report () {
       this.loading = this.$loading({
         lock: true,
-        text: '报告正在生成中...请稍等...可能需要等待10分钟左右的时间...',
+        text: '报告正在生成中...请稍等...可能需要等待5~10分钟左右的时间...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
       this.axios.get('/server/create_report?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (res.data.message === 200) {
+        if (res.data.message_type === 'success') {
           this.getReportStatus()
         } else {
           this.loading.close()

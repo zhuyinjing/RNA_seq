@@ -14,6 +14,7 @@
         <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
         <el-button type="primary" @click="ppiClick()">ppi</el-button>
         <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
+        <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
       </div>
 
       <div>
@@ -28,15 +29,14 @@
       <br>
       <div class="form-group">
           <label class="radio-inline control-label">显示：</label>
-          <el-radio v-model="displayByFC" label="1">在 Normal 中表达量上调基因</el-radio>
-          <el-radio v-model="displayByFC" label="-1">在 Normal 中表达量下调基因</el-radio>
+          <el-radio v-model="displayByFC" label="1">在 {{$store.state._case}} 中表达量上调基因</el-radio>
+          <el-radio v-model="displayByFC" label="-1">在 {{$store.state._case}} 中表达量下调基因</el-radio>
           <el-radio v-model="displayByFC" label="0">所有上调和下调基因</el-radio>
       </div>
       <br>
       <transition name="fade">
         <div class="" style="">
           <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
-              <caption>差异表达基因表</caption>
               <thead>
                 <tr>
                   <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th>
@@ -57,7 +57,7 @@
                   <td>{{item.name}}</td>
                   <td>{{item.description}}</td>
                   <td>{{item.type}}</td>
-                  <td>{{item.baseMean}}</td>
+                  <td>{{numFormat(item.baseMean)}}</td>
                   <td>{{item.log2FoldChange}}</td>
                   <td>{{item.pvalue}}</td>
                   <td>{{item.padj}}</td>
@@ -101,6 +101,25 @@ export default {
     '$route': 'getTabelValueReset'
   },
   methods: {
+    //  千分位
+    numFormat (num) {
+        num=num.toString().split(".");  // 分隔小数点
+        var arr=num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+        var res=[];
+        for(var i=0,len=arr.length;i<len;i++){
+          if(i%3===0&&i!==0){
+             res.push(",");   // 添加分隔符
+          }
+          res.push(arr[i]);
+        }
+        res.reverse(); // 再次倒序成为正确的顺序
+        if(num[1]){  // 如果有小数的话添加小数部分
+          res=res.join("").concat("."+num[1]);
+        }else{
+          res=res.join("");
+        }
+        return res;
+    },
     // 全选 or 取消全选
     checkedAll () {
       if (this.data.length !== this.checked.length && this.isCheckedAll === true) {
@@ -185,6 +204,21 @@ export default {
       }
       this.$router.push({'name': 'ppi_chord_plot_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
     },
+    enrichmentClick () {
+      if (this.checked.length === 0) {
+        if (this.data.length < 1000) {
+          this.$store.commit('setgeneList', this.data)
+        } else {
+          for(let i = 0;i < 1000;i++) {
+            this.checked.push(this.data[i])
+          }
+          this.$store.commit('setgeneList', this.checked)
+        }
+      } else {
+        this.$store.commit('setgeneList', this.checked)
+      }
+      this.$router.push({'name': 'enrichment_analysis_input'})
+    },
     filterTable () {
       let self = this
       $.fn.dataTable.ext.search.push(
@@ -225,7 +259,6 @@ export default {
       this.data = data
       $(document).ready(function() {
           $('#example').DataTable( {
-              // destroy:true,
               lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
               pageLength: 25,
               columnDefs: [{

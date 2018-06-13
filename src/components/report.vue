@@ -8,8 +8,9 @@
         <el-breadcrumb-item></el-breadcrumb-item>
       </el-breadcrumb>
       <h2>项目名称：{{$store.state.projectName}}</h2>
-      <p>基因数目：{{$store.state.info.rnaSeqReportSummary.geneNum}}</p>
-      <p>转录本数目：{{$store.state.info.rnaSeqReportSummary.transcriptNum}}</p>
+      <p>基因数目：{{geneNum}}</p>
+      <p>转录本数目：{{transcriptNum}}</p>
+
     </div>
   </div>
 </template>
@@ -19,15 +20,25 @@ import leftMenu from './leftMenu.vue'
 export default {
   data () {
     return {
-
+      geneNum: null,
+      transcriptNum: null,
     }
   },
   components: {
-    leftMenu
+    leftMenu,
   },
   mounted () {
+    this.getValue()
   },
   methods: {
+    getValue () {
+      this.axios.get('/server/rnaseq_report_summary?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.geneNum = res.data.rnaSeqReportSummary.geneNum
+          this.transcriptNum = res.data.rnaSeqReportSummary.transcriptNum
+        }
+      })
+    }
   }
 }
 </script>
@@ -45,4 +56,6 @@ export default {
 .cursor-pointer{
   cursor: pointer;
 }
+</style>
+<style media="screen">
 </style>

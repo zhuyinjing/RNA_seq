@@ -12,10 +12,17 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/server': {
-        target: 'http://10.10.10.34:7002',
+        target: 'http://10.10.10.34:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server': '/server/'
+        }
+      },
+      '/projects': {
+        target: 'http://10.10.10.34:7002',
+        changeOrigin: true,
+        pathRewrite: {
+          '/projects': '/projects/'
         }
       }
     },
@@ -65,7 +72,7 @@ module.exports = {
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
     // npm install --save-dev compression-webpack-plugin
-    productionGzip: false,
+    productionGzip: true,
     productionGzipExtensions: ['js', 'css'],
 
     // Run the build command with an extra argument to

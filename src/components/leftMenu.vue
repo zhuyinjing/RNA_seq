@@ -17,8 +17,10 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span slot="">样本聚类概览</span>
-          <el-menu-item index="4-0">样本聚类</el-menu-item>
-          <el-menu-item index="4-1">PCA主成分分析</el-menu-item>
+          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a>
+          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA主成分分析</el-menu-item></a>
+          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA图</el-menu-item></a>
+          <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
         </el-menu-item-group>
         <el-menu-item-group>
           <span slot="">基因差异表达分析</span>
@@ -81,6 +83,18 @@ export default {
       this.$store.commit('set_control', _control)
       this.$router.push({'name': 'report_volcano_plot', query: {'_case': _case, '_control': _control}})
     },
+    plot_cluster () {
+      this.$store.commit('setleftMenuIndex', '4-0')
+    },
+    plot_pca () {
+      this.$store.commit('setleftMenuIndex', '4-1')
+    },
+    plot_ma () {
+      this.$store.commit('setleftMenuIndex', '4-2')
+    },
+    plot_correlation () {
+      this.$store.commit('setleftMenuIndex', '4-3')
+    },
   }
 }
 </script>
@@ -92,8 +106,9 @@ export default {
 li {
   list-style: none;
 }
-span {
-
+a:hover, a:visited, a:link, a:active {
+  text-decoration: none;
+  out-line: none;
 }
 </style>
 <style media="screen">

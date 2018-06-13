@@ -10,10 +10,9 @@
 
       <h2>新转录本概况</h2>
 
-      <el-button type="text" @click="classcodeShow = true">查看classcode说明</el-button>
+      <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
 
       <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
-          <caption>新转录本概况表</caption>
           <thead>
           <tr>
               <th></th>
@@ -62,6 +61,24 @@ export default {
     this.initTable()
   },
   methods: {
+    numFormat (num) {
+        num=num.toString().split(".");  // 分隔小数点
+        var arr=num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+        var res=[];
+        for(var i=0,len=arr.length;i<len;i++){
+          if(i%3===0&&i!==0){
+             res.push(",");   // 添加分隔符
+          }
+          res.push(arr[i]);
+        }
+        res.reverse(); // 再次倒序成为正确的顺序
+        if(num[1]){  // 如果有小数的话添加小数部分
+          res=res.join("").concat("."+num[1]);
+        }else{
+          res=res.join("");
+        }
+        return res;
+    },
     initTable () {
       let self = this
       $(document).ready(function() {
@@ -101,17 +118,17 @@ export default {
               },{
                   "mDataProp" : "cpc2Entry",
                   "mRender" : function(data, type, full) {
-                      return data['transcriptLength']
+                      return self.numFormat(data['transcriptLength'])
                   }
               },{
                   "mDataProp" : "cpc2Entry",
                   "mRender" : function(data, type, full) {
-                      return data['peptideLength']
+                      return self.numFormat(data['peptideLength'])
                   }
               }, {
                   "mDataProp" : "cpc2Entry",
                   "mRender" : function(data, type, full) {
-                      return data['codingProbability']
+                      return Number(data['codingProbability']).toFixed(3)
                   }
               },{
                   "mDataProp" : "cpc2Entry",
@@ -189,6 +206,9 @@ export default {
 }
 .imgStyle {
   width: 100%;
+}
+.margin-bottom-btn {
+  margin-bottom: 10px;
 }
 </style>
 <style>
