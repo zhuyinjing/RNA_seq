@@ -33,7 +33,7 @@
       </table>
     </div>
 
-    <el-dialog title="第一步：填写实验条件" :visible.sync="step1Dialog" width="30%">
+    <el-dialog  title="第一步：填写实验条件" :visible.sync="step1Dialog" width="30%">
       <el-button type="danger" @click="addCondition()">
         <i class="el-icon-circle-plus"></i>
         增加实验条件
@@ -41,13 +41,13 @@
       <div class="padding-10-5" v-for="item in condition">
         实验条件
         <el-input
-          class="conditioninput"
+          class="conditioninput width-100"
           v-model="item.option"
           clearable>
         </el-input>
         样本数目
         <el-input
-          class="numberinput"
+          class="numberinput width-100"
           v-model="item.number"
           clearable>
         </el-input>
@@ -289,5 +289,10 @@ table.gridtable td {
 .numberinput {
   width: 20%;
   margin-right: 20px;
+}
+@media screen and (max-width:1400px) {
+  .width-100 {
+    width: 100%;
+  }
 }
 </style>

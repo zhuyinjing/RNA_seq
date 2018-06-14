@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getValue () {
-      this.axios.get('/server/rnaseq_report_summary?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+      this.axios.get('/server/rnaseq_report_summary?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&species=' +this.$store.state.species).then((res) => {
         if (res.data.message_type === 'success') {
           this.geneNum = res.data.rnaSeqReportSummary.geneNum
           this.transcriptNum = res.data.rnaSeqReportSummary.transcriptNum

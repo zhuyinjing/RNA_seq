@@ -22,7 +22,8 @@ export default new Vuex.Store({
       }
     },
     _case: '',
-    _control: ''
+    _control: '',
+    species: '', // 物种信息
   },
   mutations: {
     setusername: (state, data) => {
@@ -64,6 +65,10 @@ export default new Vuex.Store({
     set_control: (state, data) => {
       sessionStorage.setItem('_control', data)
       state._control = data
+    },
+    setspecies: (state, data) => {
+      sessionStorage.setItem('species', data)
+      state.species = data
     },
   }
 })

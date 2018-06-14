@@ -10,13 +10,18 @@
 
       <h2>基因表达量表格</h2>
 
-      <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
-          <thead>
-          <tr>
-              <th v-for="item in tpmsArray">{{item}}</th>
-          </tr>
-          </thead>
-      </table>
+      <div class="overflow-auto">
+        <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th v-for="item in tpmsArray">{{item}}</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+    <div class="clear">
+
     </div>
   </div>
 
@@ -107,5 +112,11 @@ export default {
 }
 .imgStyle {
   width: 100%;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.clear {
+  clear: both;
 }
 </style>

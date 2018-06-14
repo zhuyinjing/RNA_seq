@@ -17,17 +17,17 @@
         <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
       </div>
 
-      <div>
+      <div class="min-width-div">
           <label for="maxpval" class="label-font">pvalue &le;</label>
-          <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
+          <input type="text" id="maxpval" placeholder="0.05" class="input-style width-10" v-model="maxpval"/>
           <label for="maxfdr" class="label-font">FDR &le;</label>
-          <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
+          <input type="text" id="maxfdr" placeholder="0.05" class="input-style width-10" v-model="maxfdr"/>
           <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
-          <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
+          <input type="text" id="minfc" placeholder="0" class="input-style width-10" v-model="minfc"/>
           <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
       </div>
       <br>
-      <div class="form-group">
+      <div class="form-group min-width-div">
           <label class="radio-inline control-label">显示：</label>
           <el-radio v-model="displayByFC" label="1">在 {{$store.state._case}} 中表达量上调基因</el-radio>
           <el-radio v-model="displayByFC" label="-1">在 {{$store.state._case}} 中表达量下调基因</el-radio>
@@ -35,7 +35,7 @@
       </div>
       <br>
       <transition name="fade">
-        <div class="" style="">
+        <div class="overflow-auto" style="">
           <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
               <thead>
                 <tr>
@@ -323,5 +323,14 @@ export default {
 }
 .margin-bottom-20 {
   margin-bottom: 20px;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.min-width-div {
+  min-width: 700px;
+}
+.width-10 {
+  width: 10%;
 }
 </style>

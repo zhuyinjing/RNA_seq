@@ -683,4 +683,7 @@ export default {
     word-break: break-all;
     word-wrap: break-word;
   }
+  #example0_wrapper, #example4_wrapper, #example1_wrapper, #example2_wrapper, #example3_wrapper, #example4_wrapper{
+    overflow: auto !important;
+  }
 </style>

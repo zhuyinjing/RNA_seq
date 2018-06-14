@@ -10,7 +10,7 @@
 
       <h2>基因差异表达火山图 {{$route.query._case}} vs {{$route.query._control}} </h2>
 
-      <div class="">
+      <div class="min-width-div">
             <div class="yrange display-inline-block" v-show="rangeShow">
               <el-slider
               v-model="yTop"
@@ -25,6 +25,8 @@
             </div>
 
             <div id="canvas" class="display-inline-block vertical-align-top"></div>
+
+            <div class="clear"></div>
 
             <div class="" v-show="rangeShow">
                 <el-slider
@@ -133,7 +135,7 @@
             </table>
       </div>
   </div>
-
+  <div class="clear"></div>
   </div>
 </template>
 
@@ -410,7 +412,7 @@ export default {
 .content {
   float:left;
   width: 60%;
-  min-width: 900px;
+  /* min-width: 900px; */
   padding: 0 20px;
   margin: 19px auto;
 }
@@ -450,6 +452,12 @@ path{
     stroke: cornflowerblue;
     stroke-width: 2px;
 }
+.clear {
+  clear: both;
+}
+.min-width-div {
+  min-width: 900px;
+}
 </style>
 <style>
 .domain,.tick line {
@@ -475,7 +483,8 @@ path{
   width:5px;
 }
 .display-inline-block {
-  display:inline-block;
+  float: left;
+  /* display:inline-block; */
 }
 .vertical-align-top {
   vertical-align: top;

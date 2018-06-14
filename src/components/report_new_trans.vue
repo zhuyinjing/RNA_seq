@@ -12,27 +12,30 @@
 
       <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
 
-      <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
-          <thead>
-          <tr>
-              <th></th>
-              <th>gene</th>
-              <th>transcriptId</th>
-              <th>referenceTranscriptId</th>
-              <th>exonNum</th>
-              <th>classCode</th>
-              <th>transcriptLength</th>
-              <th>peptideLength</th>
-              <th>codingProbability</th>
-              <th>coding</th>
-          </tr>
-          </thead>
-      </table>
+      <div class="overflow-auto">
+        <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th></th>
+                <th>gene</th>
+                <th>transcriptId</th>
+                <th>referenceTranscriptId</th>
+                <th>exonNum</th>
+                <th>classCode</th>
+                <th>transcriptLength</th>
+                <th>peptideLength</th>
+                <th>codingProbability</th>
+                <th>coding</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+
 
       <el-dialog
         title="说明"
         :visible.sync="classcodeShow"
-        width="30%"
+        width="40%"
         center>
         <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
         <span slot="footer" class="dialog-footer">
@@ -209,6 +212,12 @@ export default {
 }
 .margin-bottom-btn {
   margin-bottom: 10px;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.overflow-auto {
+  overflow: auto;
 }
 </style>
 <style>

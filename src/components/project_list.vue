@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <div class="textStyle" v-if="loginBtnShow">
       <el-card class="box-card">
         <div class="text item">
@@ -8,7 +8,7 @@
         <el-button type="danger" @click="login()">登录</el-button>
       </el-card>
     </div>
-    <div class="" v-if="projectShow">
+    <div class="min-width-div" v-if="projectShow">
       <div class="createbtn">
         <el-button type="primary" plain @click="createProjectDialog = true">+ 新建项目</el-button>
       </div>
@@ -104,7 +104,7 @@ export default {
       })
     },
     login () {
-      this.$refs.loginDiv.loginDialog = true
+      window.location.href = 'https://colorseq.com/login'
     },
     createClick () {
       if (!this.form.name) {
@@ -182,6 +182,7 @@ export default {
     commitStore (item) {
       this.$store.commit('setprojectName', item.name)
       this.$store.commit('setprojectId', item.id)
+      this.$store.commit('setspecies', item.species)
     },
   }
 }
@@ -256,5 +257,11 @@ export default {
 
   .delete-font-color {
     color: #f56b6c;
+  }
+  .clear {
+    clear: both;
+  }
+  .min-width-div {
+    min-width: 1300px;
   }
 </style>

@@ -10,7 +10,7 @@
       </el-breadcrumb>
 
       <h2>绘制蛋白相互作用图 {{$store.state._case}} vs {{$store.state._control}}</h2>
-      <table>
+      <table class="min-width-div">
         <tr>
           <td>基因列表</td>
           <td>
@@ -170,5 +170,8 @@ export default {
 .delete-icon {
   float: right;
   margin-top: 8px;
+}
+.min-width-div {
+  min-width: 700px;
 }
 </style>

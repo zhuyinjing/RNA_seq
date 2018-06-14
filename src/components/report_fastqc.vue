@@ -72,6 +72,7 @@
     </table>
 
   </div>
+  <div class="clear"></div>
   </div>
 </template>
 
@@ -147,5 +148,8 @@ table.gridtable td {
 }
 .bgcolor {
   background-color: #f9f9f9 !important;
+}
+.clear {
+  clear: both;
 }
 </style>

@@ -126,6 +126,9 @@ if (sessionStorage._case) {
 if (sessionStorage._control) {
   store.state._control = sessionStorage._control
 }
+if (sessionStorage.species) {
+  store.state.species = sessionStorage.species
+}
 
 axios.get('/getUser').then((res) => {
   store.commit('setusername', res.data)
