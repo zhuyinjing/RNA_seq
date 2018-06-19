@@ -18,13 +18,13 @@ module.exports = {
           '/server': '/server/'
         }
       },
-      '/projects': {
-        target: 'http://10.10.10.34:7002',
-        changeOrigin: true,
-        pathRewrite: {
-          '/projects': '/projects/'
-        }
-      }
+      // '/projects': {
+      //   target: 'http://10.10.10.34:7002',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '/projects': '/projects/'
+      //   }
+      // }
     },
 
     // Various Dev Server settings

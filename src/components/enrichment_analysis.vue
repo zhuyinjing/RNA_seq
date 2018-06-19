@@ -13,6 +13,19 @@
       <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="输入基因列表" name="输入基因列表">
+          <div class="geneListTableDiv">
+            <table class="gridtable" id="geneListTable">
+              <tr>
+                  <th>Id</th><th>Name</th>
+              </tr>
+              <tr v-for="(item, index) in $store.state.geneList">
+                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.target_id}}</td>
+                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+              </tr>
+            </table>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="KEGG" name="KEGG">
             <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
               <thead>
@@ -129,13 +142,14 @@ import leftMenu from './leftMenu.vue'
 export default {
   data () {
     return {
-      activeName: 'KEGG',
+      activeName: '输入基因列表',
       head0: [],
       tbval0: [],
       tbval1: [],
       tbval2: [],
       tbval3: [],
       tbval4: [],
+      TFvalue: null
     }
   },
   components: {
@@ -145,7 +159,15 @@ export default {
     this.handleClick2()
   },
   methods: {
-    handleClick () {
+    handleClick (tab, event) {
+      if (tab.label === '转录因子') {
+        if (!this.TFvalue) {
+          this.$message({
+            message: '由于网络原因，数据正在加载，请稍等...',
+            type: 'warning',
+          });
+        }
+      }
     },
     handleClick2() {
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'KEGG').then((res) => {
@@ -254,7 +276,8 @@ export default {
         })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'TF').then((res) => {
             if (res.data.message_type === 'success') {
-              $('#example1').dataTable().fnDestroy()
+              this.TFvalue = res.data.enrich_list
+              // $('#example1').dataTable().fnDestroy()
               var table = $('#example1').DataTable( {
                 "aoColumnDefs": [
                     {"bSortable": false, "aTargets": [ 0 ] },
@@ -362,7 +385,7 @@ export default {
           })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_3.GO').then((res) => {
             if (res.data.message_type === 'success') {
-              $('#example2').dataTable().fnDestroy()
+              // $('#example2').dataTable().fnDestroy()
               var table = $('#example2').DataTable( {
                 "aoColumnDefs": [
                     {"bSortable": false, "aTargets": [ 0 ] },
@@ -459,7 +482,7 @@ export default {
           })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_4.GO').then((res) => {
             if (res.data.message_type === 'success') {
-              $('#example3').dataTable().fnDestroy()
+              // $('#example3').dataTable().fnDestroy()
               var table = $('#example3').DataTable( {
                 "aoColumnDefs": [
                     {"bSortable": false, "aTargets": [ 0 ] },
@@ -555,7 +578,7 @@ export default {
           })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_5.GO').then((res) => {
             if (res.data.message_type === 'success') {
-              $('#example4').dataTable().fnDestroy()
+              // $('#example4').dataTable().fnDestroy()
               var table = $('#example4').DataTable( {
                 "aoColumnDefs": [
                     {"bSortable": false, "aTargets": [ 0 ] },
@@ -666,6 +689,61 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.tagsDiv {
+  display: inline-block;
+  width: 500px;
+  height:500px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+.tagDiv {
+  margin: 5px;
+}
+.tag {
+    margin: 5px;
+    background-color: rgba(64,158,255,.1);
+    padding: 0 10px;
+    height: 32px;
+    line-height: 30px;
+    font-size: 12px;
+    color: #409EFF;
+    border-radius: 4px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid rgba(64,158,255,.2);
+    white-space: nowrap;
+    /* display: inline-block; */
+}
+.geneListTableDiv {
+  height: 800px;
+  overflow-y: auto;
+}
+#geneListTable.gridtable {
+    width: 100%;
+    text-align: center;
+    font-size:14px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #ebeef5;
+    border-collapse: collapse;
+}
+#geneListTable.gridtable th {
+    color: #333;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #ebeef5;
+}
+#geneListTable.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #ebeef5;
+    background-color: #ffffff;
+}
+.bgcolor {
+  background-color: #f9f9f9 !important;
 }
 </style>
 <style media="screen">

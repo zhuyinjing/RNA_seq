@@ -25,7 +25,7 @@ const enrichment_analysis = resolve => require(['@/components/enrichment_analysi
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     // {
     //   path: '*',
