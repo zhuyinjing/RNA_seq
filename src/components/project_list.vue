@@ -174,7 +174,6 @@ export default {
       this.axios.get('/server/rnaseq_report_index?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
         if (res.data.experimentDesign !== null || res.data.rnaSeqReportSummary !== null) {
           this.$store.commit('setinfo', res.data)
-          sessionStorage.setItem('geneSum', res.data.rnaSeqReportSummary.geneNum)
         }
       })
       this.$router.push({'name': 'report'})
@@ -253,10 +252,6 @@ export default {
   .createbtn {
     width: 60%;
     margin: 19px auto;
-  }
-
-  .delete-font-color {
-    color: #f56b6c;
   }
   .clear {
     clear: both;

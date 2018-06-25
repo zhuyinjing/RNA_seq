@@ -24,7 +24,7 @@
       <p class="p-font-style">差异表达基因比对条件</p>
       <table class="gridtable">
         <tr>
-            <th>实验条件</th><th>样本名称</th>
+            <th>实验组</th><th>对照组</th>
         </tr>
         <tr v-for="(item, index) in message.experiments">
             <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>

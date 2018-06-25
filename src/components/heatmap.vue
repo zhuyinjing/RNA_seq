@@ -48,7 +48,7 @@ export default {
   components: {
     leftMenu
   },
-  mounted () {
+  created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
 
     let self = this
@@ -70,10 +70,9 @@ export default {
          preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
        }
      }
-
-    setTimeout(() => {
-      this.initchart()
-    }, 500)
+  },
+  mounted () {
+    this.initchart()
   },
   methods: {
     initchart () {
@@ -296,15 +295,6 @@ export default {
   width: 60%;
   padding: 0 20px;
   margin: 19px auto;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-.icon-func-div {
-  margin-top: 10px;
-}
-.font-size-12 {
-  font-size: 12px;
 }
 .margin-top-200 {
   margin-top: 200px;

@@ -15,6 +15,10 @@
       <img src="https://colorseq.com/server/username" alt="" class='display-none'>
     </div>
     <login ref="loginDiv"></login>
+
+    <div class="footer">
+      京ICP备18032172号-1
+    </div>
   </div>
 </template>
 
@@ -61,5 +65,15 @@ export default {
 .display-none {
   width: 0;
   height: 0;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background: #e6e6e6;
+  padding-left: 50px;
+  font-size: 12px;
 }
 </style>

@@ -52,7 +52,7 @@ export default {
   components: {
     leftMenu
   },
-  mounted () {
+  created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
 
     let self = this
@@ -74,10 +74,9 @@ export default {
          preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
        }
      }
-
-    setTimeout(() => {
-      this.d3heatmap()
-    }, 500)
+  },
+  mounted () {
+    this.d3heatmap()
   },
   methods: {
     idShowChange () {
@@ -155,8 +154,8 @@ export default {
                   .data(self.value)
                   .enter()
                   .append("rect")
-                  .attr("x", function(d, i){ return (i % 12)*gridSize;})
-                  .attr("y", function(d, i){ return parseInt(i / 12) * self.height;})
+                  .attr("x", function(d, i){ return (i % xData.length)*gridSize;})
+                  .attr("y", function(d, i){ return parseInt(i / xData.length) * self.height;})
                   .attr("width", gridSize)
                   .attr("height", self.height)
                   .style("fill", "#FFFFFF");
@@ -180,16 +179,10 @@ export default {
   padding: 0 20px;
   margin: 19px auto;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .icon-func-div {
   margin-top: 10px;
 }
 .font-size-12 {
   font-size: 12px;
-}
-.margin-top-200 {
-  margin-top: 200px;
 }
 </style>
