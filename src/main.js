@@ -44,6 +44,7 @@ import {
   Slider,
   Row,
   Col,
+  Popover,
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
@@ -77,6 +78,7 @@ Vue.use(TabPane);
 Vue.use(Slider);
 Vue.use(Row);
 Vue.use(Col);
+Vue.use(Popover);
 
 Vue.use(Loading.directive);
 
