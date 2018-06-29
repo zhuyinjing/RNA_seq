@@ -17,7 +17,8 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span slot="">样本聚类概览</span>
-          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a>
+          <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
+          <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a> -->
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA主成分分析</el-menu-item></a>
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA图</el-menu-item></a>
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
@@ -82,6 +83,10 @@ export default {
       this.$store.commit('set_case', _case)
       this.$store.commit('set_control', _control)
       this.$router.push({'name': 'report_volcano_plot', query: {'_case': _case, '_control': _control}})
+    },
+    plotCluster () {
+      this.$store.commit('setleftMenuIndex', '4-0')
+      this.$router.push({'name': 'plotCluster'})
     },
     plot_cluster () {
       this.$store.commit('setleftMenuIndex', '4-0')

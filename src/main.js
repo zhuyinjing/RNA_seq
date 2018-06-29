@@ -12,6 +12,7 @@ import 'datatables/media/js/jquery.dataTables.min.js'
 import Highcharts from 'highcharts/highstock';
 import HighchartsMore from 'highcharts/highcharts-more';
 import Highmaps from 'highcharts/modules/map';
+
 import {
   Dialog,
   Menu,

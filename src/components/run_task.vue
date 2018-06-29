@@ -280,7 +280,7 @@ export default {
             window.clearInterval(this.timer)
           }
         })
-      }, 1000)
+      }, 15000)
     },
     result () {
 

@@ -6,7 +6,7 @@
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
         <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制蛋白蛋白相互作用图</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制基因热图(svg)</el-breadcrumb-item>
         <el-breadcrumb-item>Heat Map(svg)</el-breadcrumb-item>
       </el-breadcrumb>
 
@@ -149,7 +149,6 @@ export default {
                  .attr("transform", "translate(-6," + "9)")
                  .attr('class', 'ySum')
                  .style('visibility', self.visible)
-
               var heatMap = svg.selectAll(".score")
                   .data(self.value)
                   .enter()

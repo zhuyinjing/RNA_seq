@@ -101,109 +101,47 @@
               <i class="el-icon-warning color-orange" v-if="item.basicStatistics === 'WARN'"></i>
             </td>
             <!-- 碱基质量	 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_base_quality.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.perBaseSequenceQuality === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.perBaseSequenceQuality === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.perBaseSequenceQuality === 'WARN'"></i>
-              </td>
-              </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_base_quality.png')">
+              <i class="el-icon-success color-green" v-if="item.perBaseSequenceQuality === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.perBaseSequenceQuality === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.perBaseSequenceQuality === 'WARN'"></i>
+            </td>
             <!-- 每瓦质量	 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_tile_quality.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.perTileSequenceQuality === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.perTileSequenceQuality === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.perTileSequenceQuality === 'WARN'"></i>
-              </td>
-            </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_tile_quality.png')">
+              <i class="el-icon-success color-green" v-if="item.perTileSequenceQuality === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.perTileSequenceQuality === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.perTileSequenceQuality === 'WARN'"></i>
+            </td>
             <!-- 序列质量	 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_sequence_quality.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.perSequenceQualityScores === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.perSequenceQualityScores === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.perSequenceQualityScores === 'WARN'"></i>
-              </td>
-            </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_sequence_quality.png')">
+              <i class="el-icon-success color-green" v-if="item.perSequenceQualityScores === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.perSequenceQualityScores === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.perSequenceQualityScores === 'WARN'"></i>
+            </td>
             <!-- GC含量 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_sequence_gc_content.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.perSequenceGcContent === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.perSequenceGcContent === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.perSequenceGcContent === 'WARN'"></i>
-              </td>
-            </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_sequence_gc_content.png')">
+              <i class="el-icon-success color-green" v-if="item.perSequenceGcContent === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.perSequenceGcContent === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.perSequenceGcContent === 'WARN'"></i>
+            </td>
             <!-- 无效碱基含量 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_base_n_content.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.perBaseNContent === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.perBaseNContent === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.perBaseNContent === 'WARN'"></i>
-              </td>
-            </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'per_base_n_content.png')">
+              <i class="el-icon-success color-green" v-if="item.perBaseNContent === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.perBaseNContent === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.perBaseNContent === 'WARN'"></i>
+            </td>
             <!-- 序列长度分布 -->
-            <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div class="">
-                  <!-- <img style="" src="https://colorseq.com/projects/1/results/006.fastqc/A_1.L1.1_fastqc/Images/per_tile_quality.png" alt="" class="tdImg"> -->
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'sequence_length_distribution.png'" alt="">
-                </div>
-              </div>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">
-                <i class="el-icon-success color-green" v-if="item.sequenceLengthDistribution === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.sequenceLengthDistribution === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.sequenceLengthDistribution === 'WARN'"></i>
-              </td>
-            </el-tooltip>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'sequence_length_distribution.png')">
+              <i class="el-icon-success color-green" v-if="item.sequenceLengthDistribution === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.sequenceLengthDistribution === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.sequenceLengthDistribution === 'WARN'"></i>
+            </td>
             <!-- 接头污染 -->
-            <!-- <el-popover
-              placement="right"
-              width="400"
-              trigger="click">
-              <img style="" src="https://colorseq.com/projects/1/results/006.fastqc/B_4.L1.2_fastqc/Images/per_tile_quality.png" alt="" class="tdImg">
-              <td slot="reference" :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer">
-                <i class="el-icon-success color-green" v-if="item.adapterContent === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.adapterContent === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.adapterContent === 'WARN'"></i>
-              </td>
-            </el-popover> -->
-            <!-- <el-tooltip placement="top" effect="light">
-              <div slot="content">
-                <div>
-                  <img style="" src="https://colorseq.com/projects/1/results/006.fastqc/B_4.L1.2_fastqc/Images/per_tile_quality.png" alt="" class="tdImg">
-                  <img class="tdImg" :src="'/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'adapter_content.png'" alt="">
-                </div>
-              </div> -->
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'adapter_content.png')">
-                <i class="el-icon-success color-green" v-if="item.adapterContent === 'PASS'"></i>
-                <i class="el-icon-error color-red" v-if="item.adapterContent === 'FAIL'"></i>
-                <i class="el-icon-warning color-orange" v-if="item.adapterContent === 'WARN'"></i>
-              </td>
-            <!-- </el-tooltip> -->
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}" class="cursor-pointer" @click="imgClick('/projects/' + $store.state.projectId+ '/results/006.fastqc/' + item.fileName + '_fastqc/Images/' + 'adapter_content.png')">
+              <i class="el-icon-success color-green" v-if="item.adapterContent === 'PASS'"></i>
+              <i class="el-icon-error color-red" v-if="item.adapterContent === 'FAIL'"></i>
+              <i class="el-icon-warning color-orange" v-if="item.adapterContent === 'WARN'"></i>
+            </td>
         </tr>
       </tbody>
     </table>
@@ -245,7 +183,6 @@ export default {
       })
     },
     imgClick(imgSrc) {
-      console.log(imgSrc)
       this.imgDialog = true
       this.imgSrc = imgSrc
       // this.imgSrc = 'https://colorseq.com/projects/1/results/006.fastqc/B_4.L1.2_fastqc/Images/per_tile_quality.png'

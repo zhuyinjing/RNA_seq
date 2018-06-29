@@ -21,6 +21,7 @@ const heatmapsvg = resolve => require(['@/components/heatmapsvg'], resolve)
 const heatmapsvg_input = resolve => require(['@/components/heatmapsvg_input'], resolve)
 const enrichment_analysis_input = resolve => require(['@/components/enrichment_analysis_input'], resolve)
 const enrichment_analysis = resolve => require(['@/components/enrichment_analysis'], resolve)
+const plotCluster = resolve => require(['@/components/plotCluster'], resolve)
 
 Vue.use(Router)
 
@@ -136,6 +137,11 @@ export default new Router({
       path: '/enrichment_analysis',
       name: 'enrichment_analysis',
       component: enrichment_analysis
+    },
+    {
+      path: '/plotCluster',
+      name: 'plotCluster',
+      component: plotCluster
     },
   ]
 })
