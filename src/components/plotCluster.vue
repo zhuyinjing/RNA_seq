@@ -368,12 +368,6 @@ stroke-opacity: 0.4;
 stroke-width: 1.5px;
 }
 
-#show-length {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-
 .links {
   fill: none;
   stroke: #000;
