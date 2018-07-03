@@ -88,9 +88,6 @@ export default {
   components: {
   },
   mounted () {
-    // if (sessionStorage.projectId) {
-    //   this.$store.state.projectId = sessionStorage.projectId
-    // }
     this.getExperiment()
   },
   methods: {

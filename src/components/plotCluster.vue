@@ -16,12 +16,6 @@
 
       <div id="container"></div>
 
-      <!-- <svg xmlns="http://www.w3.org/2000/svg">
-
-            <path d="M50,50A30,50 0 0,1 100,100L150,150"style="stroke:pink; fill:none;"/>
-
-      </svg> -->
-
     </div>
 
   </div>
@@ -93,24 +87,23 @@ export default {
             timeout = setTimeout(function() { input.property("checked", true).each(changed); }, 100);
 
         setRadius(root, root.data.length = 0, innerRadius / maxLength(root));
-        // setColor(root);
         var linkExtension = chart.append("g")
           .attr("class", "link-extensions")
           .selectAll("path")
           .data(root.links().filter(function(d) {
-            return !d.target.children;
-          }))
+              return !d.target.children;
+            }))
           .enter().append("path")
-            .each(function(d) {
-              d.target.linkExtensionNode = this;
-            })
-            .attr("d", linkExtensionConstant)
+          .each(function(d) {
+            d.target.linkExtensionNode = this;
+          })
+          .attr("d", linkExtensionConstant)
 
         var link = chart.append("g")
             .attr("class", "links")
-          .selectAll("path")
-          .data(root.links())
-          .enter().append("path")
+            .selectAll("path")
+            .data(root.links())
+            .enter().append("path")
             .each(function(d) {
               d.target.linkNode = this;
             })
@@ -121,11 +114,17 @@ export default {
           .attr("transform", function(d, i) { return "translate(" + (innerRadius + 5) + ","+ (i + 0.5) +")"; })
 
         var linear = d3.scaleLinear()
-            .domain([0, 20, 40])
+            .domain([0, 20, d3.max(self.tableValue)])
             .range([(d3.rgb(6,113,160)), (d3.rgb(2,218,150)), (d3.rgb(120,248,232))]);
 
-        let gridSize = 30
-        let gridHeight = 30
+        let gridSize, gridHeight
+        if (self.yData.length <= 4) {
+          gridSize = 90
+          gridHeight = 90
+        } else {
+          gridSize = 30
+          gridHeight = 30
+        }
 
         rightArea.selectAll(".nameLabel")
             .data(self.yData)
@@ -137,7 +136,7 @@ export default {
             .style("text-anchor", "start")
             .style("font-size", "12px")
             .style("font-family", "Consolas, Monaco, monospace")
-            .attr("transform", "translate(370," + "16)")
+            .attr("transform", "translate("+ (gridSize * (self.yData.length) + 10) +"," + ""+ (gridHeight / 2) +")")
             .attr('class', 'ySum')
         rightArea.selectAll(".score")
             .data(self.tableValue)
@@ -170,13 +169,6 @@ export default {
         if (d.children) d.children.forEach(function(d) { setRadius(d, y0, k); });
       }
 
-      // Set the color of each node by recursively inheriting.
-      function setColor(d) {
-        // var name = d.data.name;
-        // d.color = color.domain().indexOf(name) >= 0 ? color(name) : d.parent ? d.parent.color : null;
-        // if (d.children) d.children.forEach(setColor);
-      }
-
       function linkVariable(d) {
         return linkStep(d.source.x, d.source.radius, d.target.x, d.target.radius);
       }
@@ -195,6 +187,7 @@ export default {
 
       // Like d3.svg.diagonal.radial, but with square corners.
       function linkStep(startAngle, startRadius, endAngle, endRadius) {
+        console.log(endAngle);
         return "M" + startRadius  + "," + startAngle
             + (endAngle === startAngle ? "" : "L" + startRadius  + "," + endAngle)
             + "L" + endRadius  + "," + endAngle;

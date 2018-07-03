@@ -13,7 +13,7 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span slot="">基因表达量</span>
-          <el-menu-item index="3-0" @click="report_expr_matrix">基因表达量表格（counts）</el-menu-item>
+          <el-menu-item index="3-0" @click="report_expr_matrix">基因表达量表格（TPM）</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <span slot="">样本聚类概览</span>
@@ -30,6 +30,7 @@
             <el-menu-item :index="'5-' + index" @click="report_volcano_plot(item['_case'], item['_control'], index)">火山图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)">差异表达基因</el-menu-item>
             <el-menu-item :index="'5-' + index + '-2'" @click="heatmap(item['_case'], item['_control'], index)">Heat Map</el-menu-item>
+            <el-menu-item :index="'5-' + index + '-3'" @click="ppi(item['_case'], item['_control'], index)">蛋白相互作用图</el-menu-item>
           </el-menu-item-group>
         </el-menu-item-group>
     </el-menu>
@@ -113,6 +114,24 @@ export default {
       this.axios.post('/server/heatmap.app.for_report', formData).then((res) => {
         this.$store.commit('setheatmapJson', res.data.message)
         this.$router.push({'name': 'heatmap', query: {'_case': _case, '_control': _control}})
+      })
+    },
+    ppi (_case, _control, index) {
+      this.$store.commit('setleftMenuIndex', '5-' + index + '-3')
+      this.$store.commit('set_case', _case)
+      this.$store.commit('set_control', _control)
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('caseSample', _case)
+      formData.append('controlSample', _control)
+      this.axios.post('/server/ppi_chord_plot.app.for_report', formData).then((res) => {
+        if (res.data.message_type === 'warn') {
+          this.$message.error(res.data.message)
+        } else {
+          this.$store.commit('setppiJson', res.data.message)
+          this.$router.push({'name': 'ppi_chord_plot', query: {'_case': _case, '_control': _control}})
+        }
       })
     },
   }

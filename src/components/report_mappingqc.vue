@@ -10,7 +10,14 @@
 
       <h2>序列比对结果统计图</h2>
 
-      <p>图中每种颜色代表一个样本，纵坐标为碱基数目，横坐标分别是比对到基因组各种区域上的碱基数。</p>
+      <p>转录本由基因外显子序列组成，因此转录组测序产生的 reads 理论上应主要回贴到基因外显子（包括 UTR ）区域；同时由于可变剪切事件的存在，部分 reads 会回贴到基因内含子区域；另外可能有少量 reads 会回帖到基因间区。对 reads 基因组回贴位置进行统计，可以辅助判断转录组的测序质量。
+我们使用 Hisat2 软件进行基因组回帖比对分析，该软件是是 TopHat2/Bowtie2 的后续更新版本，使用改进的 BWT 算法，实现了更快的速度和更少的资源占用，作者推荐 TopHat2/Bowtie2 和 HISAT 的用户转换到 HISAT2 。</p>
+      <p>参考文献：</p>
+
+      <p>Kim D, Langmead B and Salzberg SL. HISAT: a fast spliced aligner with low memory requirements. Nature Methods 2015 </p>
+      <p>[<a href="https://www.nature.com/articles/nmeth.3317">https://www.nature.com/articles/nmeth.3317</a>](<a href="https://www.nature.com/articles/nmeth.3317">https://www.nature.com/articles/nmeth.3317</a>)</p>
+
+      <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 B 代表 Billion）。</p>
 
       <div id="metrics_bar"></div>
 
