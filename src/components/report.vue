@@ -4,7 +4,7 @@
 
     <div class="content">
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item>项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>项目 {{$store.state.projectName}}</el-breadcrumb-item>
         <el-breadcrumb-item></el-breadcrumb-item>
       </el-breadcrumb>
       <h2>转录组测序简介</h2>

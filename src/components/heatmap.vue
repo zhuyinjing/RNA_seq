@@ -4,9 +4,9 @@
 
     <div class="content">
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+        <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item> -->
         <el-breadcrumb-item>基因热图</el-breadcrumb-item>
       </el-breadcrumb>
 
@@ -37,7 +37,6 @@ export default {
   data () {
     return {
       arr: [],
-      temp: [],
       value: [],
       sortValue: [],
       idShow: false,
@@ -48,33 +47,20 @@ export default {
   components: {
     leftMenu
   },
+  watch: {
+    '$route': 'routerChange'
+  },
   created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
-
-    let self = this
-    for (let k in this.$store.state.heatmapJson.heatmap_json_string.data.nodes) {
-      let node = this.$store.state.heatmapJson.heatmap_json_string.data.nodes[k]
-      if (('parent' in node) === false) {
-        preOrder(node)
-      }
-    }
-    function preOrder(node){
-       if(node.distance === 0){
-         self.temp.push(node.objects[0]);  // y 轴的gene名称
-         for(let i = 0;i < node.features.length;i++) {
-           self.value.push(node.features[i])   // 每一行的值
-           self.sortValue.push(node.features[i])  // 用来排序的数组
-         }
-       } else {
-         preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['left_child']]);
-         preOrder(self.$store.state.heatmapJson.heatmap_json_string.data.nodes[node['right_child']]);
-       }
-     }
   },
   mounted () {
     this.initchart()
   },
   methods: {
+    routerChange () {
+      this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
+      this.initchart()
+    },
     initchart () {
       let stages = this.$store.state.heatmapJson.stages
       let genes = this.$store.state.heatmapJson.genes
@@ -150,7 +136,7 @@ export default {
                       column_metadata: true, //turn on the column metadata
                       min_row_height:5,
                       max_column_width:50,
-                      max_height: genes.length * 5, //set maximum height of visualization in pixels
+                      max_height: 5, //set maximum height of visualization in pixels
                       heatmap_colors: "RdBkGr", //set color scale for clustered data
                       metadata_colors: "RdLrBu", //set color scale for metadata
                       column_dendrogram: true,

@@ -29,6 +29,7 @@
             <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span>
             <el-menu-item :index="'5-' + index" @click="report_volcano_plot(item['_case'], item['_control'], index)">火山图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)">差异表达基因</el-menu-item>
+            <el-menu-item :index="'5-' + index + '-2'" @click="heatmap(item['_case'], item['_control'], index)">Heat Map</el-menu-item>
           </el-menu-item-group>
         </el-menu-item-group>
     </el-menu>
@@ -99,6 +100,20 @@ export default {
     },
     plot_correlation () {
       this.$store.commit('setleftMenuIndex', '4-3')
+    },
+    heatmap (_case, _control, index) {
+      this.$store.commit('setleftMenuIndex', '5-' + index + '-2')
+      this.$store.commit('set_case', _case)
+      this.$store.commit('set_control', _control)
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('caseSample', _case)
+      formData.append('controlSample', _control)
+      this.axios.post('/server/heatmap.app.for_report', formData).then((res) => {
+        this.$store.commit('setheatmapJson', res.data.message)
+        this.$router.push({'name': 'heatmap', query: {'_case': _case, '_control': _control}})
+      })
     },
   }
 }

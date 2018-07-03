@@ -4,7 +4,7 @@
 
     <div class="content">
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目{{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
         <el-breadcrumb-item>基因表达量表格</el-breadcrumb-item>
       </el-breadcrumb>
 
