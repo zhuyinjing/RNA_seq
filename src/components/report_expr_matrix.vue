@@ -56,6 +56,9 @@ export default {
   },
   mounted () {
     this.getTpms()
+    this.$nextTick(function() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    });
   },
   methods: {
     getTpms () {

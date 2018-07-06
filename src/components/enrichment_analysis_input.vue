@@ -87,6 +87,8 @@ export default {
       formData.append('username', this.$store.state.username)
       formData.append('p', this.$store.state.projectId)
       formData.append('genelist', temp)
+      formData.append('caseSample', this.$store.state._case)
+      formData.append('controlSample', this.$store.state._control)
       this.loading = this.$loading({
         lock: true,
         text: '文件正在生成中...请稍等...可能需要等待1～2分钟左右的时间...',
@@ -106,7 +108,7 @@ export default {
             this.loading.close()
             this.$message.success('富集分析已完成!')
             window.clearInterval(this.timer)
-            this.$router.push({'name': 'enrichment_analysis'})
+            this.$router.push({'name': 'enrichment_analysis', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
           }
         })
       }, 1000)

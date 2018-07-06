@@ -15,7 +15,7 @@
       <p>参考文献：</p>
 
       <p>Kim D, Langmead B and Salzberg SL. HISAT: a fast spliced aligner with low memory requirements. Nature Methods 2015 </p>
-      <p>[<a href="https://www.nature.com/articles/nmeth.3317">https://www.nature.com/articles/nmeth.3317</a>](<a href="https://www.nature.com/articles/nmeth.3317">https://www.nature.com/articles/nmeth.3317</a>)</p>
+      <p>[<a href="https://www.nature.com/articles/nmeth.3317">原文链接</a>]</p>
 
       <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 B 代表 Billion）。</p>
 

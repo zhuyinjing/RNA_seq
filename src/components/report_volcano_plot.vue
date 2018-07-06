@@ -10,6 +10,8 @@
 
       <h2>基因差异表达火山图 {{$route.query._case}} vs {{$route.query._control}} </h2>
 
+      <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
+
       <div class="min-width-div">
             <div class="yrange display-inline-block" v-show="rangeShow">
               <el-slider

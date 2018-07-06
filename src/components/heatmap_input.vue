@@ -172,7 +172,7 @@ export default {
       formData.append('column_linkage', this.column_linkage)
       this.axios.post('/server/heatmap.app', formData).then((res) => {
         this.$store.commit('setheatmapJson', res.data.message)
-        this.$router.push({'name': 'heatmap'})
+        this.$router.push({'name': 'heatmap', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
       })
     },
     handleClose(tag) {

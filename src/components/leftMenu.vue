@@ -3,34 +3,36 @@
     <el-menu style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
         <el-menu-item index="0-0" @click="report">报告首页</el-menu-item>
         <el-menu-item-group>
-          <span slot="">质量控制</span>
+          <span slot="" class="title-style">质量控制</span>
           <el-menu-item index="1-0" @click="report_fastqc">测序质检</el-menu-item>
           <el-menu-item index="1-1" @click="report_mappingqc">比对结果质检</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span slot="">转录本拼接概况</span>
+          <span class="title-style">转录本拼接概况</span>
           <el-menu-item index="2-0" @click="report_new_trans">新转录本概况</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span slot="">基因表达量</span>
+          <span class="title-style">基因表达量</span>
           <el-menu-item index="3-0" @click="report_expr_matrix">基因表达量表格（TPM）</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span slot="">样本聚类概览</span>
+          <span class="title-style">样本聚类概览</span>
           <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
+          <el-menu-item index="4-4" @click="keggbubble">KEGG气泡图</el-menu-item>
           <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a> -->
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA主成分分析</el-menu-item></a>
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA图</el-menu-item></a>
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span slot="">基因差异表达分析</span>
+          <span class="title-style">基因差异表达分析</span>
           <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">
             <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span>
-            <el-menu-item :index="'5-' + index" @click="report_volcano_plot(item['_case'], item['_control'], index)">火山图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)">差异表达基因</el-menu-item>
+            <el-menu-item :index="'5-' + index" @click="report_volcano_plot(item['_case'], item['_control'], index)">火山图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-2'" @click="heatmap(item['_case'], item['_control'], index)">Heat Map</el-menu-item>
             <el-menu-item :index="'5-' + index + '-3'" @click="ppi(item['_case'], item['_control'], index)">蛋白相互作用图</el-menu-item>
+            <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item>
           </el-menu-item-group>
         </el-menu-item-group>
     </el-menu>
@@ -102,6 +104,10 @@ export default {
     plot_correlation () {
       this.$store.commit('setleftMenuIndex', '4-3')
     },
+    keggbubble () {
+      this.$store.commit('setleftMenuIndex', '4-4')
+      this.$router.push({'name': 'keggbubble'})
+    },
     heatmap (_case, _control, index) {
       this.$store.commit('setleftMenuIndex', '5-' + index + '-2')
       this.$store.commit('set_case', _case)
@@ -134,6 +140,12 @@ export default {
         }
       })
     },
+    enrichment_analysis (_case, _control, index) {
+      this.$store.commit('setleftMenuIndex', '5-' + index + '-4')
+      this.$store.commit('set_case', _case)
+      this.$store.commit('set_control', _control)
+      this.$router.push({'name': 'enrichment_analysis', query: {'_case': _case, '_control': _control}})
+    },
   }
 }
 </script>
@@ -149,9 +161,12 @@ a:hover, a:visited, a:link, a:active {
   text-decoration: none;
   out-line: none;
 }
-</style>
-<style media="screen">
-  .el-menu {
-    /* border-right: none; */
-  }
+.title-style {
+  font-size: 16px;
+  font-weight: bold;
+}
+.el-menu-item, .el-submenu__title {
+  height: 40px !important;
+  line-height: 40px !important;
+}
 </style>

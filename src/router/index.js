@@ -22,6 +22,7 @@ const heatmapsvg_input = resolve => require(['@/components/heatmapsvg_input'], r
 const enrichment_analysis_input = resolve => require(['@/components/enrichment_analysis_input'], resolve)
 const enrichment_analysis = resolve => require(['@/components/enrichment_analysis'], resolve)
 const plotCluster = resolve => require(['@/components/plotCluster'], resolve)
+const keggbubble = resolve => require(['@/components/keggbubble'], resolve)
 
 Vue.use(Router)
 
@@ -142,6 +143,11 @@ export default new Router({
       path: '/plotCluster',
       name: 'plotCluster',
       component: plotCluster
+    },
+    {
+      path: '/keggbubble',
+      name: 'keggbubble',
+      component: keggbubble
     },
   ]
 })

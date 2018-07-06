@@ -86,7 +86,7 @@ export default {
           this.$message.error(res.data.message)
         } else {
           this.$store.commit('setppiJson', res.data.message)
-          this.$router.push({'name': 'ppi_chord_plot'})
+          this.$router.push({'name': 'ppi_chord_plot', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
         }
       })
     },

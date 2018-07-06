@@ -10,6 +10,10 @@
 
       <h2>样本聚类图</h2>
 
+      <p>样本聚类热图，图中矩阵色块颜色的深浅，可以直观的显示不同样本的基因表达模式的接近程度。左侧的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。样本距离的计算采用欧式距离，样本间的 linkage 计算方法为 ward，使用的聚类工具是 R 语言的 fastcluster 软件，参考文献：</p>
+      <p>Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">全文链接</a>]</p>
+      <p>“Show branch length” 选项打开以后，树状图的枝干长度会体现样本之间的距离远近。</p>
+
       <label id="show-length">
         <input type="checkbox"> Show branch length
       </label>
@@ -114,17 +118,11 @@ export default {
           .attr("transform", function(d, i) { return "translate(" + (innerRadius + 5) + ","+ (i + 0.5) +")"; })
 
         var linear = d3.scaleLinear()
-            .domain([0, 20, d3.max(self.tableValue)])
-            .range([(d3.rgb(6,113,160)), (d3.rgb(2,218,150)), (d3.rgb(120,248,232))]);
+            .domain([0, d3.max(self.tableValue)])
+            .range([(d3.rgb(6,113,160)), (d3.rgb(120,248,232))]);
 
-        let gridSize, gridHeight
-        if (self.yData.length <= 4) {
-          gridSize = 90
-          gridHeight = 90
-        } else {
-          gridSize = 30
-          gridHeight = 30
-        }
+        let gridSize = 360 / self.yData.length
+        let gridHeight = 360 / self.yData.length
 
         rightArea.selectAll(".nameLabel")
             .data(self.yData)
@@ -187,7 +185,6 @@ export default {
 
       // Like d3.svg.diagonal.radial, but with square corners.
       function linkStep(startAngle, startRadius, endAngle, endRadius) {
-        console.log(endAngle);
         return "M" + startRadius  + "," + startAngle
             + (endAngle === startAngle ? "" : "L" + startRadius  + "," + endAngle)
             + "L" + endRadius  + "," + endAngle;
