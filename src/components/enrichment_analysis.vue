@@ -19,8 +19,8 @@
               <tr>
                   <th>Id</th><th>Name</th>
               </tr>
-              <tr v-for="(item, index) in $store.state.geneList">
-                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.target_id}}</td>
+              <tr v-for="(item, index) in idList">
+                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.id}}</td>
                   <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
               </tr>
             </table>
@@ -149,7 +149,8 @@ export default {
       tbval2: [],
       tbval3: [],
       tbval4: [],
-      TFvalue: null
+      TFvalue: null,
+      idList: null,
     }
   },
   components: {
@@ -185,7 +186,7 @@ export default {
     handleClick2() {
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'id_list' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
             if (res.data.message_type === 'success') {
-              console.log(res.data);
+              this.idList = res.data.message
             }
           })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'KEGG' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
