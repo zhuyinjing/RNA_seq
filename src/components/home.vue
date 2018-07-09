@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import bus from '../bus.js'
 import navbar from './navbar.vue'
 import login from './login.vue'
 export default {
@@ -47,7 +48,7 @@ export default {
     //   this.$refs.loginDiv.loginDialog = true
     // },
     project_list () {
-      this.$router.push({'name': 'project_list'})
+      bus.$emit("handleSelect","project")
     }
   }
 }

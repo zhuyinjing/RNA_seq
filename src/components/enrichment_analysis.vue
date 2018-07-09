@@ -164,6 +164,7 @@ export default {
   },
   methods: {
     resetTable () {
+      this.activeName = '输入基因列表'
       if ( $.fn.dataTable.isDataTable( '#example0' ) ) {
         $('#example0').DataTable().destroy()
         $('#example1').DataTable().destroy()
@@ -191,7 +192,7 @@ export default {
           })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'KEGG' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
             if (res.data.message_type === 'success') {
-                // $('#example0').dataTable().fnDestroy()
+              // $('#example0').dataTable().fnDestroy()
                 var table = $('#example0').DataTable( {
                   "aoColumnDefs": [
                       {"bSortable": false, "aTargets": [ 0 ]},
@@ -271,6 +272,7 @@ export default {
              return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
            }
            var detailRows = [];
+           $('#example0 tbody').off('click', 'tr td.details-control');
            $('#example0 tbody').on( 'click', 'tr td.details-control', function () {
              var tr = $(this).closest('tr');
              var row = table.row( tr );
@@ -380,6 +382,7 @@ export default {
            return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
+         $('#example1 tbody').off('click', 'tr td.details-control');
          $('#example1 tbody').on( 'click', 'tr td.details-control', function () {
            var tr = $(this).closest('tr');
            var row = table.row( tr );
@@ -477,6 +480,7 @@ export default {
            return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
+         $('#example2 tbody').off('click', 'tr td.details-control');
          $('#example2 tbody').on( 'click', 'tr td.details-control', function () {
            var tr = $(this).closest('tr');
            var row = table.row( tr );
@@ -573,6 +577,7 @@ export default {
            return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
+         $('#example3 tbody').off('click', 'tr td.details-control');
          $('#example3 tbody').on( 'click', 'tr td.details-control', function () {
            var tr = $(this).closest('tr');
            var row = table.row( tr );
@@ -669,6 +674,7 @@ export default {
            return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
+         $('#example4 tbody').off('click', 'tr td.details-control');
          $('#example4 tbody').on( 'click', 'tr td.details-control', function () {
            var tr = $(this).closest('tr');
            var row = table.row( tr );

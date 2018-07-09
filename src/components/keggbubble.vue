@@ -12,6 +12,8 @@
 
       <div class="container"></div>
 
+      <a :href="href" target="_blank" ref="aTag"></a>
+
     </div>
 
   </div>
@@ -27,6 +29,7 @@ export default {
       xData: [],
       yData: [],
       tableValue: [],
+      href: ''
     }
   },
   components: {
@@ -47,24 +50,25 @@ export default {
           var initHeight = 800
 
           var padding = {
-            left: 300,
-            top: 20,
-            right: 20,
+            left: 400,
+            top: 40,
+            right: 200,
             bottom: 20
           }
 
+          var width = initHeight - padding.left - padding.bottom
           var height = initWidth - padding.top - padding.bottom
-          var width = initHeight - padding.left - padding.right
 
-
-          var svg = d3.select(".container")
+          var svgG = d3.select(".container")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .style("padding-left", padding.left)
+            .attr("class", "test")
+            .attr("width", initWidth)
+            .attr("height", initHeight)
+            // .style("padding-left", padding.left)
             .style("padding-right", padding.right)
-            .style("padding-top", padding.top)
+            // .style("padding-top", padding.top)
             .style("padding-bottom", padding.bottom)
+          var svg = svgG.append('g').attr('transform','translate('+padding.left+','+padding.top+')')
 
           //添加y轴坐标轴
 
@@ -72,17 +76,34 @@ export default {
           let ydata = self.yData
           let yScale = d3.scaleBand().rangeRound([height, 0]).padding(1)
             .domain(ydata.map(function(d) {
-              return d;
+              return d.y;
             }))
 
           //定义y轴
           let yAxis = d3.axisLeft(yScale)
 
           //添加y轴
-          svg.append("g")
-            .attr("class", "xaxis")
+          let yaxisg = svg.append("g")
+            .attr("class", "yaxis")
             .attr("transform", "translate(" + 0 + "," + 0 + ")")
-            .call(yAxis);
+            .call(yAxis)
+            .style("font-size", "14px")
+            .style("cursor", "pointer")
+            svg.selectAll(".tick text")
+            .on("mouseover", function (d, i) {
+                d3.select(this)
+                .style("fill","#409EFF")
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this)
+                .style("fill","")
+            })
+            .on("click", function (d, i) {
+              self.href = "https://www.genome.jp/dbget-bin/www_bget?"+ self.yData[i]["id"]
+              setTimeout(() => {
+                self.$refs.aTag.click()
+              }, 100)
+            })
 
           //添加x轴坐标轴
 
@@ -98,10 +119,11 @@ export default {
           let xAxis = d3.axisBottom(xScale)
 
           //添加x轴
-          svg.append("g")
-            .attr("class", "yaxis")
+          let xaxisg = svg.append("g")
+            .attr("class", "xaxis")
             .attr("transform", "translate(" + "0 ," + height + ")")
-            .call(xAxis);
+            .call(xAxis)
+            .style("font-size", "14px")
 
           d3.selectAll('.domain').remove() // 删除多余的两端刻度线
 
@@ -170,6 +192,9 @@ export default {
             .attr("fill", function(d) {
               return colorLinear(Number(d.p_value))
             })
+            // .on("click", function (d) {
+            //   self.$refs.aTag.click()
+            // })
             .on("mouseover", function(d) {
               let self = this;
               d3.select(this)
@@ -183,10 +208,10 @@ export default {
                   return yScale(d.y) - d3.select(self).attr("r") * 1.6 - 5
                 })
                 .text(function() {
-                  return d.id
+                  return ("pvalue:" + Number(d.p_value).toFixed(3))+ ' , ' + "gene_ratio:" +(d.gene_ratio).toFixed(3)
                 })
                 .attr("text-anchor", "middle")
-                .attr("fill", "#666")
+                // .attr("fill", "black")
             })
             .on("mouseout", function() {
               d3.select(this)
@@ -195,11 +220,122 @@ export default {
                 .attr("r", d3.select(this).attr("r") / 1.6)
               showtext.text("")
             })
+
           //添加左侧提示部分包裹层
           let detail = cover.append("g")
           let showtext = svg.append("text")
             .text("")
             .attr("font-size", '14px')
+
+        // 右侧颜色图例
+        var defs = svg.append("defs");
+
+  		var linearGradient = defs.append("linearGradient")
+  								.attr("id","linearColor")
+  								.attr("x1","0%")
+  								.attr("y1","100%")
+  								.attr("x2","0%")
+  								.attr("y2","0%");
+
+  		var stop1 = linearGradient.append("stop")
+  						.attr("offset","0%")
+  						.style("stop-color","red");
+
+  		var stop2 = linearGradient.append("stop")
+  						.attr("offset","100%")
+  						.style("stop-color","blue");
+
+  		//添加一个矩形，并应用线性渐变
+  		var colorRect = svg.append("rect")
+  					.attr("x", width + 50)
+  					.attr("y", height / 1.5)
+  					.attr("width", 40)
+  					.attr("height", 100)
+  					.style("fill","url(#" + linearGradient.attr("id") + ")")
+
+  		//添加文字
+  		var minValueText = svg.append("text")
+  					.attr("class","valueText")
+  					.attr("x", width + 100)
+  					.attr("y", height - 232)
+  					.attr("dy", "-0.3em")
+  					.text(function(){
+  						return d3.max(self.tableValue , function (d) {
+              				  return Number(d.p_value).toFixed(3)})
+  					});
+
+  		var maxValueText = svg.append("text")
+  					.attr("class","valueText")
+  					.attr("x", width + 100)
+  					.attr("y", height - 140)
+  					.attr("dy", "-0.3em")
+  					.text(function(){
+  						return d3.min(self.tableValue , function (d) {
+              				  return Number(d.p_value).toFixed(3)});
+  					});
+
+      var maxValueText = svg.append("text")
+  					.attr("class","valueText")
+  					.attr("x", width + 50)
+  					.attr("y", height / 1.5 - 10)
+  					.attr("dy", "-0.3em")
+  					.text(function(){
+  						return "pvalue";
+  					});
+      // gene ratio
+      var circleRect = svg.append("rect")
+  					.attr("x", width + 50)
+  					.attr("y", 130)
+  					.attr("width", 40)
+  					.attr("height", 40)
+            .attr("fill", "white")
+            .attr("stroke", "#999")
+     svg.append("circle")
+            .attr("cx", width + 50 + 20)
+            .attr("cy", 130 + 20)
+            .attr("r", radiusLinear(d3.min(self.tableValue , function (d) {
+            				  return Number(d.gene_ratio) })))
+            .attr("fill", "black")
+      svg.append("text")
+  					.attr("class","valueText")
+  					.attr("x", width + 50)
+  					.attr("y", 120)
+  					.attr("dy", "-0.3em")
+  					.text(function(){
+  						return "GeneRatio";
+  					});
+        svg.append("text")
+    					.attr("class","valueText")
+    					.attr("x", width + 100)
+    					.attr("y", 160)
+    					.attr("dy", "-0.3em")
+    					.text(function(){
+    						return (d3.min(self.tableValue , function (d) {
+                				  return Number(d.gene_ratio) })).toFixed(3);
+    					});
+        var circleRect = svg.append("rect")
+    					.attr("x", width + 50)
+    					.attr("y", 170)
+    					.attr("width", 40)
+    					.attr("height", 40)
+              .attr("fill", "white")
+              .attr("stroke", "#999")
+       svg.append("circle")
+              .attr("cx", width + 50 + 20)
+              .attr("cy", 170 + 20)
+              .attr("r", radiusLinear(d3.max(self.tableValue , function (d) {
+              				  return Number(d.gene_ratio) })))
+              .attr("fill", "black")
+      svg.append("text")
+  					.attr("class","valueText")
+  					.attr("x", width + 100)
+  					.attr("y", 200)
+  					.attr("dy", "-0.3em")
+  					.text(function(){
+  						return (d3.max(self.tableValue , function (d) {
+              				  return Number(d.gene_ratio) })).toFixed(3);
+  					});
+
     },
   }
 }

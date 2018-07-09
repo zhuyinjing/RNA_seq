@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import bus from '../bus.js'
 export default {
   data () {
     return {
@@ -30,9 +31,13 @@ export default {
     } else {
       this.activeIndex = sessionStorage.navbarItem
     }
+    bus.$on("handleSelect", (key) => {
+      this.handleSelect(key)
+    })
   },
   methods: {
     handleSelect(key, keyPath) {
+      let self = this
       switch (key) {
         case 'home':
           sessionStorage.setItem('navbarItem', 'home')
