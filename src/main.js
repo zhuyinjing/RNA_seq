@@ -45,6 +45,9 @@ import {
   Slider,
   Row,
   Col,
+  Checkbox,
+  CheckboxButton,
+  CheckboxGroup,
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
@@ -78,6 +81,9 @@ Vue.use(TabPane);
 Vue.use(Slider);
 Vue.use(Row);
 Vue.use(Col);
+Vue.use(Checkbox);
+Vue.use(CheckboxButton);
+Vue.use(CheckboxGroup);
 
 Vue.use(Loading.directive);
 

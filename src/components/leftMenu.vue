@@ -18,8 +18,9 @@
         <el-menu-item-group>
           <span class="title-style">样本聚类概览</span>
           <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
+          <el-menu-item index="4-1" @click="plotPCA">PCA 主成分分析</el-menu-item>
           <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a> -->
-          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA 主成分分析</el-menu-item></a>
+          <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA 主成分分析</el-menu-item></a> -->
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a>
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
           <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
@@ -95,8 +96,9 @@ export default {
     plot_cluster () {
       this.$store.commit('setleftMenuIndex', '4-0')
     },
-    plot_pca () {
+    plotPCA () {
       this.$store.commit('setleftMenuIndex', '4-1')
+      this.$router.push({'name': 'plotPCA'})
     },
     plot_ma () {
       this.$store.commit('setleftMenuIndex', '4-2')

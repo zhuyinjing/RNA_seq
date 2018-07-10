@@ -128,7 +128,6 @@ export default {
           d3.selectAll('.domain').remove() // 删除多余的两端刻度线
 
           //添加网格-----------
-
           // gridlines in x axis function
           function make_x_gridlines() {
             return d3.axisBottom(xScale)
@@ -192,9 +191,6 @@ export default {
             .attr("fill", function(d) {
               return colorLinear(Number(d.p_value))
             })
-            // .on("click", function (d) {
-            //   self.$refs.aTag.click()
-            // })
             .on("mouseover", function(d) {
               let self = this;
               d3.select(this)
@@ -211,7 +207,6 @@ export default {
                   return ("pvalue:" + Number(d.p_value).toFixed(3))+ ' , ' + "gene_ratio:" +(d.gene_ratio).toFixed(3)
                 })
                 .attr("text-anchor", "middle")
-                // .attr("fill", "black")
             })
             .on("mouseout", function() {
               d3.select(this)

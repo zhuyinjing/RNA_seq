@@ -23,6 +23,7 @@ const enrichment_analysis_input = resolve => require(['@/components/enrichment_a
 const enrichment_analysis = resolve => require(['@/components/enrichment_analysis'], resolve)
 const plotCluster = resolve => require(['@/components/plotCluster'], resolve)
 const keggbubble = resolve => require(['@/components/keggbubble'], resolve)
+const plotPCA = resolve => require(['@/components/plotPCA'], resolve)
 
 Vue.use(Router)
 
@@ -148,6 +149,11 @@ export default new Router({
       path: '/keggbubble',
       name: 'keggbubble',
       component: keggbubble
+    },
+    {
+      path: '/plotPCA',
+      name: 'plotPCA',
+      component: plotPCA
     },
   ]
 })
