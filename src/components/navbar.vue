@@ -40,10 +40,12 @@ export default {
       let self = this
       switch (key) {
         case 'home':
+          this.activeIndex = 'home'
           sessionStorage.setItem('navbarItem', 'home')
           this.$router.push({'path': '/'})
           break
         case 'project':
+          this.activeIndex = 'project'
           sessionStorage.setItem('navbarItem', 'project')
           this.$router.push({'name': 'project_list'})
           break
