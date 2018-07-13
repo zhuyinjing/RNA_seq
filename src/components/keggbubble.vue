@@ -194,8 +194,8 @@ export default {
             .on("mouseover", function(d) {
               let self = this;
               d3.select(this)
-                .transition()
-                .duration(100)
+                // .transition()
+                // .duration(100)
                 .attr("r", d3.select(this).attr("r") * 1.6)
               showtext.attr("x", function() {
                   return xScale(d.x)
@@ -210,8 +210,8 @@ export default {
             })
             .on("mouseout", function() {
               d3.select(this)
-                .transition()
-                .duration(100)
+                // .transition()
+                // .duration(100)
                 .attr("r", d3.select(this).attr("r") / 1.6)
               showtext.text("")
             })
@@ -349,6 +349,6 @@ export default {
 </style>
 <style media="screen">
 .grid .tick line {
-  stroke: #ccc;
+  stroke: #cccccc4d;
 }
 </style>

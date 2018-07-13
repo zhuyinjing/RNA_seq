@@ -70,7 +70,7 @@ export default {
 .footer {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: calc(100% - 50px);
   height: 30px;
   line-height: 30px;
   background: #e6e6e6;

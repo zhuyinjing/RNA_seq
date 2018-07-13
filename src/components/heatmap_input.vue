@@ -77,7 +77,7 @@
               <el-option value="weighted">weighted</el-option>
               <el-option value="centroid">centroid</el-option>
               <el-option value="median">median</el-option>
-          </el-select>
+            </el-select>
         </td>
         </tr>
         <tr>
@@ -105,7 +105,7 @@
               <el-option value="minkowski">minkowski</el-option>
               <el-option value="seuclidean">seuclidean</el-option>
               <el-option value="sqeuclidean">sqeuclidean</el-option>
-          </el-select>
+            </el-select>
         </td>
         </tr>
         <tr>
@@ -119,7 +119,7 @@
               <el-option value="weighted">weighted</el-option>
               <el-option value="centroid">centroid</el-option>
               <el-option value="median">median</el-option>
-          </el-select>
+            </el-select>
         </td>
         </tr>
         <tr>
@@ -176,26 +176,23 @@ export default {
       })
     },
     handleClose(tag) {
-        this.$store.state.geneList.splice(this.$store.state.geneList.indexOf(tag), 1);
-      },
-
-      showInput() {
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-
-      handleInputConfirm() {
-        let inputValue = {}
-        if (this.inputValue) {
-          inputValue.target_id = this.inputValue
-          this.$store.state.geneList.push(inputValue);
-        }
-        this.inputVisible = false;
-        this.inputValue = '';
-      },
-
+      this.$store.state.geneList.splice(this.$store.state.geneList.indexOf(tag), 1);
+    },
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      let inputValue = {}
+      if (this.inputValue) {
+        inputValue.target_id = this.inputValue
+        this.$store.state.geneList.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
   }
 }
 </script>

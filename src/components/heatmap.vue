@@ -26,6 +26,111 @@
             </div>
           </el-col>
         </el-row>
+
+        <div class="">
+          <el-button class="" type="danger" @click="draw()">绘图</el-button>
+          <el-button class="" type="info" @click="optionsVisible = true">选项</el-button>
+        </div>
+        <br>
+
+        <degTable></degTable>
+
+       <el-dialog
+         title="选项"
+         :visible.sync="optionsVisible"
+         center>
+         <div class="" style="text-align:center">
+           <div class="">
+             <div class="labelStyle">
+               <label for="maxpval" class="label-font">基因距离计算方法</label>
+             </div>
+             <el-select class="input-style" v-model="row_distance" placeholder="请选择">
+               <el-option value="euclidean">euclidean</el-option>
+               <el-option value="dice">dice</el-option>
+               <el-option value="hamming">hamming</el-option>
+               <el-option value="jaccard">jaccard</el-option>
+               <el-option value="kulsinski">kulsinski</el-option>
+               <el-option value="matching">matching</el-option>
+               <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+               <el-option value="russellrao">russellrao</el-option>
+               <el-option value="sokalmichener">sokalmichener</el-option>
+               <el-option value="sokalsneath">sokalsneath</el-option>
+               <el-option value="yule">yule</el-option>
+               <el-option value="braycurtis">braycurtis</el-option>
+               <el-option value="canberra">canberra</el-option>
+               <el-option value="chebyshev">chebyshev</el-option>
+               <el-option value="cityblock">cityblock</el-option>
+               <el-option value="correlation">correlation</el-option>
+               <el-option value="cosine">cosine</el-option>
+               <el-option value="mahalanobis">mahalanobis</el-option>
+               <el-option value="minkowski">minkowski</el-option>
+               <el-option value="seuclidean">seuclidean</el-option>
+               <el-option value="sqeuclidean">sqeuclidean</el-option>
+             </el-select>
+           </div>
+           <div class="">
+             <div class="labelStyle">
+               <label for="maxfdr" class="label-font">基因linkage计算方法</label>
+             </div>
+             <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
+               <el-option value="ward">ward</el-option>
+               <el-option value="single">single</el-option>
+               <el-option value="complete">complete</el-option>
+               <el-option value="average">average</el-option>
+               <el-option value="weighted">weighted</el-option>
+               <el-option value="centroid">centroid</el-option>
+               <el-option value="median">median</el-option>
+           </el-select>
+           </div>
+           <div class="">
+             <div class="labelStyle">
+               <label for="minfc" class="label-font">样本距离计算方法</label>
+             </div>
+             <el-select class="input-style" v-model="column_distance" placeholder="请选择">
+               <el-option value="euclidean">euclidean</el-option>
+               <el-option value="dice">dice</el-option>
+               <el-option value="hamming">hamming</el-option>
+               <el-option value="jaccard">jaccard</el-option>
+               <el-option value="kulsinski">kulsinski</el-option>
+               <el-option value="matching">matching</el-option>
+               <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+               <el-option value="russellrao">russellrao</el-option>
+               <el-option value="sokalmichener">sokalmichener</el-option>
+               <el-option value="sokalsneath">sokalsneath</el-option>
+               <el-option value="yule">yule</el-option>
+               <el-option value="braycurtis">braycurtis</el-option>
+               <el-option value="canberra">canberra</el-option>
+               <el-option value="chebyshev">chebyshev</el-option>
+               <el-option value="cityblock">cityblock</el-option>
+               <el-option value="correlation">correlation</el-option>
+               <el-option value="cosine">cosine</el-option>
+               <el-option value="mahalanobis">mahalanobis</el-option>
+               <el-option value="minkowski">minkowski</el-option>
+               <el-option value="seuclidean">seuclidean</el-option>
+               <el-option value="sqeuclidean">sqeuclidean</el-option>
+             </el-select>
+           </div>
+           <div class="">
+             <div class="labelStyle">
+               <label class="radio-inline control-label">样本linkage计算方法</label>
+             </div>
+             <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
+               <el-option value="ward">ward</el-option>
+               <el-option value="single">single</el-option>
+               <el-option value="complete">complete</el-option>
+               <el-option value="average">average</el-option>
+               <el-option value="weighted">weighted</el-option>
+               <el-option value="centroid">centroid</el-option>
+               <el-option value="median">median</el-option>
+             </el-select>
+           </div>
+         </div>
+         <span slot="footer" class="dialog-footer">
+           <el-button @click="optionsVisible = false">取 消</el-button>
+           <el-button type="primary" @click="optionsVisible = false">确 定</el-button>
+         </span>
+       </el-dialog>
+
       </div>
     </div>
   </div>
@@ -34,6 +139,7 @@
 
 <script>
 import leftMenu from './leftMenu.vue'
+import degTable from './degTableComponent.vue'
 import * as d3 from 'd3'
 
 import Highcharts from 'highcharts/highstock';
@@ -46,10 +152,20 @@ export default {
       idShow: false,
       visible: 'hidden',
       height: 5,
+      optionProject: ['RNASeq'],
+      project: 'RNASeq',
+      row_distance: 'euclidean',
+      row_linkage: 'ward',
+      column_distance: 'euclidean',
+      column_linkage: 'ward',
+      data: [],
+      checked:[],
+      optionsVisible:false,
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    degTable,
   },
   watch: {
     '$route': 'routerChange'
@@ -64,6 +180,9 @@ export default {
     routerChange () {
       this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
       this.initchart()
+    },
+    draw () {
+      console.log(this.$store.state.checked);
     },
     initchart () {
       let stages = this.$store.state.heatmapJson.stages
@@ -288,5 +407,21 @@ export default {
 }
 .margin-top-200 {
   margin-top: 200px;
+}
+.labelStyle {
+  display:inline-block;
+  width:200px;
+  text-align:end;
+}
+.filterbtn {
+  margin-left:240px;
+  margin-top:-100px;
+}
+.label-font {
+  font-size: 14px;
+}
+.input-style{
+  margin-right: 20px;
+  margin-top: 10px;
 }
 </style>

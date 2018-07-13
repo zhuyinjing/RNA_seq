@@ -24,6 +24,7 @@ export default new Vuex.Store({
     _case: '',
     _control: '',
     species: '', // 物种信息
+    checked: [],
   },
   mutations: {
     setusername: (state, data) => {
@@ -69,6 +70,9 @@ export default new Vuex.Store({
     setspecies: (state, data) => {
       sessionStorage.setItem('species', data)
       state.species = data
+    },
+    setchecked: (state, data) => {
+      state.checked = data
     },
   }
 })

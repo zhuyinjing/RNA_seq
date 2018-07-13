@@ -100,8 +100,8 @@ export default {
         d3.selectAll('.d3svg').remove()
       }
       let self = this
-      var initWidth = this.checkedPCA.length > 10 ? 1000 : 800
-      var initHeight = this.checkedPCA.length > 10 ? 1000 : 800
+      var initWidth = this.checkedPCA.length > 8 ? this.checkedPCA.length * 100 : 800
+      var initHeight = this.checkedPCA.length > 8 ? this.checkedPCA.length * 100 : 800
       // var initWidth = 800 + 40 * this.checkedPCA.length
       // var initHeight = 800 + 40 * this.checkedPCA.length
 
@@ -252,8 +252,8 @@ export default {
           })
           .on("mouseover", function(d) {
             d3.select(this)
-              .transition()
-              .duration(100)
+              // .transition()
+              // .duration(100)
               .attr("r", d3.select(this).attr("r") * 1.6)
             showtext.attr("x", function() {
                 return xScale(d['value'][self.checkedPCA[0] - 1])
@@ -268,8 +268,8 @@ export default {
           })
           .on("mouseout", function() {
             d3.select(this)
-              .transition()
-              .duration(100)
+              // .transition()
+              // .duration(100)
               .attr("r", d3.select(this).attr("r") / 1.6)
             showtext.text("")
           })
@@ -361,8 +361,8 @@ export default {
               })
               .on("mouseover", function(d) {
                 d3.select(this)
-                  .transition()
-                  .duration(100)
+                  // .transition()
+                  // .duration(100)
                   .attr("r", d3.select(this).attr("r") * 1.6)
                 showtext.attr("x", function() {
                     return xScale(0)
@@ -377,8 +377,8 @@ export default {
               })
               .on("mouseout", function() {
                 d3.select(this)
-                  .transition()
-                  .duration(100)
+                  // .transition()
+                  // .duration(100)
                   .attr("r", d3.select(this).attr("r") / 1.6)
                 showtext.text("")
               })
@@ -484,6 +484,6 @@ export default {
 </style>
 <style media="screen">
 .grid .tick line {
-  stroke: #ccc;
+  stroke: #cccccc4d;
 }
 </style>

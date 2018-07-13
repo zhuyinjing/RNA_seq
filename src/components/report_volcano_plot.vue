@@ -184,7 +184,7 @@ export default {
         max: 4
       },
       pvalueArr: [],
-      padjArr: []
+      padjArr: [],
     }
   },
   components: {

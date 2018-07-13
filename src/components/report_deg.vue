@@ -10,36 +10,63 @@
 
       <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-      <div class="margin-bottom-20">
+      <!-- <div class="margin-bottom-20">
         <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
         <el-button type="primary" @click="ppiClick()">ppi</el-button>
         <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
         <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
-      </div>
+      </div> -->
 
-      <div class="min-width-div">
-          <label for="maxpval" class="label-font">pvalue &le;</label>
-          <input type="text" id="maxpval" placeholder="0.05" class="input-style width-10" v-model="maxpval"/>
-          <label for="maxfdr" class="label-font">FDR &le;</label>
-          <input type="text" id="maxfdr" placeholder="0.05" class="input-style width-10" v-model="maxfdr"/>
-          <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
-          <input type="text" id="minfc" placeholder="0" class="input-style width-10" v-model="minfc"/>
-          <el-button type="primary" size="mini" plain @click="filterTable()">筛选</el-button>
-      </div>
+      <el-card class="" style="width:800px;">
+        <div class="">
+          <div class="labelStyle">
+            <label for="maxpval" class="label-font">pvalue &le;</label>
+          </div>
+          <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
+        </div>
+        <div class="">
+          <div class="labelStyle">
+            <label for="maxfdr" class="label-font">FDR &le;</label>
+          </div>
+          <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
+        </div>
+        <div class="">
+          <div class="labelStyle">
+            <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+          </div>
+          <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
+        </div>
+        <div class="">
+          <div class="labelStyle">
+            <label class="radio-inline control-label">显示：</label>
+          </div>
+          <el-radio class="input-style" v-model="displayByFC" label="1">在 {{$store.state._case}} 中表达量上调</el-radio>
+        </div>
+        <div class="">
+          <div class="labelStyle"></div>
+          <el-radio class="input-style" v-model="displayByFC" label="-1">在 {{$store.state._case}} 中表达量下调</el-radio>
+        </div>
+        <div class="">
+          <div class="labelStyle"></div>
+          <el-radio class="input-style" v-model="displayByFC" label="0">在 {{$store.state._case}} 中所有上调和下调</el-radio>
+        </div>
+        <div class="">
+          <div class="labelStyle"></div>
+          <el-button class="filterbtn" type="primary" @click="filterTable()">筛选</el-button>
+        </div>
+     </el-card>
       <br>
-      <div class="form-group min-width-div">
-          <label class="radio-inline control-label">显示：</label>
-          <el-radio v-model="displayByFC" label="1">在 {{$store.state._case}} 中表达量上调基因</el-radio>
-          <el-radio v-model="displayByFC" label="-1">在 {{$store.state._case}} 中表达量下调基因</el-radio>
-          <el-radio v-model="displayByFC" label="0">所有上调和下调基因</el-radio>
+      <div>
+        <el-button type="danger" @click="saveData()">保存列表</el-button>
+        <el-button type="info" @click="restoreData()">恢复默认列表</el-button>
       </div>
       <br>
       <transition name="fade">
-        <div class="overflow-auto" style="">
-          <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
+        <div class="overflow-auto">
+          <table id="exampledeg" class="display" cellspacing="0" width="100%" v-show="tableShow">
               <thead>
                 <tr>
-                  <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th>
+                  <!-- <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th> -->
                   <th>target_id</th>
                   <th>name</th>
                   <th>description</th>
@@ -52,7 +79,7 @@
               </thead>
               <tbody>
                 <tr v-for='(item, index) in data'>
-                  <td> <input type="checkbox" class="inputcheckbox" name="" v-model="checked" :value="data[index]"> </td>
+                  <!-- <td> <input type="checkbox" class="inputcheckbox" name="" v-model="checked" :value="data[index]"> </td> -->
                   <td>{{item.target_id}}</td>
                   <td>{{item.name}}</td>
                   <td>{{item.description}}</td>
@@ -101,6 +128,53 @@ export default {
     '$route': 'getTabelValueReset'
   },
   methods: {
+    saveData () {
+      this.$confirm('确认保存筛选后的数据吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let table = $('#exampledeg').DataTable()
+          let filterData = table.rows( { filter : 'applied'} ).data()
+          let data = []
+          for (let i = 0;i < filterData.length; i++) {
+            data.push({
+              target_id: filterData[i][0],
+              name: filterData[i][1],
+              description: filterData[i][2],
+              type: filterData[i][3],
+              baseMean: filterData[i][4],
+              log2FoldChange: filterData[i][5],
+              pvalue: filterData[i][6],
+              padj: filterData[i][7],
+            })
+          }
+          console.log(data);
+        }).catch(() => {});
+    },
+    restoreData () {
+      this.$confirm('确认恢复默认列表吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          this.data = [
+            {
+              target_id: 'es6',
+              name: 2017,
+              description: 2017,
+              type: 2017,
+              baseMean: 2017,
+              log2FoldChange: 2017,
+              pvalue: 2017,
+              padj: 2017,
+            }
+          ]
+        }).catch(() => {
+        });
+    },
     //  千分位
     numFormat (num) {
         num=num.toString().split(".");  // 分隔小数点
@@ -153,8 +227,8 @@ export default {
       this.checked = []
       this.tableShow = false
       this.resetFilter()
-      if ( $.fn.dataTable.isDataTable( '#example' ) ) {
-        var dt = $('#example').DataTable();
+      if ( $.fn.dataTable.isDataTable( '#exampledeg' ) ) {
+        var dt = $('#exampledeg').DataTable();
         dt.destroy()
       }
       this.getTabelValue()
@@ -226,9 +300,9 @@ export default {
                 var maxPVAL = parseFloat(self.maxpval);
                 var maxFDR = parseFloat(self.maxfdr);
                 var minFC = parseFloat(self.minfc);
-                var pval = parseFloat(data[7]);
-                var fc = parseFloat(data[6]);
-                var fdr = parseFloat(data[8]);
+                var pval = parseFloat(data[6]);
+                var fc = parseFloat(data[5]);
+                var fdr = parseFloat(data[7]);
                 if (!isNaN(maxPVAL) && pval > maxPVAL) {
                     return false;
                 }
@@ -250,7 +324,7 @@ export default {
                 return true;
             }
         );
-        var table = $('#example').DataTable();
+        var table = $('#exampledeg').DataTable();
 
         table.draw()
     },
@@ -258,15 +332,15 @@ export default {
       let self = this
       this.data = data
       $(document).ready(function() {
-          $('#example').DataTable( {
+          $('#exampledeg').DataTable( {
               lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
               pageLength: 25,
-              columnDefs: [{
-                'targets':   0,
-                'orderable': false,
-                'className': 'dt-body-center',
-              }],
-              order: [],
+              // columnDefs: [{
+              //   'targets':   0,
+              //   'orderable': false,
+              //   'className': 'dt-body-center',
+              // }],
+              // order: [],
           } );
           self.tableShow = true
       });
@@ -312,8 +386,9 @@ export default {
   font-size: 14px;
 }
 .input-style{
-  height: 16px;
+  height: 20px;
   margin-right: 20px;
+  margin-top: 10px;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s;
@@ -327,10 +402,13 @@ export default {
 .overflow-auto {
   overflow: auto;
 }
-.min-width-div {
-  min-width: 700px;
+.labelStyle {
+  display:inline-block;
+  width:200px;
+  text-align:end;
 }
-.width-10 {
-  width: 10%;
+.filterbtn {
+  margin-left:240px;
+  margin-top:-100px;
 }
 </style>
