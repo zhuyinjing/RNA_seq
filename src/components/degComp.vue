@@ -3,12 +3,12 @@
     <h2 class="text-align-center"> {{$store.state._case}} vs {{$store.state._control}} </h2>
     <el-card class="text-align-center">当前差异表达基因筛选条件：P-Value <= 0.05, FDR <= 0.05,  | Log2(FoldChange) | >= 1</el-card> <br>
     <div class="margin-bottom-20">
-      <el-button type="danger"  @click="report_deg()">差异基因</el-button>
-      <el-button type="danger"  @click="report_volcano_plot()">火山图</el-button>
-      <el-button type="danger"  @click="heatmap()">基因热图</el-button>
-      <el-button type="success" @click="heatmapsvg()">基因热图svg</el-button>
-      <el-button type="primary" @click="ppi_chord_plot()">蛋白互作图</el-button>
-      <el-button type="primary" @click="enrichment_analysis()">富集分析</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/report_deg'}" @click="report_deg()">差异基因</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/report_volcano_plot'}" @click="report_volcano_plot()">火山图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/heatmap'}" @click="heatmap()">基因热图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/heatmapsvg'}" @click="heatmapsvg()">基因热图svg</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/ppi_chord_plot'}" @click="ppi_chord_plot()">蛋白互作图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/enrichment_analysis'}" @click="enrichment_analysis()">富集分析</el-button>
     </div>
     <br>
   </div>
@@ -83,5 +83,9 @@ export default {
 }
 .text-align-center {
   text-align: center;
+}
+.activebtn {
+  background:#f56c6c;
+  border-color:#f56c6c;
 }
 </style>

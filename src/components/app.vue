@@ -1,7 +1,7 @@
 <template>
   <div class="content">
-    <el-button type="danger" @click="app_heatmap_input">HeatMap</el-button>
-    <el-button type="primary" @click="app_ppi_input">&nbsp;&nbsp; ppi &nbsp;&nbsp;</el-button>
+    <el-button type="danger" @click="app_heatmap_input">基因热图 &nbsp;</el-button>
+    <el-button type="primary" @click="app_ppi_input">蛋白互作图</el-button>
   </div>
 </template>
 

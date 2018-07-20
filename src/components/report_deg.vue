@@ -1,6 +1,6 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
@@ -15,7 +15,7 @@
 
         <!-- <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2> -->
 
-        <el-card class="" style="width:900px;">
+        <el-card class="" style="width:900px;" shadow="hover">
           <div class="" style="display:inline-block;width:42%;vertical-align:top;">
             <div class="">
               <div class="labelStyle">
@@ -148,6 +148,16 @@ export default {
   },
   methods: {
     saveData () {
+      let table = $('#exampledeg').DataTable()
+      let data = []
+      table.column(0, { search:'applied' } ).data().each(function(value, index) {
+        data.push(value)
+      })
+      if (data.length === 0) {
+        this.$message.warning('保存列表不能为空！');
+        return
+      }
+      data = data.join(",")
       this.$confirm('确认保存筛选后的数据吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -160,12 +170,6 @@ export default {
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           })
-          let table = $('#exampledeg').DataTable()
-          let data = []
-          table.column(0, { search:'applied' } ).data().each(function(value, index) {
-            data.push(value)
-          });
-          data = data.join(",")
           let formData = new FormData()
           formData.append('username', this.$store.state.username)
           formData.append('p', this.$store.state.projectId)
@@ -418,6 +422,8 @@ export default {
             res.data.message.data[i].padj = parseFloat(res.data.message.data[i].padj).toFixed(3) - 0
           }
           this.initTable(res.data.message.data)
+          // deg 表存到缓存中 方便富集分析点击加号获取 geneName 和 log2FC
+          sessionStorage.setItem('deg' + _case + _control, JSON.stringify(res.data.message.data))
         } else {
           this.$message.error(res.data.message);
         }

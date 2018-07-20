@@ -1,6 +1,6 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
@@ -155,6 +155,7 @@ export default {
       tbval4: [],
       TFvalue: null,
       idList: null,
+      deg: null,
     }
   },
   components: {
@@ -163,6 +164,11 @@ export default {
   },
   watch: {
     '$route': 'resetTable'
+  },
+  created () {
+    if (sessionStorage.getItem('deg' + this.$store.state._case + this.$store.state._control)) {
+      this.deg = JSON.parse(sessionStorage.getItem('deg' + this.$store.state._case + this.$store.state._control))
+    }
   },
   mounted () {
     this.handleClick2()
@@ -275,22 +281,22 @@ export default {
        },
            });
            function format ( d ) {
-             // let str = ""
-             // let idArr = d[8].split('/')
-             // for (let j = 0;j < idArr.length;j++) {
-             //   for (let i = 0;i < self.idList.length;i++) {
-             //     if (self.idList[i]['id'] === idArr[j]) {
-             //       if (i % 2 === 0) {
-             //         str = str.concat(' ' + '<span class="red">' + self.idList[i]['name'] + '</span>' + ' ')
-             //       } else {
-             //         str = str.concat(' ' + '<span class="green">' + self.idList[i]['name'] + '</span>' + ' ')
-             //       }
-             //       break
-             //     }
-             //   }
-             // }
-             // return str
-             return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
+             let str = ""
+             let idArr = d[8].split('/')
+             for (let j = 0;j < idArr.length;j++) {
+               for (let i = 0;i < self.deg.length;i++) {
+                 if (self.deg[i]['target_id'] === idArr[j]) {
+                   if (self.deg[i]['log2FoldChange'] > 0) {
+                     str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
+                   } else {
+                     str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
+                   }
+                   break
+                 }
+               }
+             }
+             return str
+             // return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
            }
            var detailRows = [];
            $('#example0 tbody').off('click', 'tr td.details-control');
@@ -400,18 +406,22 @@ export default {
      },
          });
          function format ( d ) {
-           // let temp = []
-           // let idArr = d[13].split('/')
-           // for (let j = 0;j < idArr.length;j++) {
-           //   for (let i = 0;i < self.idList.length;i++) {
-           //     if (self.idList[i]['id'] === idArr[j]) {
-           //       temp.push(self.idList[i]['name'])
-           //       break
-           //     }
-           //   }
-           // }
-           // return  "geneName: <div class='red'>"+ temp.join(' ') +"</div>"
-           return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
+           let str = ""
+           let idArr = d[13].split('/')
+           for (let j = 0;j < idArr.length;j++) {
+             for (let i = 0;i < self.deg.length;i++) {
+               if (self.deg[i]['target_id'] === idArr[j]) {
+                 if (self.deg[i]['log2FoldChange'] > 0) {
+                   str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
+                 } else {
+                   str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
+                 }
+                 break
+               }
+             }
+           }
+           return str
+           // return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
          $('#example1 tbody').off('click', 'tr td.details-control');
@@ -509,7 +519,22 @@ export default {
      },
          });
          function format ( d ) {
-           return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
+           let str = ""
+           let idArr = d[9].split('/')
+           for (let j = 0;j < idArr.length;j++) {
+             for (let i = 0;i < self.deg.length;i++) {
+               if (self.deg[i]['target_id'] === idArr[j]) {
+                 if (self.deg[i]['log2FoldChange'] > 0) {
+                   str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
+                 } else {
+                   str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
+                 }
+                 break
+               }
+             }
+           }
+           return str
+           // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
          $('#example2 tbody').off('click', 'tr td.details-control');
@@ -606,7 +631,22 @@ export default {
      },
          });
          function format ( d ) {
-           return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
+           let str = ""
+           let idArr = d[9].split('/')
+           for (let j = 0;j < idArr.length;j++) {
+             for (let i = 0;i < self.deg.length;i++) {
+               if (self.deg[i]['target_id'] === idArr[j]) {
+                 if (self.deg[i]['log2FoldChange'] > 0) {
+                   str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
+                 } else {
+                   str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
+                 }
+                 break
+               }
+             }
+           }
+           return str
+           // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
          $('#example3 tbody').off('click', 'tr td.details-control');
@@ -703,7 +743,22 @@ export default {
      },
          });
          function format ( d ) {
-           return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
+           let str = ""
+           let idArr = d[9].split('/')
+           for (let j = 0;j < idArr.length;j++) {
+             for (let i = 0;i < self.deg.length;i++) {
+               if (self.deg[i]['target_id'] === idArr[j]) {
+                 if (self.deg[i]['log2FoldChange'] > 0) {
+                   str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
+                 } else {
+                   str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
+                 }
+                 break
+               }
+             }
+           }
+           return str
+           // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
          $('#example4 tbody').off('click', 'tr td.details-control');
