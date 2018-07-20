@@ -185,6 +185,7 @@ export default {
       }
     },
     handleClick2() {
+          let self = this
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'id_list' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
             if (res.data.message_type === 'success') {
               this.idList = res.data.message
@@ -269,6 +270,21 @@ export default {
        },
            });
            function format ( d ) {
+             // let str = ""
+             // let idArr = d[8].split('/')
+             // for (let j = 0;j < idArr.length;j++) {
+             //   for (let i = 0;i < self.idList.length;i++) {
+             //     if (self.idList[i]['id'] === idArr[j]) {
+             //       if (i % 2 === 0) {
+             //         str = str.concat(' ' + '<span class="red">' + self.idList[i]['name'] + '</span>' + ' ')
+             //       } else {
+             //         str = str.concat(' ' + '<span class="green">' + self.idList[i]['name'] + '</span>' + ' ')
+             //       }
+             //       break
+             //     }
+             //   }
+             // }
+             // return str
              return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
            }
            var detailRows = [];
@@ -379,6 +395,17 @@ export default {
      },
          });
          function format ( d ) {
+           // let temp = []
+           // let idArr = d[13].split('/')
+           // for (let j = 0;j < idArr.length;j++) {
+           //   for (let i = 0;i < self.idList.length;i++) {
+           //     if (self.idList[i]['id'] === idArr[j]) {
+           //       temp.push(self.idList[i]['name'])
+           //       break
+           //     }
+           //   }
+           // }
+           // return  "geneName: <div class='red'>"+ temp.join(' ') +"</div>"
            return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
          }
          var detailRows = [];
@@ -708,7 +735,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }
@@ -788,5 +816,11 @@ export default {
   }
   #example0_wrapper, #example4_wrapper, #example1_wrapper, #example2_wrapper, #example3_wrapper, #example4_wrapper{
     overflow: auto !important;
+  }
+  .red {
+    color: red;
+  }
+  .green {
+    color: green;
   }
 </style>

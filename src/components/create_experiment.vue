@@ -61,7 +61,7 @@
 
     <el-dialog title="第二步：填写需要进行差异表达基因对比的条件对" :visible.sync="step2Dialog" width="30%">
       <div class="padding-10-5" v-for="item in experiments">
-        {{item['_case']}} <i class="el-icon-refresh cursor-poiter" @click="refresh(item)"></i> {{item['_control']}} &nbsp;&nbsp;&nbsp;<i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>
+         <i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>&nbsp;&nbsp;&nbsp;{{item['_case']}} <i class="el-icon-refresh cursor-poiter" @click="refresh(item)"></i> {{item['_control']}}
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="step1Dialog = true;step2Dialog = false">上一步</el-button>

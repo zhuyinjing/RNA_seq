@@ -54,6 +54,15 @@ export default {
   methods: {
     initD3 () {
       let self = this
+      let tooltip = d3.select('body')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	// .style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '14px')
+      	.style('font-weight', 'bold')
+      	.text('')
       preOrder(this.clusterData.rootNode)
       function preOrder(node){
          if(node.branchset === null){
@@ -63,15 +72,15 @@ export default {
            preOrder(node.branchset[1]);
          }
        }
-      var outerRadius = 1200 / 2,
-          innerRadius = outerRadius - 170;
+      var outerRadius = 1350 / 2,
+      innerRadius = outerRadius - 170;
 
       var color = d3.scaleOrdinal()
           .domain([0,d3.max(self.tableValue)])
           .range(d3.schemeCategory10);
 
       var cluster = d3.cluster()
-          .size([360, innerRadius])
+          .size([700, innerRadius])
           .separation(function(a, b) { return 1; });
 
       var svg = d3.select("#container").append("svg")
@@ -121,8 +130,8 @@ export default {
             .domain([0, d3.max(self.tableValue)])
             .range([(d3.rgb(6,113,160)), (d3.rgb(120,248,232))]);
 
-        let gridSize = 360 / self.yData.length
-        let gridHeight = 360 / self.yData.length
+        let gridSize = 700 / self.yData.length
+        let gridHeight = 700 / self.yData.length
 
         rightArea.selectAll(".nameLabel")
             .data(self.yData)
@@ -130,7 +139,7 @@ export default {
             .append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
-            .attr("y", function (d, i) { return parseInt(i) * gridHeight; })
+            .attr("y", function (d, i) { return parseInt(i) * gridHeight + 5; })
             .style("text-anchor", "start")
             .style("font-size", "12px")
             .style("font-family", "Consolas, Monaco, monospace")
@@ -147,7 +156,16 @@ export default {
             .attr("width", gridSize)
             .attr("height", gridHeight)
             .style("fill", function(d) { return linear(d) })
-            .append("title").text(function(d) { return d; });
+            .on('mouseover', function (d, i) {
+              return tooltip.style('visibility', 'visible').text(d)
+            })
+            .on('mousemove', function (d, i) {
+              return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+            })
+            .on('mouseout', function (d, i) {
+              return tooltip.style('visibility', 'hidden')
+            })
+            // .append("title").text(function(d) { return d; });
 
         function changed() {
           clearTimeout(timeout);
@@ -186,8 +204,9 @@ export default {
       // Like d3.svg.diagonal.radial, but with square corners.
       function linkStep(startAngle, startRadius, endAngle, endRadius) {
         return "M" + startRadius  + "," + startAngle
-            + (endAngle === startAngle ? "" : "L" + startRadius  + "," + endAngle)
-            + "L" + endRadius  + "," + endAngle;
+            // + (endAngle === startAngle ? "" : "L" + startRadius  + "," + endAngle)
+            + "L" + startRadius + "," + endAngle
+            + "L" + endRadius + "," + endAngle
       }
     },
 
@@ -198,7 +217,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }

@@ -48,6 +48,11 @@ import {
   Checkbox,
   CheckboxButton,
   CheckboxGroup,
+  Upload,
+  Container,
+  Header,
+  Aside,
+  Main,
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
@@ -84,6 +89,11 @@ Vue.use(Col);
 Vue.use(Checkbox);
 Vue.use(CheckboxButton);
 Vue.use(CheckboxGroup);
+Vue.use(Upload);
+Vue.use(Container);
+Vue.use(Header);
+Vue.use(Aside);
+Vue.use(Main);
 
 Vue.use(Loading.directive);
 
@@ -97,6 +107,22 @@ Vue.prototype.$message = Message;
 // axios.interceptors.request.use((config) => {
 //   return config
 // })
+
+  let timer
+  function startTimer() {
+    clearTimeout(timer)
+    timer = setTimeout(function () {
+      sessionStorage.clear()
+      window.location.href = 'https://colorseq.com/logout'
+    }, 1000*60*15)
+   }
+  startTimer()
+  document.body.onclick  = startTimer
+  document.body.onmouseup = startTimer
+  document.body.onmousemove = startTimer
+  document.body.onkeyup  = startTimer
+  document.body.onclick  = startTimer
+  document.body.ontouchend  = startTimer
 
 if (sessionStorage.username) {
   store.state.username = sessionStorage.username

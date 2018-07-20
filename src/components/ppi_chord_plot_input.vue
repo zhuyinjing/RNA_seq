@@ -79,7 +79,7 @@ export default {
       temp = temp.join('\n')
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
-      formData.append('p', this.$store.state.projectId)
+      // formData.append('p', this.$store.state.projectId)
       formData.append('genelist', temp)
       this.axios.post('/server/ppi_chord_plot.app', formData).then((res) => {
         if (res.data.message_type === 'warn') {

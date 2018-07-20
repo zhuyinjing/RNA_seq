@@ -12,14 +12,15 @@
 
     <h2>PCA 主成分分析</h2>
 
-    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-    <div style="margin: 15px 0;"></div>
+    <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
+    <!-- <div style="margin: 15px 0;"></div> -->
     <el-checkbox-group v-model="checkedPCA" @change="handlecheckedPCAChange">
       <el-checkbox style="width:20%" v-for="pca in checkboxValue" :label="pca" :key="pca">PC{{pca}}</el-checkbox>
     </el-checkbox-group>
 
     <br>
     <el-button type="primary" @click="initD3()">确定</el-button>
+    <el-button type="info" @click="clearChecked()">清空</el-button>
 
     <div class="container"></div>
 
@@ -90,9 +91,22 @@ export default {
       this.checkAll = checkedCount === this.checkboxValue.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkboxValue.length;
     },
+    clearChecked () {
+      this.$confirm('此操作将清空您的选项, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.checkedPCA = []
+        }).catch(() => {});
+    },
     initD3() {
       if (this.checkedPCA.length < 2) {
-        this.$message('请至少选择2个选项！')
+        this.$message('请至少选择2个PC！')
+        return
+      }
+      if (this.checkedPCA.length > 10) {
+        this.$message('最多选择10个PC，请修改您的选项！')
         return
       }
       let hassvg = d3.selectAll('.d3svg')
@@ -108,7 +122,7 @@ export default {
       var padding = {
         left: 80,
         top: 40,
-        right: 100,
+        right: 150,
         bottom: 20
       }
 
@@ -121,7 +135,7 @@ export default {
       var height2 = initHeight - padding.top - padding.bottom
 
       // color 配色
-      var colorRandom = d3.scaleOrdinal(d3.schemeCategory10)
+      var colorRandom = d3.scaleOrdinal(d3.schemeCategory20)
 
       var svgG = d3.select(".container")
         .append("svg")
@@ -228,8 +242,7 @@ export default {
             .tickFormat("")
           )
         // color 配色
-        var colorRandom = d3.scaleOrdinal(d3.schemeCategory10)
-        // console.log(colorRandom("A"));
+        var colorRandom = d3.scaleOrdinal(d3.schemeCategory20)
         //添加circle包裹层，有几种类型添加几个
         var cover = svg.append("g")
 
@@ -245,16 +258,14 @@ export default {
             return yScale(d['value'][self.checkedPCA[1] - 1])
           })
           .attr("r", function(d) {
-            return 10
+            return 6
           })
           .attr("fill", function(d) {
-            return colorRandom(self.nameSampleMap[d['name']]['condition'])
+            return colorRandom(colorRandom(self.nameSampleMap[d['name']]['condition']))
           })
           .on("mouseover", function(d) {
             d3.select(this)
-              // .transition()
-              // .duration(100)
-              .attr("r", d3.select(this).attr("r") * 1.6)
+              // .attr("r", d3.select(this).attr("r") * 1.6)
             showtext.attr("x", function() {
                 return xScale(d['value'][self.checkedPCA[0] - 1])
               })
@@ -268,9 +279,7 @@ export default {
           })
           .on("mouseout", function() {
             d3.select(this)
-              // .transition()
-              // .duration(100)
-              .attr("r", d3.select(this).attr("r") / 1.6)
+              // .attr("r", d3.select(this).attr("r") / 1.6)
             showtext.text("")
           })
 
@@ -361,9 +370,7 @@ export default {
               })
               .on("mouseover", function(d) {
                 d3.select(this)
-                  // .transition()
-                  // .duration(100)
-                  .attr("r", d3.select(this).attr("r") * 1.6)
+                  // .attr("r", d3.select(this).attr("r") * 1.6)
                 showtext.attr("x", function() {
                     return xScale(0)
                   })
@@ -377,9 +384,7 @@ export default {
               })
               .on("mouseout", function() {
                 d3.select(this)
-                  // .transition()
-                  // .duration(100)
-                  .attr("r", d3.select(this).attr("r") / 1.6)
+                  // .attr("r", d3.select(this).attr("r") / 1.6)
                 showtext.text("")
               })
 
@@ -451,7 +456,7 @@ export default {
         svgG.append("circle")
           .attr("cx", width1 + 10 + 15) // 圆心x坐标无需改动
           .attr("cy", (130 + 30 * i) + 15)
-          .attr("r", 10)
+          .attr("r", 8)
           .attr("fill", colorRandom(self.conditionArr[i]))
         svgG.append("text")
           .attr("x", width1 + 10 + 40) // text x坐标无需改动
@@ -469,7 +474,8 @@ export default {
 <style scoped="true">
 .content {
   float: left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }

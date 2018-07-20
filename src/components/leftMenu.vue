@@ -19,13 +19,11 @@
           <span class="title-style">样本聚类概览</span>
           <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
           <el-menu-item index="4-1" @click="plotPCA">PCA 主成分分析</el-menu-item>
-          <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotCluster.pdf'" target="_blank"><el-menu-item index="4-0" >样本聚类</el-menu-item></a> -->
-          <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotPCA_deseq.pdf'" target="_blank"><el-menu-item index="4-1" >PCA 主成分分析</el-menu-item></a> -->
           <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a>
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
           <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group>
+        <!-- <el-menu-item-group>
           <span class="title-style">基因差异表达分析</span>
           <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">
             <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span>
@@ -35,7 +33,7 @@
             <el-menu-item :index="'5-' + index + '-3'" @click="ppi(item['_case'], item['_control'], index)">蛋白相互作用图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item>
           </el-menu-item-group>
-        </el-menu-item-group>
+        </el-menu-item-group> -->
     </el-menu>
   </div>
 </template>
@@ -170,5 +168,8 @@ a:hover, a:visited, a:link, a:active {
 .el-menu-item, .el-submenu__title {
   height: 40px !important;
   line-height: 40px !important;
+}
+.el-menu {
+  border: none !important;
 }
 </style>

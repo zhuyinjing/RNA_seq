@@ -17,52 +17,65 @@
         <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
       </div> -->
 
-      <el-card class="" style="width:800px;">
-        <div class="">
-          <div class="labelStyle">
-            <label for="maxpval" class="label-font">pvalue &le;</label>
+      <el-card class="" style="width:900px;">
+        <div class="" style="display:inline-block;width:42%;vertical-align:top;">
+          <div class="">
+            <div class="labelStyle">
+              <label for="maxpval" class="label-font">pvalue &le;</label>
+            </div>
+            <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
           </div>
-          <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
-        </div>
-        <div class="">
-          <div class="labelStyle">
-            <label for="maxfdr" class="label-font">FDR &le;</label>
+          <div class="">
+            <div class="labelStyle">
+              <label for="maxfdr" class="label-font">FDR &le;</label>
+            </div>
+            <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
           </div>
-          <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
-        </div>
-        <div class="">
-          <div class="labelStyle">
-            <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+          <div class="">
+            <div class="labelStyle">
+              <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+            </div>
+            <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
           </div>
-          <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
         </div>
-        <div class="">
-          <div class="labelStyle">
-            <label class="radio-inline control-label">显示：</label>
+        <div class="" style="display:inline-block;width:20%;vertical-align:top;">
+          <div class="">
+            <div class="">
+              <label class="radio-inline control-label">type：</label>
+            </div>
+            <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox>
           </div>
-          <el-radio class="input-style" v-model="displayByFC" label="1">在 {{$store.state._case}} 中表达量上调</el-radio>
+          <div class="">
+            <div class="labelStyle">
+              <label class="radio-inline control-label"></label>
+            </div>
+            <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox>
+          </div>
+        </div>
+        <div class="" style="display:inline-block;width:29%;vertical-align:top;">
+          <div class="">
+            <div class="">
+              <label class="radio-inline control-label">显示：</label>
+            </div>
+            <el-checkbox class="input-style" v-model="checkedUp">在 {{$store.state._case}} 中表达量上调</el-checkbox>
+          </div>
+          <div class="">
+            <div class="labelStyle"></div>
+            <el-checkbox class="input-style" v-model="checkedDown">在 {{$store.state._case}} 中表达量下调</el-checkbox>
+          </div>
         </div>
         <div class="">
-          <div class="labelStyle"></div>
-          <el-radio class="input-style" v-model="displayByFC" label="-1">在 {{$store.state._case}} 中表达量下调</el-radio>
-        </div>
-        <div class="">
-          <div class="labelStyle"></div>
-          <el-radio class="input-style" v-model="displayByFC" label="0">在 {{$store.state._case}} 中所有上调和下调</el-radio>
-        </div>
-        <div class="">
-          <div class="labelStyle"></div>
           <el-button class="filterbtn" type="primary" @click="filterTable()">筛选</el-button>
         </div>
      </el-card>
       <br>
       <div>
         <el-button type="danger" @click="saveData()">保存列表</el-button>
-        <el-button type="info" @click="restoreData()">恢复默认列表</el-button>
+        <el-button type="info" @click="resetData()">恢复默认列表</el-button>
       </div>
       <br>
       <transition name="fade">
-        <div class="overflow-auto">
+        <div class="">
           <table id="exampledeg" class="display" cellspacing="0" width="100%" v-show="tableShow">
               <thead>
                 <tr>
@@ -113,6 +126,11 @@ export default {
       minfc: null,
       tableShow: false,
       isCheckedAll: false,
+      loading: null,
+      checkedProteinCoding: false,
+      checkedNonCoding: false,
+      checkedUp: true,
+      checkedDown: true,
     }
   },
   components: {
@@ -135,45 +153,67 @@ export default {
           type: 'warning',
           center: true
         }).then(() => {
+          this.loading = this.$loading({
+            lock: true,
+            text: '正在保存中...请稍等...可能需要等待1～2分钟左右的时间...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
           let table = $('#exampledeg').DataTable()
-          let filterData = table.rows( { filter : 'applied'} ).data()
           let data = []
-          for (let i = 0;i < filterData.length; i++) {
-            data.push({
-              target_id: filterData[i][0],
-              name: filterData[i][1],
-              description: filterData[i][2],
-              type: filterData[i][3],
-              baseMean: filterData[i][4],
-              log2FoldChange: filterData[i][5],
-              pvalue: filterData[i][6],
-              padj: filterData[i][7],
-            })
-          }
-          console.log(data);
+          table.column(0, { search:'applied' } ).data().each(function(value, index) {
+            data.push(value)
+          });
+          data = data.join(",")
+          let formData = new FormData()
+          formData.append('username', this.$store.state.username)
+          formData.append('p', this.$store.state.projectId)
+          formData.append('caseSample', this.$store.state._case)
+          formData.append('controlSample', this.$store.state._control)
+          formData.append('degList', data)
+          this.axios.post('/server/save_deg_list', formData).then((res) => {
+            if (res.data.message_type === 'success') {
+              this.getStatus()
+            }
+          })
         }).catch(() => {});
     },
-    restoreData () {
-      this.$confirm('确认恢复默认列表吗?', '提示', {
+    resetData () {
+      this.$confirm('确认恢复原始列表吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
           center: true
         }).then(() => {
-          this.data = [
-            {
-              target_id: 'es6',
-              name: 2017,
-              description: 2017,
-              type: 2017,
-              baseMean: 2017,
-              log2FoldChange: 2017,
-              pvalue: 2017,
-              padj: 2017,
+          this.loading = this.$loading({
+            lock: true,
+            text: '正在恢复中...请稍等...可能需要等待1～2分钟左右的时间...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
+          let formData = new FormData()
+          formData.append('username', this.$store.state.username)
+          formData.append('p', this.$store.state.projectId)
+          formData.append('caseSample', this.$store.state._case)
+          formData.append('controlSample', this.$store.state._control)
+          this.axios.post('/server/reset_default_deg_list', formData).then((res) => {
+            if (res.data.message_type === 'success') {
+              this.getStatus()
             }
-          ]
-        }).catch(() => {
-        });
+          })
+        }).catch(() => {});
+    },
+    getStatus () {
+      this.timer = setInterval(() => {
+        this.axios.get('/server/deg_list_status?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+          if (res.data.message_type === 'success') {
+            this.loading.close()
+            this.$message.success(res.data.message)
+            window.clearInterval(this.timer)
+            this.getTabelValueReset()
+          }
+        })
+      }, 1000)
     },
     //  千分位
     numFormat (num) {
@@ -303,6 +343,7 @@ export default {
                 var pval = parseFloat(data[6]);
                 var fc = parseFloat(data[5]);
                 var fdr = parseFloat(data[7]);
+                var type = data[3];
                 if (!isNaN(maxPVAL) && pval > maxPVAL) {
                     return false;
                 }
@@ -312,15 +353,34 @@ export default {
                 if (!isNaN(minFC) && Math.abs(fc) < minFC) {
                     return false;
                 }
-                var displayByFC = self.displayByFC - 0
-                if (!isNaN(displayByFC)) {
-                    displayByFC = parseFloat(displayByFC);
-                    if ((displayByFC < 0 && fc > 0) ||
-                        (displayByFC > 0 && fc < 0)
-                    ) {
-                        return false;
-                    }
+                // type protein_coding or non_coding
+                if (self.checkedProteinCoding === self.checkedNonCoding && self.checkedProteinCoding === true) {
+                  if (type !== 'non_coding' && type !== 'protein_coding') {
+                    return false;
+                  }
+                } else if (self.checkedProteinCoding === true) {
+                  if (type !== 'protein_coding') {
+                    return false;
+                  }
+                } else if (self.checkedNonCoding === true) {
+                  if (type !== 'non_coding') {
+                    return false;
+                  }
                 }
+                // show up or down
+                if (self.checkedUp === self.checkedDown) {
+                  return true;
+                } else if (self.checkedUp === true) {
+                  if (fc < 0) {
+                    return false;
+                  }
+                } else if (self.checkedDown === true) {
+                  if (fc > 0) {
+                    return false;
+                  }
+                }
+
+
                 return true;
             }
         );
@@ -372,7 +432,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }
@@ -387,7 +448,7 @@ export default {
 }
 .input-style{
   height: 20px;
-  margin-right: 20px;
+  /* margin-right: 20px; */
   margin-top: 10px;
 }
 .fade-enter-active, .fade-leave-active {
@@ -404,11 +465,12 @@ export default {
 }
 .labelStyle {
   display:inline-block;
-  width:200px;
+  width:170px;
   text-align:end;
 }
 .filterbtn {
-  margin-left:240px;
-  margin-top:-100px;
+  float: right;
+  margin-bottom: 10px;
+  margin-right: 100px;
 }
 </style>

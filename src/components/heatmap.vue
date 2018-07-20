@@ -13,10 +13,10 @@
       <div class="container">
         <h2>基因差异表达热图 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-        <p>差异表达基因热图，可以通过颜色深浅来直观显示不同实验条件下基因表达的差异，并且可以较直观的显示出不同实验条件下调基因调控模式（表达谱）的差异。默认的配色方案为红色代表较低的表达水平，绿色代表较高的表达水平，黑色代表中间表达水平。用户可以点击左上角的色条更改配色方案。HeatMap 左侧的树状结构表示基因聚类的结果，表达趋势越接近的基因，在树状结构图中的位置也更接近。HeatMap 上方的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。HeatMap 的输入数据为样本间差异表达基因列表中前 100 个基因的 TPM 值，基因距离和样本距离的计算采用欧式距离，基因和样本间的 linkage 计算方法为 ward，使用工具为 Inchlib，参考文献:</p>
+        <p>差异表达基因热图，可以通过颜色深浅来直观显示不同实验条件下基因表达的差异，并且可以较直观的显示出不同实验条件下调基因调控模式（表达谱）的差异。默认的配色方案为绿色代表较低的表达水平，红色代表较高的表达水平，黑色代表中间表达水平。用户可以点击左上角的色条更改配色方案。HeatMap 左侧的树状结构表示基因聚类的结果，表达趋势越接近的基因，在树状结构图中的位置也更接近。HeatMap 上方的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。HeatMap 的输入数据为样本间差异表达基因列表中前 100 个基因的 TPM 值，基因距离和样本距离的计算采用欧式距离，基因和样本间的 linkage 计算方法为 ward，使用工具为 Inchlib，参考文献:</p>
         <p>Škuta, C., Bartůněk, P., Svozil, D. InCHlib – interactive cluster heatmap for web applications. Journal of Cheminformatics 2014, 6 (44), DOI: 10.1186/s13321-014-0044-4 [<a href="http://www.jcheminf.com/content/6/1/44" target="_blank">全文链接</a>]]</p>
 
-        <el-row>
+        <!-- <el-row>
           <el-col :span="16">
             <div id="microarrays_dendrogram" class=""></div>
           </el-col>
@@ -25,12 +25,22 @@
                 <div id="boxplot"></div>
             </div>
           </el-col>
-        </el-row>
+        </el-row> -->
 
-        <div class="">
+        <div class="" style="display:flex">
+          <div class="" style="float:left;width:900px;">
+            <div id="microarrays_dendrogram" class=""></div>
+          </div>
+          <div class="" style="float:left;width:800px;" class="margin-top-200">
+            <div id="boxplot"></div>
+          </div>
+        </div>
+        <div style="clear:both"></div>
+
+        <!-- <div class="">
           <el-button class="" type="danger" @click="draw()">绘图</el-button>
           <el-button class="" type="info" @click="optionsVisible = true">选项</el-button>
-        </div>
+        </div> -->
         <br>
 
         <degTable></degTable>
@@ -39,7 +49,19 @@
          title="选项"
          :visible.sync="optionsVisible"
          center>
-         <div class="" style="text-align:center">
+         <div class="" style="">
+           <div class="">
+             <div class="labelStyle">
+               <label for="maxpval" class="label-font">基因距离计算方法</label>
+             </div>
+             <el-input
+               style="display:inline-block;width:50%;"
+               type="textarea"
+               :rows="5"
+               placeholder="请输入基因，多个基因可以用逗号、空格或者换行符分隔"
+               v-model="textareaGeneList">
+             </el-input>
+           </div>
            <div class="">
              <div class="labelStyle">
                <label for="maxpval" class="label-font">基因距离计算方法</label>
@@ -132,6 +154,7 @@
        </el-dialog>
 
       </div>
+
     </div>
   </div>
 
@@ -161,6 +184,7 @@ export default {
       data: [],
       checked:[],
       optionsVisible:false,
+      textareaGeneList: null,
     }
   },
   components: {
@@ -193,6 +217,7 @@ export default {
                       renderTo: "boxplot",
                       type: 'boxplot',
                       height: 400,
+                      width: stages.length > 10 ? stages.length * 30 : 400,
                   },
                   credits: {
                     enabled: false //不显示LOGO
@@ -252,7 +277,6 @@ export default {
               var x_pos = offset.left;
               var microarrays_element = $("#microarrays");
               //microarrays_element.css({"left": x_pos + target_element.width()-50, "top": min_y, "z-index": 100});
-
               window.dendrogram = new InCHlib({ //instantiate InCHlib
                       target: "microarrays_dendrogram", //ID of a target HTML element
                       metadata: true, //turn on the metadata
@@ -260,18 +284,25 @@ export default {
                       min_row_height:5,
                       max_column_width:50,
                       max_height: 5, //set maximum height of visualization in pixels
-                      heatmap_colors: "RdBkGr", //set color scale for clustered data
+                      heatmap_colors: "GrBkRd", //set color scale for clustered data
                       metadata_colors: "RdLrBu", //set color scale for metadata
                       column_dendrogram: true,
                       max_percentile: 90,
                       // middle_percentile: 50,
                       min_percentile: 10,
-                      independent_columns: false
+                      independent_columns: false,
+                      heatmap_part_width: 0.7,  // 每一个小格的宽度
+                      width: 900,
+                      // min_row_width: json.column_metadata.features[0].length * 5,
               });
-
               var current = null;
               var current_objects = [];// dendrogram.data.nodes[0].objects;
               var current_columns = [];
+              dendrogram.add_color_scale("GrBkRd",
+                				{"start": {"r":35, "g": 139, "b": 69},
+                				"middle": {"r": 0, "g": 0, "b": 0},
+                				"end": {"r": 215, "g": 25, "b": 28}
+                				})
 
               dendrogram.events.row_onclick = function(object_ids, evt){
                   current = object_ids[0];
@@ -390,9 +421,6 @@ export default {
                   return parameters;
               }
     },
-    backHeatmapInput () {
-      this.$router.push({'name': 'heatmap_input'})
-    }
 
   }
 }
@@ -401,7 +429,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }
@@ -423,5 +452,10 @@ export default {
 .input-style{
   margin-right: 20px;
   margin-top: 10px;
+}
+</style>
+<style media="screen">
+.color_scales {
+  z-index: 9 !important;
 }
 </style>

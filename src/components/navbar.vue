@@ -3,6 +3,7 @@
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="home">首页</el-menu-item>
       <el-menu-item index="project">项目列表</el-menu-item>
+      <el-menu-item index="app">可视化工具</el-menu-item>
       <!-- <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
       <el-menu-item index="about">关于</el-menu-item> -->
     </el-menu>
@@ -48,6 +49,11 @@ export default {
           this.activeIndex = 'project'
           sessionStorage.setItem('navbarItem', 'project')
           this.$router.push({'name': 'project_list'})
+          break
+        case 'app':
+          this.activeIndex = 'app'
+          sessionStorage.setItem('navbarItem', 'app')
+          this.$router.push({'name': 'app'})
           break
         case 'abrowse':
           sessionStorage.setItem('navbarItem', 'about')

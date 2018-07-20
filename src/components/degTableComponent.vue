@@ -1,7 +1,7 @@
 <template>
   <div class="">
       <transition name="fade">
-        <div class="overflow-auto">
+        <div class="">
           <table id="example" class="display" cellspacing="0" width="100%" v-show="tableShow">
               <thead>
                 <tr>

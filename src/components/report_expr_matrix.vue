@@ -20,7 +20,8 @@
       <p>L<sub>i</sub>：基因 i 的外显子长度的总和。</p>
       <p>在一个样本中一个基因的 TPM：先对每个基因的read数用基因的长度进行校正，之后再用校正后的这个基因 read 数 (N<sub>i</sub>/L<sub>i</sub>) 与校正后的这个样本的所有 read 求商。</p>
 
-      <div class="overflow-auto">
+      <!-- <div class="overflow-auto"> -->
+      <div class="">
         <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
             <thead>
             <tr>
@@ -116,7 +117,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }

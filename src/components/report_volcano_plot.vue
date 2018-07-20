@@ -413,7 +413,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   /* min-width: 900px; */
   padding: 0 20px;
   margin: 19px auto;

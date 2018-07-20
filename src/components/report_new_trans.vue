@@ -12,7 +12,8 @@
 
       <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
 
-      <div class="overflow-auto">
+      <!-- <div class="overflow-auto"> -->
+      <div class="">
         <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
             <thead>
             <tr>
@@ -200,7 +201,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }

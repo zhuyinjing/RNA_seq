@@ -46,14 +46,14 @@ export default {
   methods: {
     initD3 () {
           let self = this
-          var initWidth = 800
-          var initHeight = 800
+          var initWidth = 1000
+          var initHeight = 1000
 
           var padding = {
             left: 400,
             top: 40,
             right: 200,
-            bottom: 20
+            bottom: 60
           }
 
           var width = initHeight - padding.left - padding.bottom
@@ -64,9 +64,7 @@ export default {
             .attr("class", "test")
             .attr("width", initWidth)
             .attr("height", initHeight)
-            // .style("padding-left", padding.left)
             .style("padding-right", padding.right)
-            // .style("padding-top", padding.top)
             .style("padding-bottom", padding.bottom)
           var svg = svgG.append('g').attr('transform','translate('+padding.left+','+padding.top+')')
 
@@ -123,7 +121,10 @@ export default {
             .attr("class", "xaxis")
             .attr("transform", "translate(" + "0 ," + height + ")")
             .call(xAxis)
+            .selectAll("text")
             .style("font-size", "14px")
+            .style("text-anchor", "start")
+            .attr("transform", "rotate(45 -10 10)");
 
           d3.selectAll('.domain').remove() // 删除多余的两端刻度线
 
@@ -169,7 +170,7 @@ export default {
             				  return d.gene_ratio; } ),
                     d3.max(self.tableValue , function (d) {
                     	 return d.gene_ratio; })])
-            .range([10, 20]);
+            .range([8, 16]);
 
           //添加circle包裹层，有几种类型添加几个
           var cover = svg.append("g")
@@ -194,9 +195,7 @@ export default {
             .on("mouseover", function(d) {
               let self = this;
               d3.select(this)
-                // .transition()
-                // .duration(100)
-                .attr("r", d3.select(this).attr("r") * 1.6)
+                // .attr("r", d3.select(this).attr("r") * 1.6)
               showtext.attr("x", function() {
                   return xScale(d.x)
                 })
@@ -210,9 +209,7 @@ export default {
             })
             .on("mouseout", function() {
               d3.select(this)
-                // .transition()
-                // .duration(100)
-                .attr("r", d3.select(this).attr("r") / 1.6)
+                // .attr("r", d3.select(this).attr("r") / 1.6)
               showtext.text("")
             })
 
@@ -252,7 +249,7 @@ export default {
   		var minValueText = svg.append("text")
   					.attr("class","valueText")
   					.attr("x", width + 100)
-  					.attr("y", height - 232)
+  					.attr("y", height - 280)
   					.attr("dy", "-0.3em")
   					.text(function(){
   						return d3.max(self.tableValue , function (d) {
@@ -262,7 +259,7 @@ export default {
   		var maxValueText = svg.append("text")
   					.attr("class","valueText")
   					.attr("x", width + 100)
-  					.attr("y", height - 140)
+  					.attr("y", height - 200)
   					.attr("dy", "-0.3em")
   					.text(function(){
   						return d3.min(self.tableValue , function (d) {
@@ -339,7 +336,8 @@ export default {
 <style scoped="true">
 .content {
   float:left;
-  width: 60%;
+  /* width: 60%; */
+  width: calc(100% - 350px);
   padding: 0 20px;
   margin: 19px auto;
 }
