@@ -4,15 +4,16 @@
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
-      <div class="">
-        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: 'enrichment_analysis_input' }">富集分析</el-breadcrumb-item> -->
-          <el-breadcrumb-item>富集分析详情</el-breadcrumb-item>
-        </el-breadcrumb>
 
-        <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2>
+      <degComp></degComp>
+
+      <div class="">
+        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>富集分析详情</el-breadcrumb-item>
+        </el-breadcrumb> -->
+
+        <!-- <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2> -->
 
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="输入基因列表" name="输入基因列表">
@@ -140,6 +141,7 @@
 
 <script>
 import leftMenu from './leftMenu.vue'
+import degComp from './degComp.vue'
 
 export default {
   data () {
@@ -156,7 +158,8 @@ export default {
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    degComp
   },
   watch: {
     '$route': 'resetTable'

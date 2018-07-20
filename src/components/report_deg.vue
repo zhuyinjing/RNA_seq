@@ -4,20 +4,16 @@
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
+
+      <degComp></degComp>
+
       <div class="">
-        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
           <el-breadcrumb-item>差异表达基因</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
 
-        <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2>
-
-        <!-- <div class="margin-bottom-20">
-          <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
-          <el-button type="primary" @click="ppiClick()">ppi</el-button>
-          <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
-          <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
-        </div> -->
+        <!-- <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2> -->
 
         <el-card class="" style="width:900px;">
           <div class="" style="display:inline-block;width:42%;vertical-align:top;">
@@ -116,6 +112,7 @@
 </template>
 
 <script>
+import degComp from './degComp.vue'
 import leftMenu from './leftMenu.vue'
 
 export default {
@@ -137,7 +134,8 @@ export default {
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    degComp
   },
   mounted () {
     this.getTabelValue()
@@ -475,5 +473,8 @@ export default {
   float: right;
   margin-bottom: 10px;
   margin-right: 100px;
+}
+.text-align-center {
+  text-align: center;
 }
 </style>

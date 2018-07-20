@@ -1,38 +1,44 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制基因热图(svg)</el-breadcrumb-item>
-        <el-breadcrumb-item>Heat Map(svg)</el-breadcrumb-item>
-      </el-breadcrumb>
+      <degComp></degComp>
 
-      <h2>基因Heat Map(svg) {{$store.state._case}} vs {{$store.state._control}} </h2>
+      <div class="">
+        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制基因热图(svg)</el-breadcrumb-item>
+          <el-breadcrumb-item>Heat Map(svg)</el-breadcrumb-item>
+        </el-breadcrumb> -->
+
+        <!-- <h2>基因Heat Map(svg) {{$store.state._case}} vs {{$store.state._control}} </h2> -->
 
 
-      <div class="icon-func-div">
-        <span class="font-size-12">ID显示</span>
-        <el-switch
-          v-model="idShow"
-          active-text=""
-          inactive-text=""
-          @change="idShowChange"
-          >
-        </el-switch>
-      </div>
+        <div class="icon-func-div">
+          <span class="font-size-12">ID显示</span>
+          <el-switch
+            v-model="idShow"
+            active-text=""
+            inactive-text=""
+            @change="idShowChange"
+            >
+          </el-switch>
+        </div>
 
-      <div id="chart"></div>
+        <div id="chart"></div>
 
-      </div>
-  </div>
-
+        </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
 import leftMenu from './leftMenu.vue'
+import degComp from './degComp.vue'
 
 import * as d3 from 'd3'
 
@@ -50,7 +56,8 @@ export default {
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    degComp
   },
   created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
@@ -78,7 +85,14 @@ export default {
   mounted () {
     this.d3heatmap()
   },
+  watch: {
+    '$route': 'routerChange'
+  },
   methods: {
+    routerChange () {
+      this.idShow = false
+      this.idShowChange()
+    },
     idShowChange () {
       if (this.idShow === true) {
         this.height = 9
@@ -97,7 +111,16 @@ export default {
       let self = this
       let yData = self.temp
       let xData = this.$store.state.heatmapJson.heatmap_json_string.data.feature_names
-
+      // mouseover text
+      let tooltip = d3.select('body')
+        .append('div')
+        .style('position', 'absolute')
+        .style('z-index', '10')
+        .style('visibility', 'hidden')
+        .style('font-size', '14px')
+        .style('font-weight', 'bold')
+        .style('color', 'yellow')
+        .text('')
       var array_data = [];
       var margin = { top: 50, right: 0, bottom: 100, left: 100 },
           width = 800 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
@@ -114,7 +137,7 @@ export default {
 
               var linear = d3.scaleLinear()
               				.domain([min, middle, max])
-              				.range([(d3.rgb(255,0,0)).darker(0.7), (d3.rgb(19,3,3)).darker(1), (d3.rgb(0,255,0)).darker(1)]);
+              				.range([(d3.rgb(0,255,0)).darker(1), (d3.rgb(19,3,3)).darker(1), (d3.rgb(255,0,0)).darker(0.7)]);
 
               // 设置chart，svg
               var svg = d3.select("#chart").append("svg") // 选择“chart”（就是div），加入一个svg，设置属性跟div一样大
@@ -157,12 +180,19 @@ export default {
                   .attr("y", function(d, i){ return parseInt(i / xData.length) * self.height;})
                   .attr("width", gridSize)
                   .attr("height", self.height)
-                  .style("fill", "#FFFFFF");
+                  .style("fill", "#FFFFFF")
+                  .on('mouseover', function (d, i) {
+                    return tooltip.style('visibility', 'visible').text(d)
+                  })
+                  .on('mousemove', function (d, i) {
+                    return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+                  })
+                  .on('mouseout', function (d, i) {
+                    return tooltip.style('visibility', 'hidden')
+                  })
               // duration(1000) 在1000ns也就是1s内将格子图上色
               heatMap.transition().duration(500)
                   .style("fill", function(d) { return linear(d) });
-              // 鼠标停留显示value
-              heatMap.append("title").text(function(d) { return d; });
     },
     backHeatmapsvgInput () {
       this.$router.push({'name': 'heatmapsvg_input'})

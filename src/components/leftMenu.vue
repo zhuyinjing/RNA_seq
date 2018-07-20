@@ -24,15 +24,16 @@
           <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">基因差异表达分析</span>
-          <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">
-            <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span>
-            <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)">差异表达基因</el-menu-item>
+          <span class="title-style">差异表达基因分析</span>
+          <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)" v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">{{item['_case']}} vs {{item['_control']}}</el-menu-item>
+          <!-- <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index"> -->
+            <!-- <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span> -->
+            <!-- <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)">差异表达基因</el-menu-item>
             <el-menu-item :index="'5-' + index" @click="report_volcano_plot(item['_case'], item['_control'], index)">火山图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-2'" @click="heatmap(item['_case'], item['_control'], index)">Heat Map</el-menu-item>
             <el-menu-item :index="'5-' + index + '-3'" @click="ppi(item['_case'], item['_control'], index)">蛋白相互作用图</el-menu-item>
-            <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item>
-          </el-menu-item-group>
+            <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item> -->
+          <!-- </el-menu-item-group> -->
         </el-menu-item-group>
     </el-menu>
   </div>

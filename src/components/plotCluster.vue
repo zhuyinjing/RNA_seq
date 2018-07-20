@@ -60,7 +60,6 @@ export default {
       	.append('div')
       	.style('position', 'absolute')
         .style('z-index', '10')
-      	// .style('color', '#3497db')
         .style('visibility', 'hidden')
         .style('font-size', '14px')
       	.style('font-weight', 'bold')
