@@ -1,32 +1,34 @@
 <template>
-<div class="">
-  <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item> -->
+          <el-breadcrumb-item>PCA 主成分分析</el-breadcrumb-item>
+        </el-breadcrumb>
 
-  <div class="content">
-    <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-      <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-      <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item> -->
-      <el-breadcrumb-item>PCA 主成分分析</el-breadcrumb-item>
-    </el-breadcrumb>
+        <h2>PCA 主成分分析</h2>
 
-    <h2>PCA 主成分分析</h2>
+        <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
+        <!-- <div style="margin: 15px 0;"></div> -->
+        <el-checkbox-group v-model="checkedPCA" @change="handlecheckedPCAChange">
+          <el-checkbox style="width:20%" v-for="pca in checkboxValue" :label="pca" :key="pca">PC{{pca}}</el-checkbox>
+        </el-checkbox-group>
 
-    <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
-    <!-- <div style="margin: 15px 0;"></div> -->
-    <el-checkbox-group v-model="checkedPCA" @change="handlecheckedPCAChange">
-      <el-checkbox style="width:20%" v-for="pca in checkboxValue" :label="pca" :key="pca">PC{{pca}}</el-checkbox>
-    </el-checkbox-group>
+        <br>
+        <el-button type="primary" @click="initD3()">确定</el-button>
+        <el-button type="info" @click="clearChecked()">清空</el-button>
 
-    <br>
-    <el-button type="primary" @click="initD3()">确定</el-button>
-    <el-button type="info" @click="clearChecked()">清空</el-button>
+        <div class="container"></div>
 
-    <div class="container"></div>
-
-  </div>
-
-</div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

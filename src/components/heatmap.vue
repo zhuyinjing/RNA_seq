@@ -1,162 +1,165 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item> -->
+          <el-breadcrumb-item>基因热图</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item> -->
-        <el-breadcrumb-item>基因热图</el-breadcrumb-item>
-      </el-breadcrumb>
+        <div class="container">
+          <h2>基因差异表达热图 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-      <div class="container">
-        <h2>基因差异表达热图 {{$store.state._case}} vs {{$store.state._control}} </h2>
+          <p>差异表达基因热图，可以通过颜色深浅来直观显示不同实验条件下基因表达的差异，并且可以较直观的显示出不同实验条件下调基因调控模式（表达谱）的差异。默认的配色方案为绿色代表较低的表达水平，红色代表较高的表达水平，黑色代表中间表达水平。用户可以点击左上角的色条更改配色方案。HeatMap 左侧的树状结构表示基因聚类的结果，表达趋势越接近的基因，在树状结构图中的位置也更接近。HeatMap 上方的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。HeatMap 的输入数据为样本间差异表达基因列表中前 100 个基因的 TPM 值，基因距离和样本距离的计算采用欧式距离，基因和样本间的 linkage 计算方法为 ward，使用工具为 Inchlib，参考文献:</p>
+          <p>Škuta, C., Bartůněk, P., Svozil, D. InCHlib – interactive cluster heatmap for web applications. Journal of Cheminformatics 2014, 6 (44), DOI: 10.1186/s13321-014-0044-4 [<a href="http://www.jcheminf.com/content/6/1/44" target="_blank">全文链接</a>]]</p>
 
-        <p>差异表达基因热图，可以通过颜色深浅来直观显示不同实验条件下基因表达的差异，并且可以较直观的显示出不同实验条件下调基因调控模式（表达谱）的差异。默认的配色方案为绿色代表较低的表达水平，红色代表较高的表达水平，黑色代表中间表达水平。用户可以点击左上角的色条更改配色方案。HeatMap 左侧的树状结构表示基因聚类的结果，表达趋势越接近的基因，在树状结构图中的位置也更接近。HeatMap 上方的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。HeatMap 的输入数据为样本间差异表达基因列表中前 100 个基因的 TPM 值，基因距离和样本距离的计算采用欧式距离，基因和样本间的 linkage 计算方法为 ward，使用工具为 Inchlib，参考文献:</p>
-        <p>Škuta, C., Bartůněk, P., Svozil, D. InCHlib – interactive cluster heatmap for web applications. Journal of Cheminformatics 2014, 6 (44), DOI: 10.1186/s13321-014-0044-4 [<a href="http://www.jcheminf.com/content/6/1/44" target="_blank">全文链接</a>]]</p>
+          <!-- <el-row>
+            <el-col :span="16">
+              <div id="microarrays_dendrogram" class=""></div>
+            </el-col>
+            <el-col :span="8">
+              <div id="microarrays" class="margin-top-200">
+                  <div id="boxplot"></div>
+              </div>
+            </el-col>
+          </el-row> -->
 
-        <!-- <el-row>
-          <el-col :span="16">
-            <div id="microarrays_dendrogram" class=""></div>
-          </el-col>
-          <el-col :span="8">
-            <div id="microarrays" class="margin-top-200">
-                <div id="boxplot"></div>
+          <div class="" style="display:flex">
+            <div class="" style="float:left;width:900px;">
+              <div id="microarrays_dendrogram" class=""></div>
             </div>
-          </el-col>
-        </el-row> -->
+            <div class="" style="float:left;width:800px;" class="margin-top-200">
+              <div id="boxplot"></div>
+            </div>
+          </div>
+          <div style="clear:both"></div>
 
-        <div class="" style="display:flex">
-          <div class="" style="float:left;width:900px;">
-            <div id="microarrays_dendrogram" class=""></div>
-          </div>
-          <div class="" style="float:left;width:800px;" class="margin-top-200">
-            <div id="boxplot"></div>
-          </div>
+          <!-- <div class="">
+            <el-button class="" type="danger" @click="draw()">绘图</el-button>
+            <el-button class="" type="info" @click="optionsVisible = true">选项</el-button>
+          </div> -->
+          <br>
+
+          <degTable></degTable>
+
+         <el-dialog
+           title="选项"
+           :visible.sync="optionsVisible"
+           center>
+           <div class="" style="">
+             <div class="">
+               <div class="labelStyle">
+                 <label for="maxpval" class="label-font">基因距离计算方法</label>
+               </div>
+               <el-input
+                 style="display:inline-block;width:50%;"
+                 type="textarea"
+                 :rows="5"
+                 placeholder="请输入基因，多个基因可以用逗号、空格或者换行符分隔"
+                 v-model="textareaGeneList">
+               </el-input>
+             </div>
+             <div class="">
+               <div class="labelStyle">
+                 <label for="maxpval" class="label-font">基因距离计算方法</label>
+               </div>
+               <el-select class="input-style" v-model="row_distance" placeholder="请选择">
+                 <el-option value="euclidean">euclidean</el-option>
+                 <el-option value="dice">dice</el-option>
+                 <el-option value="hamming">hamming</el-option>
+                 <el-option value="jaccard">jaccard</el-option>
+                 <el-option value="kulsinski">kulsinski</el-option>
+                 <el-option value="matching">matching</el-option>
+                 <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+                 <el-option value="russellrao">russellrao</el-option>
+                 <el-option value="sokalmichener">sokalmichener</el-option>
+                 <el-option value="sokalsneath">sokalsneath</el-option>
+                 <el-option value="yule">yule</el-option>
+                 <el-option value="braycurtis">braycurtis</el-option>
+                 <el-option value="canberra">canberra</el-option>
+                 <el-option value="chebyshev">chebyshev</el-option>
+                 <el-option value="cityblock">cityblock</el-option>
+                 <el-option value="correlation">correlation</el-option>
+                 <el-option value="cosine">cosine</el-option>
+                 <el-option value="mahalanobis">mahalanobis</el-option>
+                 <el-option value="minkowski">minkowski</el-option>
+                 <el-option value="seuclidean">seuclidean</el-option>
+                 <el-option value="sqeuclidean">sqeuclidean</el-option>
+               </el-select>
+             </div>
+             <div class="">
+               <div class="labelStyle">
+                 <label for="maxfdr" class="label-font">基因linkage计算方法</label>
+               </div>
+               <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
+                 <el-option value="ward">ward</el-option>
+                 <el-option value="single">single</el-option>
+                 <el-option value="complete">complete</el-option>
+                 <el-option value="average">average</el-option>
+                 <el-option value="weighted">weighted</el-option>
+                 <el-option value="centroid">centroid</el-option>
+                 <el-option value="median">median</el-option>
+             </el-select>
+             </div>
+             <div class="">
+               <div class="labelStyle">
+                 <label for="minfc" class="label-font">样本距离计算方法</label>
+               </div>
+               <el-select class="input-style" v-model="column_distance" placeholder="请选择">
+                 <el-option value="euclidean">euclidean</el-option>
+                 <el-option value="dice">dice</el-option>
+                 <el-option value="hamming">hamming</el-option>
+                 <el-option value="jaccard">jaccard</el-option>
+                 <el-option value="kulsinski">kulsinski</el-option>
+                 <el-option value="matching">matching</el-option>
+                 <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+                 <el-option value="russellrao">russellrao</el-option>
+                 <el-option value="sokalmichener">sokalmichener</el-option>
+                 <el-option value="sokalsneath">sokalsneath</el-option>
+                 <el-option value="yule">yule</el-option>
+                 <el-option value="braycurtis">braycurtis</el-option>
+                 <el-option value="canberra">canberra</el-option>
+                 <el-option value="chebyshev">chebyshev</el-option>
+                 <el-option value="cityblock">cityblock</el-option>
+                 <el-option value="correlation">correlation</el-option>
+                 <el-option value="cosine">cosine</el-option>
+                 <el-option value="mahalanobis">mahalanobis</el-option>
+                 <el-option value="minkowski">minkowski</el-option>
+                 <el-option value="seuclidean">seuclidean</el-option>
+                 <el-option value="sqeuclidean">sqeuclidean</el-option>
+               </el-select>
+             </div>
+             <div class="">
+               <div class="labelStyle">
+                 <label class="radio-inline control-label">样本linkage计算方法</label>
+               </div>
+               <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
+                 <el-option value="ward">ward</el-option>
+                 <el-option value="single">single</el-option>
+                 <el-option value="complete">complete</el-option>
+                 <el-option value="average">average</el-option>
+                 <el-option value="weighted">weighted</el-option>
+                 <el-option value="centroid">centroid</el-option>
+                 <el-option value="median">median</el-option>
+               </el-select>
+             </div>
+           </div>
+           <span slot="footer" class="dialog-footer">
+             <el-button @click="optionsVisible = false">取 消</el-button>
+             <el-button type="primary" @click="optionsVisible = false">确 定</el-button>
+           </span>
+         </el-dialog>
+
         </div>
-        <div style="clear:both"></div>
-
-        <!-- <div class="">
-          <el-button class="" type="danger" @click="draw()">绘图</el-button>
-          <el-button class="" type="info" @click="optionsVisible = true">选项</el-button>
-        </div> -->
-        <br>
-
-        <degTable></degTable>
-
-       <el-dialog
-         title="选项"
-         :visible.sync="optionsVisible"
-         center>
-         <div class="" style="">
-           <div class="">
-             <div class="labelStyle">
-               <label for="maxpval" class="label-font">基因距离计算方法</label>
-             </div>
-             <el-input
-               style="display:inline-block;width:50%;"
-               type="textarea"
-               :rows="5"
-               placeholder="请输入基因，多个基因可以用逗号、空格或者换行符分隔"
-               v-model="textareaGeneList">
-             </el-input>
-           </div>
-           <div class="">
-             <div class="labelStyle">
-               <label for="maxpval" class="label-font">基因距离计算方法</label>
-             </div>
-             <el-select class="input-style" v-model="row_distance" placeholder="请选择">
-               <el-option value="euclidean">euclidean</el-option>
-               <el-option value="dice">dice</el-option>
-               <el-option value="hamming">hamming</el-option>
-               <el-option value="jaccard">jaccard</el-option>
-               <el-option value="kulsinski">kulsinski</el-option>
-               <el-option value="matching">matching</el-option>
-               <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-               <el-option value="russellrao">russellrao</el-option>
-               <el-option value="sokalmichener">sokalmichener</el-option>
-               <el-option value="sokalsneath">sokalsneath</el-option>
-               <el-option value="yule">yule</el-option>
-               <el-option value="braycurtis">braycurtis</el-option>
-               <el-option value="canberra">canberra</el-option>
-               <el-option value="chebyshev">chebyshev</el-option>
-               <el-option value="cityblock">cityblock</el-option>
-               <el-option value="correlation">correlation</el-option>
-               <el-option value="cosine">cosine</el-option>
-               <el-option value="mahalanobis">mahalanobis</el-option>
-               <el-option value="minkowski">minkowski</el-option>
-               <el-option value="seuclidean">seuclidean</el-option>
-               <el-option value="sqeuclidean">sqeuclidean</el-option>
-             </el-select>
-           </div>
-           <div class="">
-             <div class="labelStyle">
-               <label for="maxfdr" class="label-font">基因linkage计算方法</label>
-             </div>
-             <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
-               <el-option value="ward">ward</el-option>
-               <el-option value="single">single</el-option>
-               <el-option value="complete">complete</el-option>
-               <el-option value="average">average</el-option>
-               <el-option value="weighted">weighted</el-option>
-               <el-option value="centroid">centroid</el-option>
-               <el-option value="median">median</el-option>
-           </el-select>
-           </div>
-           <div class="">
-             <div class="labelStyle">
-               <label for="minfc" class="label-font">样本距离计算方法</label>
-             </div>
-             <el-select class="input-style" v-model="column_distance" placeholder="请选择">
-               <el-option value="euclidean">euclidean</el-option>
-               <el-option value="dice">dice</el-option>
-               <el-option value="hamming">hamming</el-option>
-               <el-option value="jaccard">jaccard</el-option>
-               <el-option value="kulsinski">kulsinski</el-option>
-               <el-option value="matching">matching</el-option>
-               <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-               <el-option value="russellrao">russellrao</el-option>
-               <el-option value="sokalmichener">sokalmichener</el-option>
-               <el-option value="sokalsneath">sokalsneath</el-option>
-               <el-option value="yule">yule</el-option>
-               <el-option value="braycurtis">braycurtis</el-option>
-               <el-option value="canberra">canberra</el-option>
-               <el-option value="chebyshev">chebyshev</el-option>
-               <el-option value="cityblock">cityblock</el-option>
-               <el-option value="correlation">correlation</el-option>
-               <el-option value="cosine">cosine</el-option>
-               <el-option value="mahalanobis">mahalanobis</el-option>
-               <el-option value="minkowski">minkowski</el-option>
-               <el-option value="seuclidean">seuclidean</el-option>
-               <el-option value="sqeuclidean">sqeuclidean</el-option>
-             </el-select>
-           </div>
-           <div class="">
-             <div class="labelStyle">
-               <label class="radio-inline control-label">样本linkage计算方法</label>
-             </div>
-             <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
-               <el-option value="ward">ward</el-option>
-               <el-option value="single">single</el-option>
-               <el-option value="complete">complete</el-option>
-               <el-option value="average">average</el-option>
-               <el-option value="weighted">weighted</el-option>
-               <el-option value="centroid">centroid</el-option>
-               <el-option value="median">median</el-option>
-             </el-select>
-           </div>
-         </div>
-         <span slot="footer" class="dialog-footer">
-           <el-button @click="optionsVisible = false">取 消</el-button>
-           <el-button type="primary" @click="optionsVisible = false">确 定</el-button>
-         </span>
-       </el-dialog>
 
       </div>
-
-    </div>
-  </div>
+    </el-main>
+  </el-container>
 
 </template>
 

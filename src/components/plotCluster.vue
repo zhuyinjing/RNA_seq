@@ -1,28 +1,30 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>样本聚类图</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>样本聚类图</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>样本聚类图</h2>
 
-      <h2>样本聚类图</h2>
+        <p>样本聚类热图，图中矩阵色块颜色的深浅，可以直观的显示不同样本的基因表达模式的接近程度。左侧的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。样本距离的计算采用欧式距离，样本间的 linkage 计算方法为 ward，使用的聚类工具是 R 语言的 fastcluster 软件，参考文献：</p>
+        <p>Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">全文链接</a>]</p>
+        <p>“Show branch length” 选项打开以后，树状图的枝干长度会体现样本之间的距离远近。</p>
 
-      <p>样本聚类热图，图中矩阵色块颜色的深浅，可以直观的显示不同样本的基因表达模式的接近程度。左侧的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。样本距离的计算采用欧式距离，样本间的 linkage 计算方法为 ward，使用的聚类工具是 R 语言的 fastcluster 软件，参考文献：</p>
-      <p>Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">全文链接</a>]</p>
-      <p>“Show branch length” 选项打开以后，树状图的枝干长度会体现样本之间的距离远近。</p>
+        <label id="show-length">
+          <input type="checkbox"> Show branch length
+        </label>
 
-      <label id="show-length">
-        <input type="checkbox"> Show branch length
-      </label>
+        <div id="container"></div>
 
-      <div id="container"></div>
-
-    </div>
-
-  </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

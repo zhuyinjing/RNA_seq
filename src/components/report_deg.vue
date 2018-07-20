@@ -1,114 +1,117 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:2px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>差异表达基因</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>差异表达基因</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-      <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2>
+        <!-- <div class="margin-bottom-20">
+          <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
+          <el-button type="primary" @click="ppiClick()">ppi</el-button>
+          <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
+          <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
+        </div> -->
 
-      <!-- <div class="margin-bottom-20">
-        <el-button type="danger" @click="heatmapClick()">Heat Map</el-button>
-        <el-button type="primary" @click="ppiClick()">ppi</el-button>
-        <el-button type="success" @click="heatmapsvgClick()">Heat Map Svg</el-button>
-        <el-button type="primary" @click="enrichmentClick()">富集分析</el-button>
-      </div> -->
-
-      <el-card class="" style="width:900px;">
-        <div class="" style="display:inline-block;width:42%;vertical-align:top;">
-          <div class="">
-            <div class="labelStyle">
-              <label for="maxpval" class="label-font">pvalue &le;</label>
-            </div>
-            <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
-          </div>
-          <div class="">
-            <div class="labelStyle">
-              <label for="maxfdr" class="label-font">FDR &le;</label>
-            </div>
-            <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
-          </div>
-          <div class="">
-            <div class="labelStyle">
-              <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
-            </div>
-            <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
-          </div>
-        </div>
-        <div class="" style="display:inline-block;width:20%;vertical-align:top;">
-          <div class="">
+        <el-card class="" style="width:900px;">
+          <div class="" style="display:inline-block;width:42%;vertical-align:top;">
             <div class="">
-              <label class="radio-inline control-label">type：</label>
+              <div class="labelStyle">
+                <label for="maxpval" class="label-font">pvalue &le;</label>
+              </div>
+              <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
             </div>
-            <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox>
-          </div>
-          <div class="">
-            <div class="labelStyle">
-              <label class="radio-inline control-label"></label>
-            </div>
-            <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox>
-          </div>
-        </div>
-        <div class="" style="display:inline-block;width:29%;vertical-align:top;">
-          <div class="">
             <div class="">
-              <label class="radio-inline control-label">显示：</label>
+              <div class="labelStyle">
+                <label for="maxfdr" class="label-font">FDR &le;</label>
+              </div>
+              <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
             </div>
-            <el-checkbox class="input-style" v-model="checkedUp">在 {{$store.state._case}} 中表达量上调</el-checkbox>
+            <div class="">
+              <div class="labelStyle">
+                <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+              </div>
+              <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
+            </div>
+          </div>
+          <div class="" style="display:inline-block;width:20%;vertical-align:top;">
+            <div class="">
+              <div class="">
+                <label class="radio-inline control-label">type：</label>
+              </div>
+              <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox>
+            </div>
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label"></label>
+              </div>
+              <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox>
+            </div>
+          </div>
+          <div class="" style="display:inline-block;width:29%;vertical-align:top;">
+            <div class="">
+              <div class="">
+                <label class="radio-inline control-label">显示：</label>
+              </div>
+              <el-checkbox class="input-style" v-model="checkedUp">在 {{$store.state._case}} 中表达量上调</el-checkbox>
+            </div>
+            <div class="">
+              <div class="labelStyle"></div>
+              <el-checkbox class="input-style" v-model="checkedDown">在 {{$store.state._case}} 中表达量下调</el-checkbox>
+            </div>
           </div>
           <div class="">
-            <div class="labelStyle"></div>
-            <el-checkbox class="input-style" v-model="checkedDown">在 {{$store.state._case}} 中表达量下调</el-checkbox>
+            <el-button class="filterbtn" type="primary" @click="filterTable()">筛选</el-button>
           </div>
+       </el-card>
+        <br>
+        <div>
+          <el-button type="danger" @click="saveData()">保存列表</el-button>
+          <el-button type="info" @click="resetData()">恢复默认列表</el-button>
         </div>
-        <div class="">
-          <el-button class="filterbtn" type="primary" @click="filterTable()">筛选</el-button>
-        </div>
-     </el-card>
-      <br>
-      <div>
-        <el-button type="danger" @click="saveData()">保存列表</el-button>
-        <el-button type="info" @click="resetData()">恢复默认列表</el-button>
+        <br>
+        <transition name="fade">
+          <div class="">
+            <table id="exampledeg" class="display" cellspacing="0" width="100%" v-show="tableShow">
+                <thead>
+                  <tr>
+                    <!-- <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th> -->
+                    <th>target_id</th>
+                    <th>name</th>
+                    <th>description</th>
+                    <th>type</th>
+                    <th>baseMean</th>
+                    <th>log2FoldChange</th>
+                    <th>pvalue</th>
+                    <th>FDR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for='(item, index) in data'>
+                    <!-- <td> <input type="checkbox" class="inputcheckbox" name="" v-model="checked" :value="data[index]"> </td> -->
+                    <td>{{item.target_id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.description}}</td>
+                    <td>{{item.type}}</td>
+                    <td>{{numFormat(item.baseMean)}}</td>
+                    <td>{{item.log2FoldChange}}</td>
+                    <td>{{item.pvalue}}</td>
+                    <td>{{item.padj}}</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+
+      </transition>
       </div>
-      <br>
-      <transition name="fade">
-        <div class="">
-          <table id="exampledeg" class="display" cellspacing="0" width="100%" v-show="tableShow">
-              <thead>
-                <tr>
-                  <!-- <th><input type="checkbox" :checked="data.length === checked.length" class="inputcheckbox" name="select_all" @click="checkedAll"></th> -->
-                  <th>target_id</th>
-                  <th>name</th>
-                  <th>description</th>
-                  <th>type</th>
-                  <th>baseMean</th>
-                  <th>log2FoldChange</th>
-                  <th>pvalue</th>
-                  <th>FDR</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for='(item, index) in data'>
-                  <!-- <td> <input type="checkbox" class="inputcheckbox" name="" v-model="checked" :value="data[index]"> </td> -->
-                  <td>{{item.target_id}}</td>
-                  <td>{{item.name}}</td>
-                  <td>{{item.description}}</td>
-                  <td>{{item.type}}</td>
-                  <td>{{numFormat(item.baseMean)}}</td>
-                  <td>{{item.log2FoldChange}}</td>
-                  <td>{{item.pvalue}}</td>
-                  <td>{{item.padj}}</td>
-                </tr>
-              </tbody>
-          </table>
-        </div>
-
-    </transition>
-    </div>
-  </div>
+    </el-main>
+  </el-container>
 
 </template>
 

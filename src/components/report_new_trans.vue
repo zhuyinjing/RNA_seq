@@ -1,51 +1,54 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
-
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>新转录本概况</el-breadcrumb-item>
-      </el-breadcrumb>
-
-      <h2>新转录本概况</h2>
-
-      <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
-
-      <!-- <div class="overflow-auto"> -->
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
       <div class="">
-        <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th></th>
-                <th>gene</th>
-                <th>transcriptId</th>
-                <th>referenceTranscriptId</th>
-                <th>exonNum</th>
-                <th>classCode</th>
-                <th>transcriptLength</th>
-                <th>peptideLength</th>
-                <th>codingProbability</th>
-                <th>coding</th>
-            </tr>
-            </thead>
-        </table>
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>新转录本概况</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <h2>新转录本概况</h2>
+
+        <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
+
+        <!-- <div class="overflow-auto"> -->
+        <div class="">
+          <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
+              <thead>
+              <tr>
+                  <th></th>
+                  <th>gene</th>
+                  <th>transcriptId</th>
+                  <th>referenceTranscriptId</th>
+                  <th>exonNum</th>
+                  <th>classCode</th>
+                  <th>transcriptLength</th>
+                  <th>peptideLength</th>
+                  <th>codingProbability</th>
+                  <th>coding</th>
+              </tr>
+              </thead>
+          </table>
+        </div>
+
+
+        <el-dialog
+          title="说明"
+          :visible.sync="classcodeShow"
+          width="40%"
+          center>
+          <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
+          </span>
+        </el-dialog>
+
       </div>
-
-
-      <el-dialog
-        title="说明"
-        :visible.sync="classcodeShow"
-        width="40%"
-        center>
-        <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
-        </span>
-      </el-dialog>
-
-    </div>
-  </div>
+    </el-main>
+  </el-container>
 
 </template>
 

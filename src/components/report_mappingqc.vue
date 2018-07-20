@@ -1,53 +1,55 @@
 <template>
-  <div class="" style="width:100%;">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>比对结果质检</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>比对结果质检</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>序列比对结果统计图</h2>
 
-      <h2>序列比对结果统计图</h2>
+        <p>转录本由基因外显子序列组成，因此转录组测序产生的 reads 理论上应主要回贴到基因外显子（包括 UTR ）区域；同时由于可变剪切事件的存在，部分 reads 会回贴到基因内含子区域；另外可能有少量 reads 会回帖到基因间区。对 reads 基因组回贴位置进行统计，可以辅助判断转录组的测序质量。
+  我们使用 Hisat2 软件进行基因组回帖比对分析，该软件是是 TopHat2/Bowtie2 的后续更新版本，使用改进的 BWT 算法，实现了更快的速度和更少的资源占用，作者推荐 TopHat2/Bowtie2 和 HISAT 的用户转换到 HISAT2 。</p>
+        <p>参考文献：</p>
 
-      <p>转录本由基因外显子序列组成，因此转录组测序产生的 reads 理论上应主要回贴到基因外显子（包括 UTR ）区域；同时由于可变剪切事件的存在，部分 reads 会回贴到基因内含子区域；另外可能有少量 reads 会回帖到基因间区。对 reads 基因组回贴位置进行统计，可以辅助判断转录组的测序质量。
-我们使用 Hisat2 软件进行基因组回帖比对分析，该软件是是 TopHat2/Bowtie2 的后续更新版本，使用改进的 BWT 算法，实现了更快的速度和更少的资源占用，作者推荐 TopHat2/Bowtie2 和 HISAT 的用户转换到 HISAT2 。</p>
-      <p>参考文献：</p>
+        <p>Kim D, Langmead B and Salzberg SL. HISAT: a fast spliced aligner with low memory requirements. Nature Methods 2015 </p>
+        <p>[<a href="https://www.nature.com/articles/nmeth.3317">原文链接</a>]</p>
 
-      <p>Kim D, Langmead B and Salzberg SL. HISAT: a fast spliced aligner with low memory requirements. Nature Methods 2015 </p>
-      <p>[<a href="https://www.nature.com/articles/nmeth.3317">原文链接</a>]</p>
+        <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 B 代表 Billion）。</p>
 
-      <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 B 代表 Billion）。</p>
+        <div id="metrics_bar"></div>
 
-      <div id="metrics_bar"></div>
-
-      <table class="gridtable">
-        <thead>
-          <tr>
-            <th>样本</th>
-            <th>总碱基数</th>
-            <th>核糖体占比</th>
-            <th>编码区占比</th>
-            <th>UTR占比</th>
-            <th>内含子区占比</th>
-            <th>基因间区占比</th>
+        <table class="gridtable">
+          <thead>
+            <tr>
+              <th>样本</th>
+              <th>总碱基数</th>
+              <th>核糖体占比</th>
+              <th>编码区占比</th>
+              <th>UTR占比</th>
+              <th>内含子区占比</th>
+              <th>基因间区占比</th>
+            </tr>
+          </thead>
+          <tr v-for="(item, index) in tableData">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[0]}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{numFormat(item[1])}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[16])* 100).toFixed(1)}}%</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[17])* 100).toFixed(1)}}%</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[18])* 100).toFixed(1)}}%</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[19])* 100).toFixed(1)}}%</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[20])* 100).toFixed(1)}}%</td>
           </tr>
-        </thead>
-        <tr v-for="(item, index) in tableData">
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item[0]}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{numFormat(item[1])}}</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[16])* 100).toFixed(1)}}%</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[17])* 100).toFixed(1)}}%</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[18])* 100).toFixed(1)}}%</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[19])* 100).toFixed(1)}}%</td>
-          <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{(Number(item[20])* 100).toFixed(1)}}%</td>
-        </tr>
-      </table>
+        </table>
 
-    </div>
-    <div class="clear"></div>
-  </div>
-
+      </div>
+      <div class="clear"></div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

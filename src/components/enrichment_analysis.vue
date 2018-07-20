@@ -1,38 +1,64 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'enrichment_analysis_input' }">富集分析</el-breadcrumb-item> -->
+          <el-breadcrumb-item>富集分析详情</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'enrichment_analysis_input' }">富集分析</el-breadcrumb-item> -->
-        <el-breadcrumb-item>富集分析详情</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2>
 
-      <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2>
-
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="输入基因列表" name="输入基因列表">
-          <div class="geneListTableDiv">
-            <table class="gridtable" id="geneListTable">
-              <tr>
-                  <th>Id</th><th>Name</th>
-              </tr>
-              <tr v-for="(item, index) in idList">
-                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.id}}</td>
-                  <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
-              </tr>
-            </table>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="KEGG" name="KEGG">
-            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="输入基因列表" name="输入基因列表">
+            <div class="geneListTableDiv">
+              <table class="gridtable" id="geneListTable">
+                <tr>
+                    <th>Id</th><th>Name</th>
+                </tr>
+                <tr v-for="(item, index) in idList">
+                    <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.id}}</td>
+                    <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+                </tr>
+              </table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="KEGG" name="KEGG">
+              <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
+                <thead>
+                  <tr>
+                    <td></td>
+                    <td>ID</td>
+                    <td>Term</td>
+                    <td>GeneRatio</td>
+                    <td>BgRatio</td>
+                    <td>log2foldE</td>
+                    <td>pvalue</td>
+                    <td>p.adjust</td>
+                    <td>qvalue</td>
+                    <td>geneID</td>
+                    <td>Count</td>
+                  </tr>
+                </thead>
+              </table>
+          </el-tab-pane>
+          <el-tab-pane label="转录因子" name="转录因子">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example1">
               <thead>
                 <tr>
                   <td></td>
                   <td>ID</td>
-                  <td>Term</td>
+                  <td>Biosample_term_name</td>
+                  <td>Biosample_type</td>
+                  <td>Biosample_life_stage</td>
+                  <td>Biosample_sex</td>
+                  <td>Biosample_age</td>
+                  <td>Experiment_target</td>
                   <td>GeneRatio</td>
                   <td>BgRatio</td>
                   <td>log2foldE</td>
@@ -44,96 +70,72 @@
                 </tr>
               </thead>
             </table>
-        </el-tab-pane>
-        <el-tab-pane label="转录因子" name="转录因子">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example1">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Biosample_term_name</td>
-                <td>Biosample_type</td>
-                <td>Biosample_life_stage</td>
-                <td>Biosample_sex</td>
-                <td>Biosample_age</td>
-                <td>Experiment_target</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level3）" name="level3.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example2">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level4）" name="level4.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example3">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level5）" name="level5.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example4">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-      </el-tabs>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level3）" name="level3.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example2">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level4）" name="level4.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example3">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level5）" name="level5.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example4">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+        </el-tabs>
 
-    </div>
-
-  </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

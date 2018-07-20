@@ -1,22 +1,24 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>KEGG 气泡图</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>KEGG 气泡图</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>KEGG 气泡图 </h2>
 
-      <h2>KEGG 气泡图 </h2>
+        <div class="container"></div>
 
-      <div class="container"></div>
+        <a :href="href" target="_blank" ref="aTag"></a>
 
-      <a :href="href" target="_blank" ref="aTag"></a>
-
-    </div>
-
-  </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>

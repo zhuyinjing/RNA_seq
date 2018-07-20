@@ -23,7 +23,7 @@
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
           <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
         </el-menu-item-group>
-        <!-- <el-menu-item-group>
+        <el-menu-item-group>
           <span class="title-style">基因差异表达分析</span>
           <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">
             <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span>
@@ -33,7 +33,7 @@
             <el-menu-item :index="'5-' + index + '-3'" @click="ppi(item['_case'], item['_control'], index)">蛋白相互作用图</el-menu-item>
             <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item>
           </el-menu-item-group>
-        </el-menu-item-group> -->
+        </el-menu-item-group>
     </el-menu>
   </div>
 </template>

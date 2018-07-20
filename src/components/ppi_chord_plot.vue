@@ -1,22 +1,25 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
-
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'ppi_chord_plot_input' }">绘制蛋白相互作用图</el-breadcrumb-item> -->
-        <el-breadcrumb-item>蛋白相互作用图</el-breadcrumb-item>
-      </el-breadcrumb>
-
-      <h2>蛋白相互作用图 {{$store.state._case}} vs {{$store.state._control}}</h2>
-
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
       <div class="">
-        <svg width="800" height="800"></svg>
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <!-- <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'ppi_chord_plot_input' }">绘制蛋白相互作用图</el-breadcrumb-item> -->
+          <el-breadcrumb-item>蛋白相互作用图</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <h2>蛋白相互作用图 {{$store.state._case}} vs {{$store.state._control}}</h2>
+
+        <div class="">
+          <svg width="800" height="800"></svg>
+        </div>
       </div>
-    </div>
-  </div>
+    </el-main>
+  </el-container>
 
 </template>
 

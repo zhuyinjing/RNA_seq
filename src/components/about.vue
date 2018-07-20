@@ -1,20 +1,12 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
-
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: 'heatmap_input' }">绘制基因热图</el-breadcrumb-item>
-        <el-breadcrumb-item>基因热图</el-breadcrumb-item>
-      </el-breadcrumb>
-
-      <h2>绘制基因Heat Map图 {{$store.state._case}} vs {{$store.state._control}} </h2>
-
-    </div>
-
-  </div>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -37,12 +29,6 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  float:left;
-  width: 60%;
-  padding: 0 20px;
-  margin: 19px auto;
-}
 .cursor-pointer {
   cursor: pointer;
 }

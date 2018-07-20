@@ -1,144 +1,146 @@
 <template>
-  <div class="">
-    <leftMenu style="float:left;width:300px;margin-top:10px;"></leftMenu>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #ccc">
+      <leftMenu style="margin-top:5px"></leftMenu>
+    </el-aside>
+    <el-main>
+      <div class="">
+        <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>火山图</el-breadcrumb-item>
+        </el-breadcrumb>
 
-    <div class="content">
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>火山图</el-breadcrumb-item>
-      </el-breadcrumb>
+        <h2>基因差异表达火山图 {{$route.query._case}} vs {{$route.query._control}} </h2>
 
-      <h2>基因差异表达火山图 {{$route.query._case}} vs {{$route.query._control}} </h2>
+        <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
 
-      <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
-
-      <div class="min-width-div">
-            <div class="yrange display-inline-block" v-show="rangeShow">
-              <el-slider
-              v-model="yTop"
-              :step="0.1"
-              :min="xRightOptions.min"
-              :max="xRightOptions.max"
-               vertical
-              :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
-              @change="xLeftChange()"
-              >
-            </el-slider>
-            </div>
-
-            <div id="canvas" class="display-inline-block vertical-align-top"></div>
-
-            <div class="clear"></div>
-
-            <div class="" v-show="rangeShow">
+        <div class="min-width-div">
+              <div class="yrange display-inline-block" v-show="rangeShow">
                 <el-slider
-                v-model="xLeft"
+                v-model="yTop"
                 :step="0.1"
-                :min="xLeftOptions.min"
-                :max="xLeftOptions.max"
-                :style="{width: xLeftOptions.width + 'px', marginLeft: (xLeftOptions.width + 50) + 'px'}"
+                :min="xRightOptions.min"
+                :max="xRightOptions.max"
+                 vertical
+                :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
                 @change="xLeftChange()"
                 >
               </el-slider>
-            </div>
+              </div>
 
-            <table class="gridtable" v-show="rangeShow">
-              <tr>
-                  <th>参数</th><th>操作</th>
-              </tr>
-              <tr>
-                <td>x轴显示</td>
-                <td>
-                  <el-switch
-                    style="display: block"
-                    v-model="xvalueShow"
-                    active-color="#409EFF"
-                    inactive-color="#409EFF"
-                    active-text="pvalue"
-                    inactive-text="padj"
-                    @change="xvaluechange"
+              <div id="canvas" class="display-inline-block vertical-align-top"></div>
+
+              <div class="clear"></div>
+
+              <div class="" v-show="rangeShow">
+                  <el-slider
+                  v-model="xLeft"
+                  :step="0.1"
+                  :min="xLeftOptions.min"
+                  :max="xLeftOptions.max"
+                  :style="{width: xLeftOptions.width + 'px', marginLeft: (xLeftOptions.width + 50) + 'px'}"
+                  @change="xLeftChange()"
                   >
-                  </el-switch>
-                </td>
-              </tr>
-              <tr>
-                <td>是否显示基因名</td>
-                <td>
-                  <el-switch
-                    style="display: block"
-                    v-model="geneNameShow"
-                    active-color="#409EFF"
-                    inactive-color="#e4e7ed"
-                    @change="initD3"
-                  >
-                  </el-switch>
-                </td>
-              </tr>
-              <tr>
-                <td>显示基因个数</td>
-                <td>
-                  <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>Log2FoldChange</td>
-                <td>
-                  <el-input-number size="mini" :min="0" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>-log10(pvalue)</td>
-                <td>
-                  <el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>x轴最小值</td>
-                <td>
-                  <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>x轴最大值</td>
-                <td>
-                  <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>y轴最小值</td>
-                <td>
-                  <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>y轴最大值</td>
-                <td>
-                  <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>宽</td>
-                <td>
-                  <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>高</td>
-                <td>
-                  <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td>点的半径</td>
-                <td>
-                  <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
-                </td>
-              </tr>
-            </table>
-      </div>
-  </div>
-  <div class="clear"></div>
-  </div>
+                </el-slider>
+              </div>
+
+              <table class="gridtable" v-show="rangeShow">
+                <tr>
+                    <th>参数</th><th>操作</th>
+                </tr>
+                <tr>
+                  <td>x轴显示</td>
+                  <td>
+                    <el-switch
+                      style="display: block"
+                      v-model="xvalueShow"
+                      active-color="#409EFF"
+                      inactive-color="#409EFF"
+                      active-text="pvalue"
+                      inactive-text="padj"
+                      @change="xvaluechange"
+                    >
+                    </el-switch>
+                  </td>
+                </tr>
+                <tr>
+                  <td>是否显示基因名</td>
+                  <td>
+                    <el-switch
+                      style="display: block"
+                      v-model="geneNameShow"
+                      active-color="#409EFF"
+                      inactive-color="#e4e7ed"
+                      @change="initD3"
+                    >
+                    </el-switch>
+                  </td>
+                </tr>
+                <tr>
+                  <td>显示基因个数</td>
+                  <td>
+                    <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Log2FoldChange</td>
+                  <td>
+                    <el-input-number size="mini" :min="0" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>-log10(pvalue)</td>
+                  <td>
+                    <el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>x轴最小值</td>
+                  <td>
+                    <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>x轴最大值</td>
+                  <td>
+                    <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>y轴最小值</td>
+                  <td>
+                    <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>y轴最大值</td>
+                  <td>
+                    <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>宽</td>
+                  <td>
+                    <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>高</td>
+                  <td>
+                    <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>点的半径</td>
+                  <td>
+                    <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
+                  </td>
+                </tr>
+              </table>
+        </div>
+    </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
