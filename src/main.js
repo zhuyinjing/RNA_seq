@@ -114,7 +114,7 @@ Vue.prototype.$message = Message;
     timer = setTimeout(function () {
       sessionStorage.clear()
       window.location.href = 'https://colorseq.com/logout'
-    }, 1000*60*15)
+    }, 1000*60*5)
    }
   startTimer()
   document.body.onclick  = startTimer

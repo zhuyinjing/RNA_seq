@@ -122,10 +122,10 @@ export default {
         .style('color', 'yellow')
         .text('')
       var array_data = [];
-      var margin = { top: 50, right: 0, bottom: 100, left: 100 },
-          width = 800 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
+      var margin = { top: 50, right: 20, bottom: 100, left: 100 },
+          width = 820 - margin.left - margin.right,        // 所有格子区域的宽度，即Heatmap的宽度
           height = self.height * yData.length ,
-          gridSize = Math.floor(width / xData.length)     // 求地板，即去掉小数部分，width分成24份
+          gridSize = Math.floor(width / xData.length)     // 求地板，即去掉小数部分，width分成 xData.length 份
 
               function sortNumber (a, b) {
                 return a - b
@@ -151,13 +151,16 @@ export default {
                   .data(xData)
                   .enter().append("text")
                   .text(function(d) { return d; })
-                  .attr("x", function(d, i) { return i * gridSize; })
-                  .attr("y", 0)
+                  .attr("x", function(d, i) { return i * gridSize + 15; })
+                  .attr("y", height)
                   .attr("class", 'xText')
-                  .style("text-anchor", "middle")
                   .style("font-size", "9px")
+                  .style("font-weight", "bold")
                   .style("font-family", "Consolas, Monaco, monospace")
-                  .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                  .style("text-anchor", "start")
+                  .attr('transform', (d,i)=>{
+                    return 'rotate(45, ' + (i * gridSize) + ' '+ (height) +')'
+                  })
 
              var dayLabels = svg.selectAll(".nameLabel")
                  .data(yData)
