@@ -20,7 +20,7 @@
           v-model="textareaMatrix">
         </el-input>
       </div>
-      <el-button type="text">(example)</el-button>
+      <!-- <el-button type="text">(example)</el-button> -->
     </div>
     <div class="margin-top-10" v-show="radioMatrix === 'file'">
       <div class="labelStyle"></div>
@@ -49,7 +49,7 @@
           v-model="textareaGroup">
         </el-input>
       </div>
-      <el-button type="text">(example)</el-button>
+      <!-- <el-button type="text">(example)</el-button> -->
     </div>
     <div class="margin-top-10" v-show="radioGroup === 'file'">
       <div class="labelStyle"></div>

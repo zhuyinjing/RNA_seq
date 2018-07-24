@@ -1,10 +1,12 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
       <div class="">
+        <imgMenuShowComp></imgMenuShowComp>
+
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
           <el-breadcrumb-item>KEGG 气泡图</el-breadcrumb-item>
@@ -23,6 +25,7 @@
 
 <script>
 import leftMenu from './leftMenu.vue'
+import imgMenuShowComp from './imgMenuShowComp.vue'
 import * as d3 from 'd3'
 
 export default {
@@ -35,7 +38,8 @@ export default {
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    imgMenuShowComp
   },
   mounted () {
     this.axios.get('/server/enrich_bubble_diagram?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&fileType=KEGG').then((res) => {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-menu style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
+    <el-menu v-show="isCollapse" style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
         <el-menu-item index="0-0" @click="report">报告首页</el-menu-item>
         <el-menu-item-group>
           <span slot="" class="title-style">质量控制</span>
@@ -19,9 +19,8 @@
           <span class="title-style">样本聚类概览</span>
           <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
           <el-menu-item index="4-1" @click="plotPCA">PCA 主成分分析</el-menu-item>
-          <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a>
+          <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a> -->
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
-          <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <span class="title-style">差异表达基因分析</span>
@@ -35,6 +34,10 @@
             <el-menu-item :index="'5-' + index + '-4'" @click="enrichment_analysis(item['_case'], item['_control'], index)">富集分析</el-menu-item> -->
           <!-- </el-menu-item-group> -->
         </el-menu-item-group>
+        <el-menu-item-group>
+          <span class="title-style">差异分析后可视化</span>
+          <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
+        </el-menu-item-group>
     </el-menu>
   </div>
 </template>
@@ -43,7 +46,7 @@
 export default {
   data () {
     return {
-
+      isCollapse: true,
     }
   },
   components: {

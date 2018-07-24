@@ -1,22 +1,16 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
+      <imgMenuShowComp></imgMenuShowComp>
 
       <degComp></degComp>
 
       <div class="">
-        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>富集分析详情</el-breadcrumb-item>
-        </el-breadcrumb> -->
-
-        <!-- <h2>富集分析详情 {{$store.state._case}} vs {{$store.state._control}} </h2> -->
-
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="输入基因列表" name="输入基因列表">
+          <!-- <el-tab-pane label="输入基因列表" name="输入基因列表">
             <div class="geneListTableDiv">
               <table class="gridtable" id="geneListTable">
                 <tr>
@@ -28,7 +22,7 @@
                 </tr>
               </table>
             </div>
-          </el-tab-pane>
+          </el-tab-pane> -->
           <el-tab-pane label="KEGG" name="KEGG">
               <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
                 <thead>
@@ -142,11 +136,12 @@
 <script>
 import leftMenu from './leftMenu.vue'
 import degComp from './degComp.vue'
+import imgMenuShowComp from './imgMenuShowComp.vue'
 
 export default {
   data () {
     return {
-      activeName: '输入基因列表',
+      activeName: 'KEGG',
       head0: [],
       tbval0: [],
       tbval1: [],
@@ -160,7 +155,8 @@ export default {
   },
   components: {
     leftMenu,
-    degComp
+    degComp,
+    imgMenuShowComp
   },
   watch: {
     '$route': 'resetTable'
@@ -197,11 +193,12 @@ export default {
     },
     handleClick2() {
           let self = this
-          this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'id_list' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
-            if (res.data.message_type === 'success') {
-              this.idList = res.data.message
-            }
-          })
+          // 获取 输入基因列表
+          // this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'id_list' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+          //   if (res.data.message_type === 'success') {
+          //     this.idList = res.data.message
+          //   }
+          // })
           this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'KEGG' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
             if (res.data.message_type === 'success') {
               $('#example0').dataTable().fnDestroy()

@@ -162,6 +162,15 @@ if (sessionStorage._control) {
 if (sessionStorage.species) {
   store.state.species = sessionStorage.species
 }
+if (sessionStorage.degGeneSum) {
+  store.state.degGeneSum = sessionStorage.degGeneSum
+}
+if (sessionStorage.degFilterArgs) {
+  store.state.degFilterArgs = JSON.parse(sessionStorage.degFilterArgs)
+}
+if (sessionStorage.menuShow) {
+  store.state.menuShow = JSON.parse(sessionStorage.menuShow)
+}
 
 axios.get('/getUser').then((res) => {
   store.commit('setusername', res.data)

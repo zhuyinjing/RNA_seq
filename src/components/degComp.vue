@@ -1,7 +1,10 @@
 <template>
   <div class="">
     <h2 class="text-align-center"> {{$store.state._case}} vs {{$store.state._control}} </h2>
-    <el-card class="text-align-center">当前差异表达基因筛选条件：P-Value <= 0.05, FDR <= 0.05,  | Log2(FoldChange) | >= 1</el-card> <br>
+    <el-card class="text-align-center">
+      当前差异表达基因筛选条件：P-Value <= {{$store.state.degFilterArgs.pvalue}}, FDR <= {{$store.state.degFilterArgs.FDR}},  | Log2(FoldChange) | >= {{$store.state.degFilterArgs.log2FoldChange}} &nbsp;
+      差异表达基因数目：{{$store.state.degGeneSum}}
+    </el-card> <br>
     <div class="margin-bottom-20">
       <el-button type="info" :class="{'activebtn': $route.path === '/report_deg'}" @click="report_deg()">差异基因</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/report_volcano_plot'}" @click="report_volcano_plot()">火山图</el-button>

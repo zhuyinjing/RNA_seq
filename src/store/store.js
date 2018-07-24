@@ -25,6 +25,13 @@ export default new Vuex.Store({
     _control: '',
     species: '', // 物种信息
     checked: [],
+    degGeneSum: null,
+    degFilterArgs: {
+      pvalue: 0.05,
+      FDR: 0.05,
+      log2FoldChange: 1
+    },
+    menuShow: true,
   },
   mutations: {
     setusername: (state, data) => {
@@ -73,6 +80,18 @@ export default new Vuex.Store({
     },
     setchecked: (state, data) => {
       state.checked = data
+    },
+    setdegGeneSum: (state, data) => {
+      sessionStorage.setItem('degGeneSum', data)
+      state.degGeneSum = data
+    },
+    setdegFilterArgs: (state, data) => {
+      sessionStorage.setItem('degFilterArgs', JSON.stringify(data))
+      state.degFilterArgs = data
+    },
+    setmenuShow: (state, data) => {
+      sessionStorage.setItem('menuShow', data)
+      state.menuShow = data
     },
   }
 })

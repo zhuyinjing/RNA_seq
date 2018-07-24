@@ -1,23 +1,14 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
+      <imgMenuShowComp></imgMenuShowComp>
 
       <degComp></degComp>
 
       <div class="">
-        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: 'report_deg' }">差异表达基因</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: 'heatmapsvg_input' }">绘制基因热图(svg)</el-breadcrumb-item>
-          <el-breadcrumb-item>Heat Map(svg)</el-breadcrumb-item>
-        </el-breadcrumb> -->
-
-        <!-- <h2>基因Heat Map(svg) {{$store.state._case}} vs {{$store.state._control}} </h2> -->
-
-
         <div class="icon-func-div">
           <span class="font-size-12">ID显示</span>
           <el-switch
@@ -39,6 +30,7 @@
 <script>
 import leftMenu from './leftMenu.vue'
 import degComp from './degComp.vue'
+import imgMenuShowComp from './imgMenuShowComp.vue'
 
 import * as d3 from 'd3'
 
@@ -57,7 +49,8 @@ export default {
   },
   components: {
     leftMenu,
-    degComp
+    degComp,
+    imgMenuShowComp
   },
   created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
@@ -155,7 +148,7 @@ export default {
                   .attr("y", height)
                   .attr("class", 'xText')
                   .style("font-size", "9px")
-                  .style("font-weight", "bold")
+                  // .style("font-weight", "bold")
                   .style("font-family", "Consolas, Monaco, monospace")
                   .style("text-anchor", "start")
                   .attr('transform', (d,i)=>{

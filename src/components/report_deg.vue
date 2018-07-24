@@ -1,53 +1,49 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
+      <imgMenuShowComp></imgMenuShowComp>
 
       <degComp></degComp>
 
       <div class="">
-        <!-- <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>差异表达基因</el-breadcrumb-item>
-        </el-breadcrumb> -->
-
-        <!-- <h2>差异表达基因分析表 {{$store.state._case}} vs {{$store.state._control}} </h2> -->
-
         <el-card class="" style="width:900px;" shadow="hover">
           <div class="" style="display:inline-block;width:42%;vertical-align:top;">
             <div class="">
               <div class="labelStyle">
                 <label for="maxpval" class="label-font">pvalue &le;</label>
               </div>
-              <input type="text" id="maxpval" placeholder="0.05" class="input-style" v-model="maxpval"/>
+              <input type="text" id="maxpval" :placeholder="originFilterArgs.pvalue" class="input-style" v-model="maxpval"/>
             </div>
             <div class="">
               <div class="labelStyle">
                 <label for="maxfdr" class="label-font">FDR &le;</label>
               </div>
-              <input type="text" id="maxfdr" placeholder="0.05" class="input-style" v-model="maxfdr"/>
+              <input type="text" id="maxfdr" :placeholder="originFilterArgs.FDR" class="input-style" v-model="maxfdr"/>
             </div>
             <div class="">
               <div class="labelStyle">
                 <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
               </div>
-              <input type="text" id="minfc" placeholder="0" class="input-style" v-model="minfc"/>
+              <input type="text" id="minfc" :placeholder="originFilterArgs.log2FoldChange" class="input-style" v-model="minfc"/>
             </div>
           </div>
           <div class="" style="display:inline-block;width:20%;vertical-align:top;">
             <div class="">
               <div class="">
                 <label class="radio-inline control-label">type：</label>
-              </div>
-              <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox>
+              </div> <br>
+              <el-radio v-model="typeRadio" label="protein_coding">只显示编码基因</el-radio>
+              <!-- <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox> -->
             </div>
             <div class="">
               <div class="labelStyle">
                 <label class="radio-inline control-label"></label>
-              </div>
-              <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox>
+              </div> <br>
+              <el-radio v-model="typeRadio" label="all">显示所有类型基因</el-radio>
+              <!-- <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox> -->
             </div>
           </div>
           <div class="" style="display:inline-block;width:29%;vertical-align:top;">
@@ -62,15 +58,12 @@
               <el-checkbox class="input-style" v-model="checkedDown">在 {{$store.state._case}} 中表达量下调</el-checkbox>
             </div>
           </div>
-          <div class="">
-            <el-button class="filterbtn" type="primary" @click="filterTable()">筛选</el-button>
+          <div class="filterbtnDiv">
+            <el-button type="primary" @click="filterTable()">筛选</el-button>
+            <el-button type="danger" :disabled="savedisabled" @click="saveData()">保存筛选</el-button>
+            <el-button type="info" @click="resetData()">恢复默认列表</el-button>
           </div>
        </el-card>
-        <br>
-        <div>
-          <el-button type="danger" @click="saveData()">保存列表</el-button>
-          <el-button type="info" @click="resetData()">恢复默认列表</el-button>
-        </div>
         <br>
         <transition name="fade">
           <div class="">
@@ -114,6 +107,7 @@
 <script>
 import degComp from './degComp.vue'
 import leftMenu from './leftMenu.vue'
+import imgMenuShowComp from './imgMenuShowComp.vue'
 
 export default {
   data () {
@@ -131,11 +125,15 @@ export default {
       checkedNonCoding: false,
       checkedUp: true,
       checkedDown: true,
+      typeRadio: 'all',
+      originFilterArgs: {},
+      savedisabled: false,
     }
   },
   components: {
     leftMenu,
-    degComp
+    degComp,
+    imgMenuShowComp
   },
   mounted () {
     this.getTabelValue()
@@ -171,11 +169,17 @@ export default {
             background: 'rgba(0, 0, 0, 0.7)'
           })
           let formData = new FormData()
+          let geneVarInfo = {
+            pvalue: this.maxpval?this.maxpval:this.originFilterArgs.pvalue,
+            FDR: this.maxfdr?this.maxfdr:this.originFilterArgs.FDR,
+            log2FoldChange: this.minfc?this.minfc:this.originFilterArgs.log2FoldChange
+          }
           formData.append('username', this.$store.state.username)
           formData.append('p', this.$store.state.projectId)
           formData.append('caseSample', this.$store.state._case)
           formData.append('controlSample', this.$store.state._control)
           formData.append('degList', data)
+          formData.append('geneVarInfo', JSON.stringify(geneVarInfo))
           this.axios.post('/server/save_deg_list', formData).then((res) => {
             if (res.data.message_type === 'success') {
               this.getStatus()
@@ -271,6 +275,7 @@ export default {
       this.data = []
       this.checked = []
       this.tableShow = false
+      this.typeRadio = 'all'
       this.resetFilter()
       if ( $.fn.dataTable.isDataTable( '#exampledeg' ) ) {
         var dt = $('#exampledeg').DataTable();
@@ -359,17 +364,9 @@ export default {
                     return false;
                 }
                 // type protein_coding or non_coding
-                if (self.checkedProteinCoding === self.checkedNonCoding && self.checkedProteinCoding === true) {
-                  if (type !== 'non_coding' && type !== 'protein_coding') {
-                    return false;
-                  }
-                } else if (self.checkedProteinCoding === true) {
-                  if (type !== 'protein_coding') {
-                    return false;
-                  }
-                } else if (self.checkedNonCoding === true) {
-                  if (type !== 'non_coding') {
-                    return false;
+                if (self.typeRadio === 'protein_coding') {
+                  if(type !== 'protein_coding') {
+                    return false
                   }
                 }
                 // show up or down
@@ -392,6 +389,15 @@ export default {
         var table = $('#exampledeg').DataTable();
 
         table.draw()
+
+        let degGeneSum = table.column(0, { search:'applied' } ).data().length
+        let degFilterArgs = {
+          pvalue: self.maxpval?self.maxpval:this.originFilterArgs.pvalue,
+          FDR: self.maxfdr?self.maxfdr:this.originFilterArgs.FDR,
+          log2FoldChange: self.minfc?self.minfc:this.originFilterArgs.log2FoldChange
+        }
+        self.$store.commit("setdegGeneSum", degGeneSum)
+        self.$store.commit("setdegFilterArgs", degFilterArgs)
     },
     initTable (data) {
       let self = this
@@ -424,6 +430,10 @@ export default {
           this.initTable(res.data.message.data)
           // deg 表存到缓存中 方便富集分析点击加号获取 geneName 和 log2FC
           sessionStorage.setItem('deg' + _case + _control, JSON.stringify(res.data.message.data))
+          // degGeneSum 存在缓存中 筛选条件card 显示
+          this.$store.commit("setdegGeneSum", res.data.message.data.length)
+          this.originFilterArgs = res.data.message.param
+          this.$store.commit("setdegFilterArgs", res.data.message.param)
         } else {
           this.$message.error(res.data.message);
         }
@@ -475,10 +485,9 @@ export default {
   width:170px;
   text-align:end;
 }
-.filterbtn {
+.filterbtnDiv {
   float: right;
   margin-bottom: 10px;
-  margin-right: 100px;
 }
 .text-align-center {
   text-align: center;

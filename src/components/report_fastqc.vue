@@ -1,10 +1,12 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main>
       <div class="">
+        <imgMenuShowComp></imgMenuShowComp>
+
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
           <el-breadcrumb-item>测序质检</el-breadcrumb-item>
@@ -162,6 +164,7 @@
 
 <script>
 import leftMenu from './leftMenu.vue'
+import imgMenuShowComp from './imgMenuShowComp.vue'
 
 export default {
   data () {
@@ -172,7 +175,8 @@ export default {
     }
   },
   components: {
-    leftMenu
+    leftMenu,
+    imgMenuShowComp
   },
   created () {
     this.initTable()
@@ -188,8 +192,6 @@ export default {
     imgClick(imgSrc) {
       this.imgDialog = true
       this.imgSrc = imgSrc
-      // this.imgSrc = 'https://colorseq.com/projects/1/results/006.fastqc/B_4.L1.2_fastqc/Images/per_tile_quality.png'
-      // this.imgSrc = 'https://colorseq.com/projects/1/results/006.fastqc/Normal_1.L1.1_fastqc/Images/per_sequence_quality.png'
     },
   }
 }
