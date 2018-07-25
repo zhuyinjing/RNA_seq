@@ -3,12 +3,11 @@
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="home">首页</el-menu-item>
       <el-menu-item index="project">项目列表</el-menu-item>
-      <el-menu-item index="app">可视化工具</el-menu-item>
+      <el-menu-item index="app_heatmap_input">可视化工具</el-menu-item>
       <!-- <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
       <el-menu-item index="about">关于</el-menu-item> -->
     </el-menu>
     <div class="userDiv" v-show="$store.state.username">
-      <!-- <img src="../assets/img/avatar.png" alt=""> -->
       <span class="nameStyle">{{$store.state.username}}</span>
       <el-button type="text" @click="logout">退出账号</el-button>
     </div>
@@ -50,10 +49,10 @@ export default {
           sessionStorage.setItem('navbarItem', 'project')
           this.$router.push({'name': 'project_list'})
           break
-        case 'app':
-          this.activeIndex = 'app'
-          sessionStorage.setItem('navbarItem', 'app')
-          this.$router.push({'name': 'app'})
+        case 'app_heatmap_input':
+          this.activeIndex = 'app_heatmap_input'
+          sessionStorage.setItem('navbarItem', 'app_heatmap_input')
+          this.$router.push({'name': 'app_heatmap_input'})
           break
         case 'abrowse':
           sessionStorage.setItem('navbarItem', 'about')

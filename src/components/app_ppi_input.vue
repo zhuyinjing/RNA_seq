@@ -1,50 +1,58 @@
 <template>
-  <div class="content">
-    <div class="margin-top-10">
-      <div class="labelStyle">
-        <label for="maxpval" class="label-font">输入基因ID列表</label>
-        <i class="el-icon-question label-font cursor-pointer"></i>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+      <appLeftMenu></appLeftMenu>
+    </el-aside>
+    <el-main>
+      <div>
+        <div class="margin-top-10">
+          <div class="labelStyle">
+            <label for="maxpval" class="label-font">输入基因ID列表</label>
+            <i class="el-icon-question label-font cursor-pointer"></i>
+          </div>
+          <div class="inline-block">
+            <!-- <el-radio v-model="radioName" label="geneName">按 geneName 输入</el-radio> -->
+            <el-radio v-model="radioName" label="geneId">按 geneId 输入</el-radio>
+          </div>
+        </div>
+        <div class="margin-top-10" v-show="radioName === 'geneName'">
+          <div class="labelStyle"></div>
+          <div class="inline-block" style="width:800px;">
+            <el-input
+              type="textarea"
+              :rows="30"
+              placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
+              v-model="textareaGeneName">
+            </el-input>
+          </div>
+          <!-- <el-button type="text">(example)</el-button> -->
+        </div>
+        <div class="margin-top-10" v-show="radioName === 'geneId'">
+          <div class="labelStyle"></div>
+          <div class="inline-block" style="width:800px;">
+            <el-input
+              type="textarea"
+              :rows="30"
+              placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
+              v-model="textareaGeneId">
+            </el-input>
+          </div>
+          <!-- <el-button type="text">(example)</el-button> -->
+        </div>
+        <div class="margin-top-10">
+          <div class="labelStyle"></div>
+          <div class="inline-block" style="width:300px;">
+            <el-button type="primary" @click="submit()">提交</el-button>
+          </div>
+        </div>
       </div>
-      <div class="inline-block">
-        <!-- <el-radio v-model="radioName" label="geneName">按 geneName 输入</el-radio> -->
-        <el-radio v-model="radioName" label="geneId">按 geneId 输入</el-radio>
-      </div>
-    </div>
-    <div class="margin-top-10" v-show="radioName === 'geneName'">
-      <div class="labelStyle"></div>
-      <div class="inline-block" style="width:40%;">
-        <el-input
-          type="textarea"
-          :rows="30"
-          placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
-          v-model="textareaGeneName">
-        </el-input>
-      </div>
-      <!-- <el-button type="text">(example)</el-button> -->
-    </div>
-    <div class="margin-top-10" v-show="radioName === 'geneId'">
-      <div class="labelStyle"></div>
-      <div class="inline-block" style="width:40%;">
-        <el-input
-          type="textarea"
-          :rows="30"
-          placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
-          v-model="textareaGeneId">
-        </el-input>
-      </div>
-      <!-- <el-button type="text">(example)</el-button> -->
-    </div>
-    <div class="margin-top-10">
-      <div class="labelStyle"></div>
-      <div class="inline-block" style="width:300px;">
-        <el-button type="primary" @click="submit()">提交</el-button>
-      </div>
-    </div>
-
-  </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
+import appLeftMenu from './app_leftMenu.vue'
+
 export default {
   data () {
     return {
@@ -55,6 +63,7 @@ export default {
     }
   },
   components: {
+    appLeftMenu
   },
   mounted () {
   },
@@ -91,18 +100,12 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  /* float:left; */
-  width: 60%;
-  padding: 0 20px;
-  margin: 19px auto;
-}
 .cursor-pointer {
   cursor: pointer;
 }
 .labelStyle {
   display:inline-block;
-  width:200px;
+  width:150px;
   text-align:end;
 }
 .label-font {

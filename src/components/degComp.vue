@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="" style="min-width:900px;">
     <h2 class="text-align-center"> {{$store.state._case}} vs {{$store.state._control}} </h2>
     <el-card class="text-align-center">
       当前差异表达基因筛选条件：P-Value <= {{$store.state.degFilterArgs.pvalue}}, FDR <= {{$store.state.degFilterArgs.FDR}},  | Log2(FoldChange) | >= {{$store.state.degFilterArgs.log2FoldChange}} &nbsp;
@@ -8,6 +8,7 @@
     <div class="margin-bottom-20">
       <el-button type="info" :class="{'activebtn': $route.path === '/report_deg'}" @click="report_deg()">差异基因</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/report_volcano_plot'}" @click="report_volcano_plot()">火山图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/report_ma_plot'}" @click="report_ma_plot()">MA plot</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/heatmap'}" @click="heatmap()">基因热图</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/heatmapsvg'}" @click="heatmapsvg()">基因热图svg</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/ppi_chord_plot'}" @click="ppi_chord_plot()">蛋白互作图</el-button>
@@ -34,6 +35,9 @@ export default {
     },
     report_volcano_plot () {
       this.$router.push({'name': 'report_volcano_plot', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+    },
+    report_ma_plot () {
+      this.$router.push({'name': 'report_ma_plot'})
     },
     heatmap () {
       let formData = new FormData()

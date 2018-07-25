@@ -1,18 +1,23 @@
 <template>
-  <div class="content">
-    <div class="">
-      <h2>蛋白相互作用图</h2>
-
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+      <appLeftMenu></appLeftMenu>
+    </el-aside>
+    <el-main>
       <div class="">
-        <svg width="800" height="800"></svg>
-      </div>
-    </div>
-  </div>
+        <h2>蛋白相互作用图</h2>
 
+        <div class="">
+          <svg width="800" height="800"></svg>
+        </div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
 import * as d3 from 'd3'
+import appLeftMenu from './app_leftMenu.vue'
 
 export default {
   data () {
@@ -20,6 +25,7 @@ export default {
     }
   },
   components: {
+    appLeftMenu
   },
   watch: {
     '$route': 'initD3'
@@ -126,11 +132,6 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  width: 60%;
-  padding: 0 20px;
-  margin: 19px auto;
-}
 .cursor-pointer{
   cursor: pointer;
 }

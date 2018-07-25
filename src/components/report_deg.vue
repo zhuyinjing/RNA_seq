@@ -390,14 +390,18 @@ export default {
 
         table.draw()
 
-        let degGeneSum = table.column(0, { search:'applied' } ).data().length
-        let degFilterArgs = {
-          pvalue: self.maxpval?self.maxpval:this.originFilterArgs.pvalue,
-          FDR: self.maxfdr?self.maxfdr:this.originFilterArgs.FDR,
-          log2FoldChange: self.minfc?self.minfc:this.originFilterArgs.log2FoldChange
+        let degFilterData = table.column(0, { search:'applied' } ).data()
+        // 判断 degFilterData 是否存在 是为了 在没有进行筛选时 页面 destroyed 会报错 length undefined
+        if (degFilterData) {
+          let degGeneSum = degFilterData.length
+          let degFilterArgs = {
+            pvalue: self.maxpval?self.maxpval:this.originFilterArgs.pvalue,
+            FDR: self.maxfdr?self.maxfdr:this.originFilterArgs.FDR,
+            log2FoldChange: self.minfc?self.minfc:this.originFilterArgs.log2FoldChange
+          }
+          self.$store.commit("setdegGeneSum", degGeneSum)
+          self.$store.commit("setdegFilterArgs", degFilterArgs)
         }
-        self.$store.commit("setdegGeneSum", degGeneSum)
-        self.$store.commit("setdegFilterArgs", degFilterArgs)
     },
     initTable (data) {
       let self = this

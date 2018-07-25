@@ -24,11 +24,12 @@ const enrichment_analysis = resolve => require(['@/components/enrichment_analysi
 const plotCluster = resolve => require(['@/components/plotCluster'], resolve)
 const keggbubble = resolve => require(['@/components/keggbubble'], resolve)
 const plotPCA = resolve => require(['@/components/plotPCA'], resolve)
-const app = resolve => require(['@/components/app'], resolve)
 const app_heatmap_input = resolve => require(['@/components/app_heatmap_input'], resolve)
 const app_heatmap = resolve => require(['@/components/app_heatmap'], resolve)
 const app_ppi_input = resolve => require(['@/components/app_ppi_input'], resolve)
 const app_ppi = resolve => require(['@/components/app_ppi'], resolve)
+const app_heatmap_input_project = resolve => require(['@/components/app_heatmap_input_project'], resolve)
+const report_ma_plot = resolve => require(['@/components/report_ma_plot'], resolve)
 
 Vue.use(Router)
 
@@ -161,11 +162,6 @@ export default new Router({
       component: plotPCA
     },
     {
-      path: '/app',
-      name: 'app',
-      component: app
-    },
-    {
       path: '/app_heatmap_input',
       name: 'app_heatmap_input',
       component: app_heatmap_input
@@ -184,6 +180,21 @@ export default new Router({
       path: '/app_ppi',
       name: 'app_ppi',
       component: app_ppi
+    },
+    {
+      path: '/report_ma_plot',
+      name: 'report_ma_plot',
+      component: report_ma_plot
+    },
+    {
+      path: '/app_heatmap_input_project',
+      name: 'app_heatmap_input_project',
+      component: app_heatmap_input_project
+    },
+    {
+      path: '/app_heatmap_project',
+      name: 'app_heatmap_project',
+      component: app_heatmap
     },
   ]
 })

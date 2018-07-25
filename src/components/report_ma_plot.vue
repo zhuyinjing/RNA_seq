@@ -9,55 +9,36 @@
       <degComp></degComp>
 
       <div class="">
-        <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
+        <p>MA plot 展示了基因在样本间的表达量丰度和表达量变化之间的关系。MA plot 的 X 轴是基因在比对的两类样本中的丰度平均值，Y 轴是为 log2(表达差异倍数取)，Y 轴是在衡量基因表达量的变化，表明一个基因在实验组中上调还是下调。例如 A vs B 的差异表达基因 G，在样本 A 中的表达量为 500，在样本 B 中的表达量为 2000，则 X 轴坐标为是
+        <p>$$  \frac{500 + 2000}{2} = 1250 $$</p>
+        Y 轴坐标为
+        <p>$$ \log_{2}{\frac{500}{2000}} = -2 $$</p>
 
-        <div>
-              <div class="yrange display-inline-block vertical-align-top" v-show="rangeShow">
-                <el-slider
-                v-model="yTop"
-                :step="0.1"
-                :min="xRightOptions.min"
-                :max="xRightOptions.max"
-                 vertical
-                :style="{marginTop: '26px',marginLeft: '-20px',height: xRightOptions.height + 'px'}"
-                @change="xLeftChange()"
-                >
-              </el-slider>
-              </div>
-
+        <div class="min-width-div">
               <div id="canvas" class="display-inline-block vertical-align-top"></div>
 
               <div class="clear"></div>
-
-              <div class="" v-show="rangeShow">
-                  <el-slider
-                  v-model="xLeft"
-                  :step="0.1"
-                  :min="xLeftOptions.min"
-                  :max="xLeftOptions.max"
-                  :style="{width: xLeftOptions.width + 'px', marginLeft: (xLeftOptions.width + 50) + 'px'}"
-                  @change="xLeftChange()"
-                  >
-                </el-slider>
-              </div>
 
               <table class="gridtable" v-show="rangeShow">
                 <tr>
                     <th>参数</th><th>操作</th>
                 </tr>
                 <tr>
-                  <td>y轴显示</td>
+                  <td>pvalue &le;</td>
                   <td>
-                    <el-switch
-                      style="display: block"
-                      v-model="xvalueShow"
-                      active-color="#409EFF"
-                      inactive-color="#409EFF"
-                      active-text=" -log10(pvalue)"
-                      inactive-text="-log10(padj)"
-                      @change="xvaluechange"
-                    >
-                    </el-switch>
+                    <el-input-number size="mini" v-model="pvalue" :step="0.1" @change="xLeftChange"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>FDR &le;</td>
+                  <td>
+                    <el-input-number size="mini" v-model="FDR" :step="0.1" @change="xLeftChange"></el-input-number>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Log2FoldChange (绝对值) &ge;</td>
+                  <td>
+                    <el-input-number size="mini" v-model="log2FoldChange" :step="0.1" @change="xLeftChange"></el-input-number>
                   </td>
                 </tr>
                 <tr>
@@ -77,18 +58,6 @@
                   <td>显示基因个数</td>
                   <td>
                     <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Log2FoldChange</td>
-                  <td>
-                    <el-input-number size="mini" :min="0" v-model="xLeft" :step="0.1" @change="xLeftChange"></el-input-number>
-                  </td>
-                </tr>
-                <tr>
-                  <td>-log10(pvalue)</td>
-                  <td>
-                    <el-input-number size="mini" :min="0" v-model="yTop" :step="0.1" @change="xLeftChange"></el-input-number>
                   </td>
                 </tr>
                 <tr>
@@ -153,39 +122,19 @@ export default {
       rangeShow: false,
       showNum: 3000,
       arr: [],
-      xvalueShow: true,
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
-      xmin: -3,
-      xmax: 3,
-      ymin: 0,
-      ymax: 12,
+      xmin: -2,
+      xmax: 8000,
+      ymin: -3,
+      ymax: 3,
       radius: 1.5,
       width: 800,
       height: 600,
-      xLeftOptions: {
-        eventType: 'auto',
-        width: 350,
-        height: 6,
-        dotSize: 16,
-        dotHeight: null,
-        dotWidth: null,
-        min: 0,
-        max: 3
-      },
-      xRightOptions: {
-        eventType: 'auto',
-        width: 5,
-        height: 550,
-        dotSize: 16,
-        dotHeight: null,
-        dotWidth: null,
-        min: 2,
-        max: 4
-      },
-      pvalueArr: [],
-      padjArr: [],
+      pvalue: 0.05,
+      FDR: 0.05,
+      log2FoldChange: 1,
     }
   },
   components: {
@@ -195,13 +144,15 @@ export default {
   },
   mounted () {
     this.getData()
+    this.$nextTick(function() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+    })
   },
   watch: {
     '$route': 'getDataReset'
   },
   methods: {
     getDataReset () {
-      this.xvalueShow = true
       this.geneNameShow = false
       this.showNum = 3000
       this.xLeft = 1
@@ -218,21 +169,10 @@ export default {
     getData () {
       let _case = sessionStorage.getItem('_case')
       let _control = sessionStorage.getItem('_control')
-      this.axios.get('/server/volcano?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&gene_num=' + this.showNum).then((res) => {
+      this.axios.get('/server/ma_data?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&gene_num=' + this.showNum).then((res) => {
         if (res.data.length > 0) {
-          this.pvalueArr = []
-          this.padjArr = []
           res.data = res.data.slice(1)
-          for (let i = 0;i< res.data.length; i++) {
-            let val = res.data[i]
-            this.pvalueArr.push([val[1] - 0, Math.log10(val[2]) * -1, val[4]])
-            this.padjArr.push([val[1] - 0, Math.log10(val[3]) * -1, val[4]])
-          }
-          if (this.xvalueShow === true) {
-            this.arr = this.pvalueArr
-          } else {
-            this.arr = this.padjArr
-          }
+          this.arr = res.data
           this.rangeShow = true
           this.initD3()
           this.xLeftChange()
@@ -259,12 +199,7 @@ export default {
       let self = this
       let width = this.width
       let height = this.height
-      let padding = {left: 30, right: 30, top: 30, bottom: 30}
-      this.xLeftOptions.max = this.xmax
-      this.xRightOptions.min = this.ymin
-      this.xRightOptions.max = this.ymax
-      this.xLeftOptions.width = this.width / 2  - 40
-      this.xRightOptions.height = this.height  - 50
+      let padding = {left: 50, right: 30, top: 30, bottom: 30}
       let svg = d3.select('#canvas')
         .append('svg')
         .attr('id', 'svg')
@@ -285,19 +220,34 @@ export default {
         .style('font-size', '12px')
       	.style('font-weight', 'bold')
       	.text('')
+      // 封闭的 box 上边和右边两条线
+      svg.append("rect")
+        .attr("x", 50)
+        .attr("y", 0)
+        .attr("width", width - 50)
+        .attr("height", height - 30)
+        .attr("fill", 'none')
+        .attr("stroke", 'black')
+      // svg.append("line")
+      //   .attr('x1', padding.left + 0)
+      //   .attr('y1', padding.bottom + 0)
+      //   .attr('x2', width)
+      //   .attr('y2', padding.bottom)
+      //   .style("stroke", "#000000")
+      //   .attr("stroke-width", "0.2")
       let circles = svg.selectAll('circle')
         .data(self.arr)
         .enter()
         .append('circle')
         .attr('cx', (d) => {
-          return padding.left + xScale(d[0])
+          return padding.left + xScale(d[1])
         })
         .attr('cy', (d) => {
-          return padding.bottom + yScale(d[1])
+          return padding.bottom + yScale(d[2])
         })
         .attr('r', self.radius)
         .on('mouseover', function (d, i) {
-          return tooltip.style('visibility', 'visible').text(d[2])
+          return tooltip.style('visibility', 'visible').text(d[5])
         })
         .on('mousemove', function (d, i) {
           return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
@@ -307,48 +257,27 @@ export default {
         })
       let xAxis = d3.axisBottom()
         .scale(xScale)
+        // .ticks(3)
       let yAxis = d3.axisLeft()
         .scale(yScale)
+        // .ticks(3)
       svg.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(' + padding.left + ',' + (height - padding.bottom) + ')')
         .call(xAxis)
         .append('text')
-        .text('Log2FoldChange')
+        .text('baseMean')
         .attr('fill', '#000')
-        .attr('transform', 'translate('+ width/2.2 + ', 28)')
+        .style('font-size', '14px')
+        .attr('transform', 'translate('+ width/2.2 + ', 30)')
       svg.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
         .call(yAxis)
-        .append('text')
-        .text('-log10(pvalue)')
+      svg.append('text')
+        .text('log2FoldChange')
         .attr('fill', '#000')
-        .attr('transform', 'translate(' + padding.left + ', -10)')
-      // 阈值分割线
-      svg.append('line')
-        .attr('x1', padding.left + xScale(self.xLeft))
-        .attr('y1', padding.bottom + yScale(0))
-        .attr('x2', padding.left + xScale(self.xLeft))
-        .attr('y2', padding.bottom + yScale(self.ymax))
-        .attr("stroke","#999")
-        .style("stroke-dasharray", "5")
-
-      svg.append('line')
-        .attr('x1', padding.left + xScale(-self.xLeft))
-        .attr('y1', padding.bottom + yScale(0))
-        .attr('x2', padding.left + xScale(-self.xLeft))
-        .attr('y2', padding.bottom + yScale(self.ymax))
-        .attr("stroke","#999")
-        .style("stroke-dasharray", "5")
-
-      svg.append('line')
-        .attr('x1', padding.left + xScale(self.xmin))
-        .attr('y1', padding.bottom + yScale(self.yTop))
-        .attr('x2', padding.left + xScale(self.xmax))
-        .attr('y2', padding.bottom + yScale(self.yTop))
-        .attr("stroke","#999")
-        .style("stroke-dasharray", "5")
+        .attr('transform', 'translate(15, '+ height / 2 +') rotate(-90)')
 
       //  显示满足条件的gene名称
       if (self.geneNameShow === true) {
@@ -357,16 +286,18 @@ export default {
           .enter()
           .append('text')
           .filter((d) => {
-            return d[1] > self.yTop && Math.abs(d[0]) > self.xLeft
+            if (Math.abs(d[2]) >= self.log2FoldChange) {
+              return d[3] <= self.pvalue && d[4] <= self.FDR
+            }
           })
           .text((d) => {
-            return d[2]
+            return d[5]
           })
           .attr('x', (d) => {
-            return padding.left + xScale(d[0]) + 5
+            return padding.left + xScale(d[1]) + 5
           })
           .attr('y', (d) => {
-            return padding.bottom + yScale(d[1])
+            return padding.bottom + yScale(d[2])
           })
           .attr('fill', '#3497db')
           .style('font-size', '6px')
@@ -379,35 +310,25 @@ export default {
     xLeftChange () {
       let self = this
       let svg = d3.selectAll('circle')
-        .classed('green', (d, i) => {
-          return d[0] < -self.xLeft && d[1] > self.yTop
-        })
         .classed('red', (d, i) => {
-          return d[0] > self.xLeft && d[1] > self.yTop
+          if (Math.abs(d[2]) >= self.log2FoldChange) {
+            return d[3] <= self.pvalue && d[4] <= self.FDR
+          }
         })
-      // if (this.geneNameShow === true) {
         this.initD3()
-      // }
     },
     // 基因名显示的时候 circle颜色不变
     circleColor () {
       let self = this
       let svg = d3.selectAll('circle')
-        .classed('green', (d, i) => {
-          return d[0] < -self.xLeft && d[1] > self.yTop
-        })
         .classed('red', (d, i) => {
-          return d[0] > self.xLeft && d[1] > self.yTop
+          if (Math.abs(d[2]) >= self.log2FoldChange) {
+            return d[3] <= self.pvalue && d[4] <= self.FDR
+          }
         })
     },
     xvaluechange () {
-      if (this.xvalueShow === true) {
-        this.arr = this.pvalueArr
-        this.initD3()
-      } else {
-        this.arr = this.padjArr
-        this.initD3()
-      }
+      this.initD3()
     }
   }
 }
@@ -461,6 +382,9 @@ path{
 .clear {
   clear: both;
 }
+.min-width-div {
+  min-width: 900px;
+}
 </style>
 <style>
 .domain,.tick line {
@@ -469,9 +393,6 @@ path{
 }
 .margin-0-auto {
   margin: 0 auto;
-}
-.green {
-  fill: green;
 }
 .red {
   fill: red;
@@ -483,7 +404,7 @@ path{
   margin-top: -25px;
 }
 .yrange {
-  width:0px;
+  width:5px;
 }
 .display-inline-block {
   float: left;

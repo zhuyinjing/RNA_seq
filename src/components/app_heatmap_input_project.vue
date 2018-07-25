@@ -6,64 +6,44 @@
     <el-main>
       <div>
         <div class="margin-top-10">
-          <div class="labelStyle">
-            <label for="maxpval" class="label-font">基因表达矩阵</label>
-            <i class="el-icon-question label-font cursor-pointer"></i>
+          <div class="labelStyle vertical-align-top">
+            <label for="maxpval" class="label-font">输入基因 ID 列表</label>
           </div>
-          <div class="inline-block">
-            <el-radio v-model="radioMatrix" label="content">手动输入</el-radio>
-            <el-radio v-model="radioMatrix" label="file">上传文件</el-radio>
-          </div>
-        </div>
-        <div class="margin-top-10" v-show="radioMatrix === 'content'">
-          <div class="labelStyle"></div>
           <div class="inline-block" style="width:800px;">
             <el-input
               type="textarea"
               :rows="20"
-              placeholder="请输入内容"
+              placeholder="请输入 ID 列表"
               v-model="textareaMatrix">
             </el-input>
-          </div>
-          <el-button type="text" @click="exampleMatrixClick()">(example)</el-button>
-        </div>
-        <div class="margin-top-10" v-show="radioMatrix === 'file'">
-          <div class="labelStyle"></div>
-          <div class="inline-block" style="width:300px;">
-            <input type="file" name="" ref="fileMatrix" accept=".csv, .tsv">
-            <p class="span-font">支持文件类型：tsv, csv</p>
           </div>
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">分组信息</label>
-            <i class="el-icon-question label-font cursor-pointer"></i>
+            <label for="maxpval" class="label-font">选择项目</label>
           </div>
-          <div class="inline-block">
-            <el-radio v-model="radioGroup" label="content">手动输入</el-radio>
-            <el-radio v-model="radioGroup" label="file">上传文件</el-radio>
-          </div>
-        </div>
-        <div class="margin-top-10" v-show="radioGroup === 'content'">
-          <div class="labelStyle"></div>
           <div class="inline-block" style="width:800px;">
-            <el-input
-              type="textarea"
-              :rows="5"
-              placeholder="请输入内容"
-              v-model="textareaGroup">
-            </el-input>
-          </div>
-          <el-button type="text" @click="exampleGroupClick()">(example)</el-button>
-        </div>
-        <div class="margin-top-10" v-show="radioGroup === 'file'">
-          <div class="labelStyle"></div>
-          <div class="inline-block" style="width:300px;">
-            <input type="file" name="" ref="fileGroup" accept=".csv, .tsv">
-            <p class="span-font">支持文件类型：tsv, csv</p>
+            <el-select class="input-style" v-model="project" placeholder="请选择" @change="projectChange()">
+              <el-option value="1">1</el-option>
+              <el-option value="2">2</el-option>
+            </el-select>
           </div>
         </div>
-
+        <div class="margin-top-10">
+          <div class="labelStyle">
+            <label for="maxpval" class="label-font">选择分组</label>
+          </div>
+          <div class="inline-block" style="width:800px;">
+            <el-select v-model="group" multiple placeholder="请选择">
+              <el-option
+                v-for="item in groups"
+                :key="item"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
         <div class="">
           <div class="margin-top-10">
             <div class="labelStyle">
@@ -163,23 +143,20 @@
 </template>
 
 <script>
-import * as d3 from 'd3'
 import appLeftMenu from './app_leftMenu.vue'
 
 export default {
   data () {
     return {
       textareaMatrix: '',
-      textareaGroup: '',
       row_distance: 'euclidean',
       row_linkage: 'ward',
       column_distance: 'euclidean',
       column_linkage: 'ward',
-      radioMatrix: 'content',
-      radioGroup: 'content',
-      MatrixIsFile: true,
-      GroupIsFile: true,
       loading: null,
+      project: 1,
+      group: [],
+      groups: [3, 4],
     }
   },
   components: {
@@ -189,42 +166,12 @@ export default {
   },
   methods: {
     submit () {
-      // 判断 基因表达矩阵 是否为空
-      if (this.radioMatrix === 'file') {
-        if (!this.$refs.fileMatrix.files[0]) {
-          this.$message.error('请上传基因表达矩阵文件!');
-          return
-        }
-        if (/text\/(c|t)sv$/.test(this.$refs.fileMatrix.files[0].type) === false) {
-          this.$message.error('基因表达矩阵文件格式不对，请重新上传!');
-          return
-        }
-        this.MatrixIsFile = true
-      } else {
-        if (!this.textareaMatrix.trim()) {
-          this.$message.error('请输入基因表达矩阵!');
-          return
-        }
-        this.MatrixIsFile = false
+      // 判断 基因 ID 列表 是否为空
+      if (!this.textareaMatrix.trim()) {
+        this.$message.error('请输入基因 ID 列表!');
+        return
       }
-      //  判断 分组信息 是否为空
-      if (this.radioGroup === 'file') {
-        if (!this.$refs.fileGroup.files[0]) {
-          this.$message.error('请上传分组信息文件!');
-          return
-        }
-        if (/text\/(c|t)sv$/.test(this.$refs.fileGroup.files[0].type) === false) {
-          this.$message.error('分组信息文件格式不对，请重新上传!');
-          return
-        }
-        this.GroupIsFile = true
-      } else {
-        if (!this.textareaGroup) {
-          this.$message.error('请输入分组信息!');
-          return
-        }
-        this.GroupIsFile = false
-      }
+      this.textareaMatrix = this.textareaMatrix.replace(/(\,|\s)+/g, '\n')
       this.loading = this.$loading({
         lock: true,
         text: '文件正在上传中...请稍等...可能需要等待1分钟左右的时间...',
@@ -247,22 +194,16 @@ export default {
         if (res.data.message_type === 'success') {
           this.$message.success('热图生成完成!');
           this.$store.commit('setheatmapJson', res.data.message)
-          this.$router.push({'name': 'app_heatmap'})
+          this.$router.push({'name': 'app_heatmap_project'})
         } else {
           this.$message.success('请求错误!');
         }
         this.loading.close()
       })
     },
-    exampleMatrixClick () {
-      d3.text('/static/matrix.txt', (data) => {
-        this.textareaMatrix = data
-      })
-    },
-    exampleGroupClick () {
-      d3.text('/static/group.txt', (data) => {
-        this.textareaGroup = data
-      })
+    projectChange () {
+      this.group = []
+      this.groups = [1, 2, 3, 4, 5, 6]
     },
   }
 }
@@ -288,14 +229,5 @@ export default {
 }
 .vertical-align-top {
   vertical-align: top;
-}
-.span-font {
-  font-size: 12px;
-  color: #54a0ff;
-}
-</style>
-<style media="screen">
-.color_scales {
-  z-index: 9 !important;
 }
 </style>
