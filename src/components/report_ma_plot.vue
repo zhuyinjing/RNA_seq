@@ -125,7 +125,7 @@ export default {
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
-      xmin: -2,
+      xmin: -100,
       xmax: 8000,
       ymin: -3,
       ymax: 3,
@@ -141,6 +141,13 @@ export default {
     leftMenu,
     degComp,
     imgMenuShowComp
+  },
+  created () {
+    // this.ymin = - this.$store.state.degFilterArgs.log2FoldChange * 3
+    // this.ymax = this.$store.state.degFilterArgs.log2FoldChange * 3
+    this.pvalue = this.$store.state.degFilterArgs.pvalue
+    this.FDR = this.$store.state.degFilterArgs.FDR
+    this.log2FoldChange = this.$store.state.degFilterArgs.log2FoldChange
   },
   mounted () {
     this.getData()
@@ -209,7 +216,7 @@ export default {
         .domain([this.xmin, this.xmax])
         .range([0, width - padding.left - padding.right])
       let yScale = d3.scaleLinear()
-        .domain([this.ymin, this.ymax])
+        .domain([this.ymin - 0.2, this.ymax])
         .range([height - padding.top - padding.bottom, 0])
       let tooltip = d3.select('body')
       	.append('div')
@@ -228,17 +235,20 @@ export default {
         .attr("height", height - 30)
         .attr("fill", 'none')
         .attr("stroke", 'black')
-      // svg.append("line")
-      //   .attr('x1', padding.left + 0)
-      //   .attr('y1', padding.bottom + 0)
-      //   .attr('x2', width)
-      //   .attr('y2', padding.bottom)
-      //   .style("stroke", "#000000")
-      //   .attr("stroke-width", "0.2")
+      svg.append('line')
+        .attr('x1', padding.left + xScale(self.xmin))
+        .attr('y1', padding.bottom + yScale(0))
+        .attr('x2', padding.left * 2 + xScale(self.xmax))
+        .attr('y2', padding.bottom + yScale(0))
+        .attr("stroke","red")
+      // .style("stroke-dasharray", "5")
       let circles = svg.selectAll('circle')
         .data(self.arr)
         .enter()
         .append('circle')
+        .filter((d) => {
+          return d[2] > self.ymin && d[2] < self.ymax
+        })
         .attr('cx', (d) => {
           return padding.left + xScale(d[1])
         })
@@ -246,6 +256,64 @@ export default {
           return padding.bottom + yScale(d[2])
         })
         .attr('r', self.radius)
+        .on('mouseover', function (d, i) {
+          return tooltip.style('visibility', 'visible').text(d[5])
+        })
+        .on('mousemove', function (d, i) {
+          return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+        })
+        .on('mouseout', function (d, i) {
+          return tooltip.style('visibility', 'hidden')
+        })
+      // 超出y轴最小值用倒三角形表示
+      svg.selectAll('.triangle')
+        .data(self.arr)
+        .enter()
+        .append("path")
+        .filter((d) => {
+          return d[2] < self.ymin
+        })
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(20))
+        .attr("transform", function(d) {
+          return "translate("+ (padding.left + xScale(d[1])) +","+ (padding.bottom + yScale(self.ymin)) +")" + "rotate(180)"
+        })
+        .attr("fill", "none")
+        .attr("stroke", (d, i) => {
+          if (Math.abs(d[2]) >= self.log2FoldChange && d[3] <= self.pvalue && d[4] <= self.FDR) {
+            return "red"
+          } else {
+            return "black"
+          }
+        })
+        .on('mouseover', function (d, i) {
+          return tooltip.style('visibility', 'visible').text(d[5])
+        })
+        .on('mousemove', function (d, i) {
+          return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+        })
+        .on('mouseout', function (d, i) {
+          return tooltip.style('visibility', 'hidden')
+        })
+      // 超出y轴最小值用正三角形表示
+      svg.selectAll('.triangle')
+        .data(self.arr)
+        .enter()
+        .append("path")
+        .filter((d) => {
+          return d[2] > self.ymax
+        })
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(20))
+        .attr("transform", function(d) {
+          return "translate("+ (padding.left + xScale(d[1])) +","+ (padding.bottom + yScale(self.ymax)) +")"
+        })
+        .attr("fill", "none")
+        .attr("stroke", (d, i) => {
+          if (Math.abs(d[2]) >= self.log2FoldChange && d[3] <= self.pvalue && d[4] <= self.FDR) {
+            return "red"
+          } else {
+            return "black"
+          }
+        })
         .on('mouseover', function (d, i) {
           return tooltip.style('visibility', 'visible').text(d[5])
         })
@@ -278,6 +346,9 @@ export default {
         .text('log2FoldChange')
         .attr('fill', '#000')
         .attr('transform', 'translate(15, '+ height / 2 +') rotate(-90)')
+
+      // 删除 domain 两条线
+      d3.selectAll('.domain').remove()
 
       //  显示满足条件的gene名称
       if (self.geneNameShow === true) {

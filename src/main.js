@@ -171,6 +171,9 @@ if (sessionStorage.degFilterArgs) {
 if (sessionStorage.menuShow) {
   store.state.menuShow = JSON.parse(sessionStorage.menuShow)
 }
+if (sessionStorage.appmenuShow) {
+  store.state.appmenuShow = JSON.parse(sessionStorage.appmenuShow)
+}
 
 axios.get('/getUser').then((res) => {
   store.commit('setusername', res.data)

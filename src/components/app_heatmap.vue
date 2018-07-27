@@ -1,9 +1,11 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.appmenuShow" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <appLeftMenu></appLeftMenu>
     </el-aside>
     <el-main>
+      <appImgMenuShowComp></appImgMenuShowComp>
+
         <div>
           <h2>基因差异表达热图</h2>
 
@@ -20,6 +22,16 @@
           </div>
           <div style="clear:both"></div>
 
+          <div class="" v-if="textarea">
+            <p>WARN：下列基因在所选择的项目及样本中无表达信息，这可能是由于这些基因在所选择的样本中表达水平过低导致的</p>
+            <el-input
+              type="textarea"
+              :rows="10"
+              placeholder=""
+              v-model="textarea">
+            </el-input>
+          </div>
+
         </div>
     </el-main>
   </el-container>
@@ -29,6 +41,7 @@
 <script>
 import * as d3 from 'd3'
 import appLeftMenu from './app_leftMenu.vue'
+import appImgMenuShowComp from './appImgMenuShowComp.vue'
 
 import Highcharts from 'highcharts/highstock';
 export default {
@@ -41,16 +54,21 @@ export default {
       visible: 'hidden',
       height: 5,
       data: [],
+      textarea: null
     }
   },
   components: {
-    appLeftMenu
+    appLeftMenu,
+    appImgMenuShowComp
   },
   watch: {
     '$route': 'routerChange'
   },
   created () {
     this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
+    if (this.$store.state.heatmapJson.invalidGeneList) {
+      this.textarea = this.$store.state.heatmapJson.invalidGeneList.join("\n")
+    }
   },
   mounted () {
     this.initchart()
@@ -59,9 +77,6 @@ export default {
     routerChange () {
       this.$store.state.heatmapJson.heatmap_json_string = JSON.parse(this.$store.state.heatmapJson.heatmap_json_string)
       this.initchart()
-    },
-    draw () {
-      console.log(this.$store.state.checked);
     },
     initchart () {
       let stages = this.$store.state.heatmapJson.stages

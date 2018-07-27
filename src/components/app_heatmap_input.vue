@@ -1,9 +1,11 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.appmenuShow" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <appLeftMenu></appLeftMenu>
     </el-aside>
     <el-main>
+      <appImgMenuShowComp></appImgMenuShowComp>
+
       <div>
         <div class="margin-top-10">
           <div class="labelStyle">
@@ -165,6 +167,7 @@
 <script>
 import * as d3 from 'd3'
 import appLeftMenu from './app_leftMenu.vue'
+import appImgMenuShowComp from './appImgMenuShowComp.vue'
 
 export default {
   data () {
@@ -183,7 +186,8 @@ export default {
     }
   },
   components: {
-    appLeftMenu
+    appLeftMenu,
+    appImgMenuShowComp
   },
   mounted () {
   },

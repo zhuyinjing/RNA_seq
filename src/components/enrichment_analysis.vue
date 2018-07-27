@@ -162,14 +162,40 @@ export default {
     '$route': 'resetTable'
   },
   created () {
-    if (sessionStorage.getItem('deg' + this.$store.state._case + this.$store.state._control)) {
-      this.deg = JSON.parse(sessionStorage.getItem('deg' + this.$store.state._case + this.$store.state._control))
-    }
+    // 从 indexeddb 获取 deg 列表 点击 + 号可以查看 name
+    this.getdegList()
   },
   mounted () {
     this.handleClick2()
   },
   methods: {
+    getdegList () {
+      let _case = sessionStorage.getItem('_case')
+      let _control = sessionStorage.getItem('_control')
+      let dbName = "deg"
+      var request = indexedDB.open(dbName)
+      request.onerror =  (e) => {}
+      request.onupgradeneeded = (e) => {
+        this.db = e.target.result
+        var objectStore = this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
+      }
+      request.onsuccess = (e) => {
+        console.log("success!");
+        this.db = e.target.result
+        this.setDeg(_case, _control)
+      }
+      request.onerror = (e) => {
+        console.log("error!");
+      }
+    },
+    setDeg (_case, _control) {
+      var tx = this.db.transaction('customers', 'readwrite')
+      var store = tx.objectStore('customers')
+      var req = store.get('deg' + _case + _control)
+      req.onsuccess = (e) => {
+        this.deg = e.target.result.value
+      }
+    },
     resetTable () {
       this.activeName = '输入基因列表'
       if ( $.fn.dataTable.isDataTable( '#example0' ) ) {

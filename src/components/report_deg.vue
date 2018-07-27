@@ -3,8 +3,8 @@
     <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
-    <el-main>
-      <imgMenuShowComp></imgMenuShowComp>
+    <el-main v-loading="tableLoading" element-loading-text="数据正在加载中，大概需要1分钟左右的时间......">
+      <imgMenuShowComp v-show="tableShow"></imgMenuShowComp>
 
       <degComp></degComp>
 
@@ -128,12 +128,31 @@ export default {
       typeRadio: 'all',
       originFilterArgs: {},
       savedisabled: false,
+      tableLoading: false,
+      db: null,
     }
   },
   components: {
     leftMenu,
     degComp,
     imgMenuShowComp
+  },
+  created () {
+    // open indexeddb
+    // let dbName = "deg"
+    // var request = window.indexedDB.open(dbName)
+    // request.onerror =  (e) => {}
+    // request.onupgradeneeded = (e) => {
+    //   this.db = e.target.result
+    //   this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
+    // }
+    // request.onsuccess = (e) => {
+    //   console.log("success!");
+    //   this.db = e.target.result
+    // }
+    // request.onerror = (e) => {
+    //   console.log("error!");
+    // }
   },
   mounted () {
     this.getTabelValue()
@@ -423,8 +442,10 @@ export default {
     getTabelValue () {
       let _case = sessionStorage.getItem('_case')
       let _control = sessionStorage.getItem('_control')
+      this.tableLoading = true
       this.axios.get('/server/deg?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&sig_only=true').then((res) => {
         if (res.data.message_type === 'success') {
+          this.tableLoading = false
           for (let i = 0;i < res.data.message.data.length;i++) {
             res.data.message.data[i].baseMean = parseFloat(res.data.message.data[i].baseMean).toFixed(3) - 0
             res.data.message.data[i].log2FoldChange = parseFloat(res.data.message.data[i].log2FoldChange).toFixed(3) - 0
@@ -432,19 +453,53 @@ export default {
             res.data.message.data[i].padj = parseFloat(res.data.message.data[i].padj).toFixed(3) - 0
           }
           this.initTable(res.data.message.data)
-          // deg 表存到缓存中 方便富集分析点击加号获取 geneName 和 log2FC
-          sessionStorage.setItem('deg' + _case + _control, JSON.stringify(res.data.message.data))
+          // deg 列表存到 indexedDB 里
+          let temp = {
+            name: 'deg' + _case + _control,
+            value: res.data.message.data
+          }
+          this.saveindexedDB(temp, _case, _control)
           // degGeneSum 存在缓存中 筛选条件card 显示
           this.$store.commit("setdegGeneSum", res.data.message.data.length)
           this.originFilterArgs = res.data.message.param
           this.$store.commit("setdegFilterArgs", res.data.message.param)
         } else {
+          this.tableLoading = false
           this.$message.error(res.data.message);
         }
       })
     },
-    backProjectList () {
-      this.$router.push({'name': 'report'})
+    saveindexedDB (data, _case, _control) {
+      let customerData = data
+      let dbName = "deg"
+      var request = indexedDB.open(dbName)
+      request.onerror =  (e) => {}
+      request.onupgradeneeded = (e) => {
+        this.db = e.target.result
+        var objectStore = this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
+      }
+      request.onsuccess = (e) => {
+        console.log("success!");
+        this.db = e.target.result
+        this.updateDBvalue(data,_case, _control)
+      }
+      request.onerror = (e) => {
+        console.log("error!");
+      }
+    },
+    updateDBvalue (data, _case, _control) {
+      var tx = this.db.transaction('customers', 'readwrite');
+      var store = tx.objectStore('customers');
+      var req = store.get('deg' + _case + _control);
+      req.onsuccess = (e) => {
+          var degData = e.target.result;
+          if (!degData) {
+            store.add(data);
+          } else {
+            degData.value = data.value;
+            store.put(degData);
+          }
+      }
     },
   }
 }

@@ -5,7 +5,7 @@ import Vue from 'vue'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    username: 'test',
+    username: '',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -32,6 +32,7 @@ export default new Vuex.Store({
       log2FoldChange: 1
     },
     menuShow: true,
+    appmenuShow: true,
   },
   mutations: {
     setusername: (state, data) => {
@@ -92,6 +93,10 @@ export default new Vuex.Store({
     setmenuShow: (state, data) => {
       sessionStorage.setItem('menuShow', data)
       state.menuShow = data
+    },
+    setappmenuShow: (state, data) => {
+      sessionStorage.setItem('appmenuShow', data)
+      state.appmenuShow = data
     },
   }
 })

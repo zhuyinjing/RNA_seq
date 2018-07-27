@@ -1,9 +1,11 @@
 <template>
   <el-container style="height:calc(100% - 62px);margin-top:2px">
-    <el-aside style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+    <el-aside v-show="$store.state.appmenuShow" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <appLeftMenu></appLeftMenu>
     </el-aside>
     <el-main>
+      <appImgMenuShowComp></appImgMenuShowComp>
+
       <div>
         <div class="margin-top-10">
           <div class="labelStyle vertical-align-top">
@@ -24,8 +26,7 @@
           </div>
           <div class="inline-block" style="width:800px;">
             <el-select class="input-style" v-model="project" placeholder="请选择" @change="projectChange()">
-              <el-option value="1">1</el-option>
-              <el-option value="2">2</el-option>
+              <el-option :value="item.projectName" v-for="(item, index) in projects" :key="item.projectId">{{item.projectName}}</el-option>
             </el-select>
           </div>
         </div>
@@ -144,6 +145,7 @@
 
 <script>
 import appLeftMenu from './app_leftMenu.vue'
+import appImgMenuShowComp from './appImgMenuShowComp.vue'
 
 export default {
   data () {
@@ -154,56 +156,77 @@ export default {
       column_distance: 'euclidean',
       column_linkage: 'ward',
       loading: null,
-      project: 1,
+      projects: [],
+      project: null,
+      projectId: null,
       group: [],
-      groups: [3, 4],
+      groups: [],
     }
   },
   components: {
-    appLeftMenu
+    appLeftMenu,
+    appImgMenuShowComp
+  },
+  created () {
+    this.getGroupValue()
   },
   mounted () {
   },
   methods: {
+    getGroupValue () {
+      this.axios.get('/server/find_project_and_condition_num?username=' + this.$store.state.username).then((res) => {
+        this.projects = res.data
+        this.project = res.data[0]['projectName']
+        this.groups = res.data[0]['sample']
+        this.projectId = res.data[0]['projectId']
+      })
+    },
     submit () {
       // 判断 基因 ID 列表 是否为空
       if (!this.textareaMatrix.trim()) {
         this.$message.error('请输入基因 ID 列表!');
         return
       }
+      if (this.group.length === 0) {
+        this.$message.error('请选择分组!');
+        return
+      }
       this.textareaMatrix = this.textareaMatrix.replace(/(\,|\s)+/g, '\n')
       this.loading = this.$loading({
         lock: true,
-        text: '文件正在上传中...请稍等...可能需要等待1分钟左右的时间...',
+        text: '文件正在上传中...请稍等...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
-      formData.append('matrixFile', this.$refs.fileMatrix.files[0])
-      formData.append('columnFile', this.$refs.fileGroup.files[0])
-      formData.append('matrixText', this.textareaMatrix)
-      formData.append('columnText', this.textareaGroup)
+      formData.append('p', this.projectId)
+      formData.append('geneList', this.textareaMatrix)
+      formData.append('nameSampleList', this.group)
       formData.append('row_distance', this.row_distance)
-      formData.append('row_linkage', this.row_linkage)
       formData.append('column_distance', this.column_distance)
+      formData.append('row_linkage', this.row_linkage)
       formData.append('column_linkage', this.column_linkage)
-      formData.append('matrixIsFile', this.MatrixIsFile)
-      formData.append('columnIsFile', this.GroupIsFile)
-      this.axios.post('/server/upload_heatmap_file', formData).then((res) => {
+      this.axios.post('/server/upload_heatmap_by_project', formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.$message.success('热图生成完成!');
           this.$store.commit('setheatmapJson', res.data.message)
           this.$router.push({'name': 'app_heatmap_project'})
         } else {
-          this.$message.success('请求错误!');
+          this.$message.error(res.data.message);
         }
         this.loading.close()
       })
     },
     projectChange () {
       this.group = []
-      this.groups = [1, 2, 3, 4, 5, 6]
+      for (let i = 0;i < this.projects.length;i++) {
+        if (this.project === this.projects[i]['projectName']) {
+          this.projectId = this.projects[i]['projectId']
+          this.groups = this.projects[i]['sample']
+          return
+        }
+      }
     },
   }
 }

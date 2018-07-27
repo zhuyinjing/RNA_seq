@@ -45,6 +45,7 @@ export default {
           this.$router.push({'path': '/'})
           break
         case 'project':
+          sessionStorage.clear()
           this.activeIndex = 'project'
           sessionStorage.setItem('navbarItem', 'project')
           this.$router.push({'name': 'project_list'})
