@@ -72,27 +72,31 @@
               <label for="maxpval" class="label-font">基因距离计算方法</label>
             </div>
             <el-select class="input-style" v-model="row_distance" placeholder="请选择">
-              <el-option value="euclidean">euclidean</el-option>
-              <el-option value="dice">dice</el-option>
-              <el-option value="hamming">hamming</el-option>
-              <el-option value="jaccard">jaccard</el-option>
-              <el-option value="kulsinski">kulsinski</el-option>
-              <el-option value="matching">matching</el-option>
-              <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-              <el-option value="russellrao">russellrao</el-option>
-              <el-option value="sokalmichener">sokalmichener</el-option>
-              <el-option value="sokalsneath">sokalsneath</el-option>
-              <el-option value="yule">yule</el-option>
-              <el-option value="braycurtis">braycurtis</el-option>
-              <el-option value="canberra">canberra</el-option>
-              <el-option value="chebyshev">chebyshev</el-option>
-              <el-option value="cityblock">cityblock</el-option>
-              <el-option value="correlation">correlation</el-option>
-              <el-option value="cosine">cosine</el-option>
-              <el-option value="mahalanobis">mahalanobis</el-option>
-              <el-option value="minkowski">minkowski</el-option>
-              <el-option value="seuclidean">seuclidean</el-option>
-              <el-option value="sqeuclidean">sqeuclidean</el-option>
+              <el-option-group label="Favourites">
+                <el-option value="euclidean">euclidean</el-option>
+                <el-option value="correlation">correlation</el-option>
+              </el-option-group>
+              <el-option-group label="All">
+                <el-option value="braycurtis">braycurtis</el-option>
+                <el-option value="canberra">canberra</el-option>
+                <el-option value="chebyshev">chebyshev</el-option>
+                <el-option value="cityblock">cityblock</el-option>
+                <el-option value="cosine">cosine</el-option>
+                <el-option value="dice">dice</el-option>
+                <el-option value="hamming">hamming</el-option>
+                <el-option value="jaccard">jaccard</el-option>
+                <el-option value="kulsinski">kulsinski</el-option>
+                <el-option value="mahalanobis">mahalanobis</el-option>
+                <el-option value="minkowski">minkowski</el-option>
+                <el-option value="matching">matching</el-option>
+                <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+                <el-option value="russellrao">russellrao</el-option>
+                <el-option value="seuclidean">seuclidean</el-option>
+                <el-option value="sqeuclidean">sqeuclidean</el-option>
+                <el-option value="sokalmichener">sokalmichener</el-option>
+                <el-option value="sokalsneath">sokalsneath</el-option>
+                <el-option value="yule">yule</el-option>
+              </el-option-group>
             </el-select>
           </div>
           <div class="margin-top-10">
@@ -100,13 +104,13 @@
               <label for="maxfdr" class="label-font">基因linkage计算方法</label>
             </div>
             <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
-              <el-option value="ward">ward</el-option>
-              <el-option value="single">single</el-option>
-              <el-option value="complete">complete</el-option>
               <el-option value="average">average</el-option>
-              <el-option value="weighted">weighted</el-option>
               <el-option value="centroid">centroid</el-option>
+              <el-option value="complete">complete</el-option>
               <el-option value="median">median</el-option>
+              <el-option value="single">single</el-option>
+              <el-option value="ward">ward</el-option>
+              <el-option value="weighted">weighted</el-option>
           </el-select>
           </div>
           <div class="margin-top-10">
@@ -114,41 +118,45 @@
               <label for="minfc" class="label-font">样本距离计算方法</label>
             </div>
             <el-select class="input-style" v-model="column_distance" placeholder="请选择">
-              <el-option value="euclidean">euclidean</el-option>
-              <el-option value="dice">dice</el-option>
-              <el-option value="hamming">hamming</el-option>
-              <el-option value="jaccard">jaccard</el-option>
-              <el-option value="kulsinski">kulsinski</el-option>
-              <el-option value="matching">matching</el-option>
-              <el-option value="rogerstanimoto">rogerstanimoto</el-option>
-              <el-option value="russellrao">russellrao</el-option>
-              <el-option value="sokalmichener">sokalmichener</el-option>
-              <el-option value="sokalsneath">sokalsneath</el-option>
-              <el-option value="yule">yule</el-option>
-              <el-option value="braycurtis">braycurtis</el-option>
-              <el-option value="canberra">canberra</el-option>
-              <el-option value="chebyshev">chebyshev</el-option>
-              <el-option value="cityblock">cityblock</el-option>
-              <el-option value="correlation">correlation</el-option>
-              <el-option value="cosine">cosine</el-option>
-              <el-option value="mahalanobis">mahalanobis</el-option>
-              <el-option value="minkowski">minkowski</el-option>
-              <el-option value="seuclidean">seuclidean</el-option>
-              <el-option value="sqeuclidean">sqeuclidean</el-option>
+              <el-option-group label="Favourites">
+                <el-option value="euclidean">euclidean</el-option>
+                <el-option value="correlation">correlation</el-option>
+              </el-option-group>
+              <el-option-group label="All">
+                <el-option value="braycurtis">braycurtis</el-option>
+                <el-option value="canberra">canberra</el-option>
+                <el-option value="chebyshev">chebyshev</el-option>
+                <el-option value="cityblock">cityblock</el-option>
+                <el-option value="cosine">cosine</el-option>
+                <el-option value="dice">dice</el-option>
+                <el-option value="hamming">hamming</el-option>
+                <el-option value="jaccard">jaccard</el-option>
+                <el-option value="kulsinski">kulsinski</el-option>
+                <el-option value="mahalanobis">mahalanobis</el-option>
+                <el-option value="minkowski">minkowski</el-option>
+                <el-option value="matching">matching</el-option>
+                <el-option value="rogerstanimoto">rogerstanimoto</el-option>
+                <el-option value="russellrao">russellrao</el-option>
+                <el-option value="seuclidean">seuclidean</el-option>
+                <el-option value="sqeuclidean">sqeuclidean</el-option>
+                <el-option value="sokalmichener">sokalmichener</el-option>
+                <el-option value="sokalsneath">sokalsneath</el-option>
+                <el-option value="yule">yule</el-option>
+              </el-option-group>
             </el-select>
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label class="radio-inline control-label">样本linkage计算方法</label>
+              <label class="label-font">样本linkage计算方法</label>
             </div>
             <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
-              <el-option value="ward">ward</el-option>
-              <el-option value="single">single</el-option>
-              <el-option value="complete">complete</el-option>
               <el-option value="average">average</el-option>
-              <el-option value="weighted">weighted</el-option>
               <el-option value="centroid">centroid</el-option>
+              <el-option value="complete">complete</el-option>
               <el-option value="median">median</el-option>
+              <el-option value="single">single</el-option>
+              <el-option value="ward">ward</el-option>
+              <el-option value="weighted">weighted</el-option>
             </el-select>
           </div>
         </div>

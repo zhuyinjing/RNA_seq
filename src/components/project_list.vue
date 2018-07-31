@@ -42,7 +42,7 @@
           <label for="">物种类型</label>
         </div>
         <el-select v-model="form.species" placeholder="物种类型">
-          <el-option v-for="item in speciesList" :key="item" :label="item" :value="item"></el-option>
+          <el-option :value="key" v-for="(item, key) in $store.state.speciesArr" :key="key">{{key}}</el-option>
         </el-select>
         <div class="selectDiv">
           <label for="">测序类型</label>
@@ -72,7 +72,7 @@ export default {
         id: '',
         name: '',
         description: '',
-        species: 'homo_sapiens',
+        species: 'Human (Homo sapiens)',
         type: 'rnaseq'
       },
       speciesList: ['homo_sapiens', 'ictidomys_tridecemlineatus', 'glycine_max'],
@@ -115,7 +115,7 @@ export default {
       formData.append('username', this.$store.state.username)
       formData.append('name', this.form.name)
       formData.append('description', this.form.description)
-      formData.append('species', this.form.species)
+      formData.append('speciesId', this.$store.state.speciesArr[this.form.species])
       formData.append('type', this.form.type)
       this.axios.post('/server/create_project', formData).then((res) => {
         if (res.data.message_type === 'success') {
@@ -181,7 +181,7 @@ export default {
     commitStore (item) {
       this.$store.commit('setprojectName', item.name)
       this.$store.commit('setprojectId', item.id)
-      this.$store.commit('setspecies', item.species)
+      this.$store.commit('setspecies', item.speciesInfoEntity.id)
     },
   }
 }

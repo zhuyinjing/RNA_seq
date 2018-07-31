@@ -267,6 +267,7 @@ export default {
           .attr("fill", function(d) {
             return colorRandom(colorRandom(self.nameSampleMap[d['name']]['condition']))
           })
+          .style("opacity","0.7")
           .on("mouseover", function(d) {
             d3.select(this)
               // .attr("r", d3.select(this).attr("r") * 1.6)
@@ -372,6 +373,7 @@ export default {
               .attr("fill", function(d) {
                 return colorRandom(self.nameSampleMap[d['name']]['condition'])
               })
+              .style("opacity","0.7")
               .on("mouseover", function(d) {
                 d3.select(this)
                   // .attr("r", d3.select(this).attr("r") * 1.6)
@@ -444,7 +446,7 @@ export default {
       //  右侧颜色图例
       svgG.append("text")
         .attr("x", width1 + 10)
-        .attr("y", 120)
+        .attr("y", 20)
         .attr("dy", "-0.3em")
         .text(function() {
           return "group";
@@ -452,19 +454,19 @@ export default {
       for (let i = 0; i < self.conditionArr.length; i++) {
         svgG.append("rect")
           .attr("x", width1 + 10) // rect 横坐标无需改动
-          .attr("y", 130 + 30 * i)
+          .attr("y", 25 + 30 * i)
           .attr("width", 30)
           .attr("height", 30)
           .attr("fill", "white")
           .attr("stroke", "#999")
         svgG.append("circle")
           .attr("cx", width1 + 10 + 15) // 圆心x坐标无需改动
-          .attr("cy", (130 + 30 * i) + 15)
+          .attr("cy", (25 + 30 * i) + 15)
           .attr("r", 8)
           .attr("fill", colorRandom(self.conditionArr[i]))
         svgG.append("text")
           .attr("x", width1 + 10 + 40) // text x坐标无需改动
-          .attr("y", 155 + 30 * i)
+          .attr("y", 50 + 30 * i)
           .attr("dy", "-0.3em")
           .text(self.conditionArr[i]);
       }

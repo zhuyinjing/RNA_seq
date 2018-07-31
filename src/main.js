@@ -108,6 +108,26 @@ Vue.prototype.$message = Message;
 //   return config
 // })
 
+//  每一次登录进来 都清一下 indexedDB 的 degTable 表
+let db
+var request = indexedDB.open("deg")
+request.onerror =  (e) => {}
+request.onupgradeneeded = (e) => {
+  db = e.target.result
+  var objectStore = db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
+}
+request.onsuccess = (e) => {
+  console.log("success!");
+  db = e.target.result
+  var tx = db.transaction(["degTable"],"readwrite")
+  var store = tx.objectStore("degTable")
+  store.clear()
+}
+request.onerror = (e) => {
+  console.log("error!");
+}
+
+//  session 失效时间 5min
   let timer
   function startTimer() {
     clearTimeout(timer)

@@ -4,7 +4,7 @@
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
     <el-main v-loading="tableLoading" element-loading-text="数据正在加载中，大概需要1分钟左右的时间......">
-      <imgMenuShowComp v-show="tableShow"></imgMenuShowComp>
+      <imgMenuShowComp></imgMenuShowComp>
 
       <degComp></degComp>
 
@@ -36,14 +36,12 @@
                 <label class="radio-inline control-label">type：</label>
               </div> <br>
               <el-radio v-model="typeRadio" label="protein_coding">只显示编码基因</el-radio>
-              <!-- <el-checkbox class="input-style" v-model="checkedProteinCoding">protein_coding</el-checkbox> -->
             </div>
             <div class="">
               <div class="labelStyle">
                 <label class="radio-inline control-label"></label>
               </div> <br>
               <el-radio v-model="typeRadio" label="all">显示所有类型基因</el-radio>
-              <!-- <el-checkbox class="input-style" v-model="checkedNonCoding">non_coding</el-checkbox> -->
             </div>
           </div>
           <div class="" style="display:inline-block;width:29%;vertical-align:top;">
@@ -88,15 +86,14 @@
                     <td>{{item.name}}</td>
                     <td>{{item.description}}</td>
                     <td>{{item.type}}</td>
-                    <td>{{numFormat(item.baseMean)}}</td>
-                    <td>{{item.log2FoldChange}}</td>
-                    <td>{{item.pvalue}}</td>
-                    <td>{{item.padj}}</td>
+                    <td>{{numFormat(parseFloat(item.baseMean).toFixed(0))}}</td>
+                    <td>{{parseFloat(item.log2FoldChange).toFixed(3)}}</td>
+                    <td>{{num2e(item.pvalue)}}</td>
+                    <td>{{num2e(item.padj)}}</td>
                   </tr>
                 </tbody>
             </table>
           </div>
-
       </transition>
       </div>
     </el-main>
@@ -121,8 +118,6 @@ export default {
       tableShow: false,
       isCheckedAll: false,
       loading: null,
-      checkedProteinCoding: false,
-      checkedNonCoding: false,
       checkedUp: true,
       checkedDown: true,
       typeRadio: 'all',
@@ -137,23 +132,6 @@ export default {
     degComp,
     imgMenuShowComp
   },
-  created () {
-    // open indexeddb
-    // let dbName = "deg"
-    // var request = window.indexedDB.open(dbName)
-    // request.onerror =  (e) => {}
-    // request.onupgradeneeded = (e) => {
-    //   this.db = e.target.result
-    //   this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
-    // }
-    // request.onsuccess = (e) => {
-    //   console.log("success!");
-    //   this.db = e.target.result
-    // }
-    // request.onerror = (e) => {
-    //   console.log("error!");
-    // }
-  },
   mounted () {
     this.getTabelValue()
   },
@@ -161,7 +139,7 @@ export default {
     this.resetFilter()
   },
   watch: {
-    '$route': 'getTabelValueReset'
+    '$route': 'getTabelValueReset2'
   },
   methods: {
     saveData () {
@@ -262,6 +240,12 @@ export default {
         }
         return res;
     },
+    // 科学计数法
+    num2e (num) {
+      var p = Math.floor(Math.log(num)/Math.LN10)
+      var n = num * Math.pow(10, -p)
+      return n.toFixed(1) + 'e' + p
+    },
     // 全选 or 取消全选
     checkedAll () {
       if (this.data.length !== this.checked.length && this.isCheckedAll === true) {
@@ -300,67 +284,26 @@ export default {
         var dt = $('#exampledeg').DataTable();
         dt.destroy()
       }
+      // 删除 indexeddb 里的表
+      var tx = this.db.transaction(['degTable'], 'readwrite')
+      var req = tx.objectStore('degTable').delete('deg' + this.$store.state._case + this.$store.state._control)
       this.getTabelValue()
     },
-    heatmapClick () {
-      if (this.checked.length === 0) {
-        if (this.data.length < 100) {
-          this.$store.commit('setgeneList', this.data)
-        } else {
-          for(let i = 0;i < 100;i++) {
-            this.checked.push(this.data[i])
-          }
-          this.$store.commit('setgeneList', this.checked)
-        }
-      } else {
-        this.$store.commit('setgeneList', this.checked)
+    getTabelValueReset2 () {
+      let checkboxs = document.getElementsByClassName('inputcheckbox')
+      for (let i = 0;i < checkboxs.length;i++) {
+        checkboxs[i].checked = false
       }
-      this.$router.push({'name': 'heatmap_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
-    },
-    heatmapsvgClick () {
-      if (this.checked.length === 0) {
-        if (this.data.length < 100) {
-          this.$store.commit('setgeneList', this.data)
-        } else {
-          for(let i = 0;i < 100;i++) {
-            this.checked.push(this.data[i])
-          }
-          this.$store.commit('setgeneList', this.checked)
-        }
-      } else {
-        this.$store.commit('setgeneList', this.checked)
+      this.data = []
+      this.checked = []
+      this.tableShow = false
+      this.typeRadio = 'all'
+      this.resetFilter()
+      if ( $.fn.dataTable.isDataTable( '#exampledeg' ) ) {
+        var dt = $('#exampledeg').DataTable();
+        dt.destroy()
       }
-      this.$router.push({'name': 'heatmapsvg_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
-    },
-    ppiClick () {
-      if (this.checked.length === 0) {
-        if (this.data.length < 100) {
-          this.$store.commit('setgeneList', this.data)
-        } else {
-          for(let i = 0;i < 50;i++) {
-            this.checked.push(this.data[i])
-          }
-          this.$store.commit('setgeneList', this.checked)
-        }
-      } else {
-        this.$store.commit('setgeneList', this.checked)
-      }
-      this.$router.push({'name': 'ppi_chord_plot_input', query: {'_case': sessionStorage._case, '_control': sessionStorage._control}})
-    },
-    enrichmentClick () {
-      if (this.checked.length === 0) {
-        if (this.data.length < 1000) {
-          this.$store.commit('setgeneList', this.data)
-        } else {
-          for(let i = 0;i < 1000;i++) {
-            this.checked.push(this.data[i])
-          }
-          this.$store.commit('setgeneList', this.checked)
-        }
-      } else {
-        this.$store.commit('setgeneList', this.checked)
-      }
-      this.$router.push({'name': 'enrichment_analysis_input'})
+      this.getTabelValue()
     },
     filterTable () {
       let self = this
@@ -400,8 +343,6 @@ export default {
                     return false;
                   }
                 }
-
-
                 return true;
             }
         );
@@ -443,62 +384,48 @@ export default {
       let _case = sessionStorage.getItem('_case')
       let _control = sessionStorage.getItem('_control')
       this.tableLoading = true
-      this.axios.get('/server/deg?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&sig_only=true').then((res) => {
-        if (res.data.message_type === 'success') {
-          this.tableLoading = false
-          for (let i = 0;i < res.data.message.data.length;i++) {
-            res.data.message.data[i].baseMean = parseFloat(res.data.message.data[i].baseMean).toFixed(3) - 0
-            res.data.message.data[i].log2FoldChange = parseFloat(res.data.message.data[i].log2FoldChange).toFixed(3) - 0
-            res.data.message.data[i].pvalue = parseFloat(res.data.message.data[i].pvalue).toFixed(3) - 0
-            res.data.message.data[i].padj = parseFloat(res.data.message.data[i].padj).toFixed(3) - 0
-          }
-          this.initTable(res.data.message.data)
-          // deg 列表存到 indexedDB 里
-          let temp = {
-            name: 'deg' + _case + _control,
-            value: res.data.message.data
-          }
-          this.saveindexedDB(temp, _case, _control)
-          // degGeneSum 存在缓存中 筛选条件card 显示
-          this.$store.commit("setdegGeneSum", res.data.message.data.length)
-          this.originFilterArgs = res.data.message.param
-          this.$store.commit("setdegFilterArgs", res.data.message.param)
-        } else {
-          this.tableLoading = false
-          this.$message.error(res.data.message);
-        }
-      })
-    },
-    saveindexedDB (data, _case, _control) {
-      let customerData = data
+
       let dbName = "deg"
       var request = indexedDB.open(dbName)
-      request.onerror =  (e) => {}
-      request.onupgradeneeded = (e) => {
-        this.db = e.target.result
-        var objectStore = this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
-      }
       request.onsuccess = (e) => {
         console.log("success!");
         this.db = e.target.result
-        this.updateDBvalue(data,_case, _control)
-      }
-      request.onerror = (e) => {
-        console.log("error!");
-      }
-    },
-    updateDBvalue (data, _case, _control) {
-      var tx = this.db.transaction('customers', 'readwrite');
-      var store = tx.objectStore('customers');
-      var req = store.get('deg' + _case + _control);
-      req.onsuccess = (e) => {
-          var degData = e.target.result;
-          if (!degData) {
-            store.add(data);
-          } else {
-            degData.value = data.value;
-            store.put(degData);
-          }
+        var tx = this.db.transaction(['degTable'], 'readwrite');
+        var store = tx.objectStore('degTable');
+        var req = store.get('deg' + _case + _control);
+        req.onsuccess = (e) => {
+            var degData = e.target.result;
+            if (!degData) {
+              this.axios.get('/server/deg?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&_case=' + _case + '&_control=' + _control + '&sig_only=true').then((res) => {
+                if (res.data.message_type === 'success') {
+                  this.tableLoading = false
+                  this.initTable(res.data.message.data)
+                  // deg 列表存到 indexedDB 里
+                  let temp = {
+                    name: 'deg' + _case + _control,
+                    value: res.data.message.data
+                  }
+                  // 开启一个事务
+                  var tx = this.db.transaction(['degTable'], 'readwrite');
+                  var store = tx.objectStore('degTable');
+                  var req = store.get('deg' + _case + _control);
+                  req.onsuccess = (e) => {
+                    store.add(temp);
+                  }
+                  // degGeneSum 存在缓存中 筛选条件card 显示
+                  this.$store.commit("setdegGeneSum", res.data.message.data.length)
+                  this.originFilterArgs = res.data.message.param
+                  this.$store.commit("setdegFilterArgs", res.data.message.param)
+                } else {
+                  this.tableLoading = false
+                  this.$message.error(res.data.message);
+                }
+              })
+            } else {
+              this.tableLoading = false
+              this.initTable(degData.value)
+            }
+        }
       }
     },
   }

@@ -63,7 +63,7 @@
                 <tr>
                   <td>x轴最小值</td>
                   <td>
-                    <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
+                    <el-input-number size="mini" :min=0 v-model="xmin" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
@@ -125,7 +125,7 @@ export default {
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
-      xmin: -100,
+      xmin: 0,
       xmax: 8000,
       ymin: -3,
       ymax: 3,
@@ -143,8 +143,6 @@ export default {
     imgMenuShowComp
   },
   created () {
-    // this.ymin = - this.$store.state.degFilterArgs.log2FoldChange * 3
-    // this.ymax = this.$store.state.degFilterArgs.log2FoldChange * 3
     this.pvalue = this.$store.state.degFilterArgs.pvalue
     this.FDR = this.$store.state.degFilterArgs.FDR
     this.log2FoldChange = this.$store.state.degFilterArgs.log2FoldChange
@@ -213,7 +211,7 @@ export default {
         .attr('width', width)
         .attr('height', height)
       let xScale = d3.scaleLinear()
-        .domain([this.xmin, this.xmax])
+        .domain([this.xmin - 100, this.xmax])
         .range([0, width - padding.left - padding.right])
       let yScale = d3.scaleLinear()
         .domain([this.ymin - 0.2, this.ymax])

@@ -49,7 +49,7 @@ import imgMenuShowComp from './imgMenuShowComp.vue'
 export default {
   data () {
     return {
-      tpmsArray: ['geneId', 'geneName'],
+      tpmsArray: [],
       arr: [{
           "mDataProp" : "geneId"
       }, {
@@ -81,6 +81,10 @@ export default {
                 }
             })
           }
+          // table head 按照 a～z 排序
+          this.tpmsArray.sort()
+          this.tpmsArray.unshift('geneId')
+          this.tpmsArray.unshift('geneName')
         }
         this.initTable()
       })

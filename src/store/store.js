@@ -5,7 +5,7 @@ import Vue from 'vue'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    username: '',
+    username: 'test',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -23,7 +23,7 @@ export default new Vuex.Store({
     },
     _case: '',
     _control: '',
-    species: '', // 物种信息
+    species: '', // 物种信息 id
     checked: [],
     degGeneSum: null,
     degFilterArgs: {
@@ -33,6 +33,13 @@ export default new Vuex.Store({
     },
     menuShow: true,
     appmenuShow: true,
+    speciesArr:{
+      'Human (Homo sapiens)': 9606,
+      'Mouse (Mus musculus)': 10090,
+      'Soybean (Clycine max)': 3847,
+      'Zebrafish (Danio rerio)': 7955,
+      'Thale cress (Arabidopsis thaliana)': 3702
+    },
   },
   mutations: {
     setusername: (state, data) => {

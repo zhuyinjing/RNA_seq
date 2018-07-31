@@ -42,6 +42,16 @@
           <!-- <el-button type="text">(example)</el-button> -->
         </div>
         <div class="margin-top-10">
+          <div class="labelStyle">
+            <label class="label-font">选择物种</label>
+          </div>
+          <div class="inline-block" style="width:300px;">
+            <el-select class="input-style" v-model="specie" placeholder="请选择">
+              <el-option :value="key" v-for="(item, key) in $store.state.speciesArr" :key="key">{{key}}</el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
             <el-button type="primary" @click="submit()">提交</el-button>
@@ -63,6 +73,7 @@ export default {
       textareaGeneId: '',
       radioName: 'geneId',
       loading: null,
+      specie: 'Human (Homo sapiens)',
     }
   },
   components: {
@@ -89,6 +100,7 @@ export default {
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('genelist', this.textareaGeneId)
+      formData.append('speciesId', this.$store.state.speciesArr[this.specie])
       this.axios.post('/server/ppi_chord_plot.app', formData).then((res) => {
         if (res.data.message_type === 'warn') {
           this.$message.error(res.data.message)

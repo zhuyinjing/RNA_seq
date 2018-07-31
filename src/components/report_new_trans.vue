@@ -198,9 +198,6 @@ export default {
           });
         })
       },
-    backReport () {
-      this.$router.push({'name': 'report'})
-    },
   }
 }
 </script>

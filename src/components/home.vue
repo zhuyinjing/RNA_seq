@@ -12,7 +12,7 @@
     <div class="textStyle">
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
       <el-button type="danger" @click="project_list()">查看项目列表</el-button>
-      <img src="https://colorseq.com/server/username" alt="" class='display-none'>
+      <img src="http://colorseq.com/server/username" alt="" class='display-none'>
     </div>
     <login ref="loginDiv"></login>
 

@@ -177,7 +177,7 @@ export default {
       request.onerror =  (e) => {}
       request.onupgradeneeded = (e) => {
         this.db = e.target.result
-        var objectStore = this.db.createObjectStore("customers", {keyPath:'name', autoIncrement:true})
+        var objectStore = this.db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
       }
       request.onsuccess = (e) => {
         console.log("success!");
@@ -189,8 +189,8 @@ export default {
       }
     },
     setDeg (_case, _control) {
-      var tx = this.db.transaction('customers', 'readwrite')
-      var store = tx.objectStore('customers')
+      var tx = this.db.transaction(['degTable'], 'readwrite')
+      var store = tx.objectStore('degTable')
       var req = store.get('deg' + _case + _control)
       req.onsuccess = (e) => {
         this.deg = e.target.result.value

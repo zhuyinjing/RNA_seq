@@ -116,7 +116,7 @@ export default {
 
           let xScale = d3.scaleBand().rangeRound([0, width]).padding(1)
             .domain(xData.map(function(d) {
-              return d;
+              return d.replace(".", " vs ");
             }))
 
           //定义x轴
@@ -187,7 +187,7 @@ export default {
             .enter()
             .append("circle")
             .attr("cx", function(d) {
-              return xScale(d.x)
+              return xScale(d.x.replace(".", " vs "))
             })
             .attr("cy", function(d) {
               return yScale(d.y)
@@ -203,7 +203,7 @@ export default {
               d3.select(this)
                 // .attr("r", d3.select(this).attr("r") * 1.6)
               showtext.attr("x", function() {
-                  return xScale(d.x)
+                  return xScale(d.x.replace(".", " vs "))
                 })
                 .attr("y", function() {
                   return yScale(d.y) - d3.select(self).attr("r") * 1.6 - 5
