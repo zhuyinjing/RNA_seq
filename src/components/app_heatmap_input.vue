@@ -10,7 +10,7 @@
         <div class="margin-top-10">
           <div class="labelStyle">
             <label for="maxpval" class="label-font">基因表达矩阵</label>
-            <i class="el-icon-question label-font cursor-pointer"></i>
+            <!-- <i class="el-icon-question label-font cursor-pointer"></i> -->
           </div>
           <div class="inline-block">
             <el-radio v-model="radioMatrix" label="content">手动输入</el-radio>
@@ -39,7 +39,7 @@
         <div class="margin-top-10">
           <div class="labelStyle">
             <label for="maxpval" class="label-font">分组信息</label>
-            <i class="el-icon-question label-font cursor-pointer"></i>
+            <!-- <i class="el-icon-question label-font cursor-pointer"></i> -->
           </div>
           <div class="inline-block">
             <el-radio v-model="radioGroup" label="content">手动输入</el-radio>

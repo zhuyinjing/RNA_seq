@@ -36,7 +36,11 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span class="title-style">差异分析后可视化</span>
-          <el-menu-item index="4-4" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
+          <el-menu-item index="5-1" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <span class="title-style">可变剪切分析</span>
+          <el-menu-item index="6-1" @click="ASprofile">ASprofile 分析</el-menu-item>
         </el-menu-item-group>
     </el-menu>
   </div>
@@ -109,8 +113,12 @@ export default {
       this.$store.commit('setleftMenuIndex', '4-3')
     },
     keggbubble () {
-      this.$store.commit('setleftMenuIndex', '4-4')
+      this.$store.commit('setleftMenuIndex', '5-1')
       this.$router.push({'name': 'keggbubble'})
+    },
+    ASprofile () {
+      this.$store.commit('setleftMenuIndex', '6-1')
+      this.$router.push({'name': 'ASprofile'})
     },
     heatmap (_case, _control, index) {
       this.$store.commit('setleftMenuIndex', '5-' + index + '-2')

@@ -74,8 +74,8 @@ export default {
         if (res.data.message_type === 'success') {
           this.geneNum = res.data.rnaSeqReportSummary.geneNum
           this.transcriptNum = res.data.rnaSeqReportSummary.transcriptNum
-          this.displayLatinName = res.data.referenceInfo.displayLatinName
-          this.displayName = res.data.referenceInfo.displayName
+          this.displayLatinName = res.data.speciesInfo.latinName
+          this.displayName = res.data.speciesInfo.commonName
           this.genome = res.data.referenceInfo.genome
         }
       })

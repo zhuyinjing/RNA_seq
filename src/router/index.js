@@ -26,6 +26,7 @@ const app_ppi_input = resolve => require(['@/components/app_ppi_input'], resolve
 const app_ppi = resolve => require(['@/components/app_ppi'], resolve)
 const app_heatmap_input_project = resolve => require(['@/components/app_heatmap_input_project'], resolve)
 const report_ma_plot = resolve => require(['@/components/report_ma_plot'], resolve)
+const ASprofile = resolve => require(['@/components/ASprofile'], resolve)
 
 Vue.use(Router)
 
@@ -171,6 +172,11 @@ export default new Router({
       path: '/app_heatmap_project',
       name: 'app_heatmap_project',
       component: app_heatmap
+    },
+    {
+      path: '/ASprofile',
+      name: 'ASprofile',
+      component: ASprofile
     },
   ]
 })
