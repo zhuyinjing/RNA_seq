@@ -14,7 +14,7 @@
 
       <h2>ASprofile 分析 </h2>
 
-      <div class="">
+      <div class="" style="min-width:800px">
         <label for="">可变剪切事件</label>
         <el-select v-model="events" multiple placeholder="请选择">
           <el-option
