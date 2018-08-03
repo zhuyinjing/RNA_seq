@@ -9,14 +9,14 @@
 
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
         <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>ASprofile 分析</el-breadcrumb-item>
+        <el-breadcrumb-item>可变剪切事件数量统计</el-breadcrumb-item>
       </el-breadcrumb>
 
-      <h2>ASprofile 分析 </h2>
+      <h2>可变剪切事件数量统计</h2>
 
-      <div class="" style="min-width:800px">
+      <div class="" style="min-width:1100px">
         <label for="">可变剪切事件</label>
-        <el-select v-model="events" multiple placeholder="请选择">
+        <el-select v-model="events" multiple placeholder="请选择" style="width:400px;">
           <el-option
             v-for="item in eventsArr"
             :key="item"
@@ -26,7 +26,7 @@
         </el-select>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <label for="">样本</label>
-        <el-select v-model="samples" multiple placeholder="请选择">
+        <el-select v-model="samples" multiple placeholder="请选择" style="width:400px;">
           <el-option
             v-for="(item,key) in samplesArr"
             :key="item"
@@ -39,7 +39,6 @@
       </div>
 
       <div id="canvas"></div>
-      <!-- <div id="canvas" style="display:inline-block;width:800px"></div> -->
 
     </div>
   </el-main>
@@ -78,9 +77,9 @@ export default {
           // 默认全选
           this.events = res.data.ASProfileInfo.asName
           // 存索引
-          for (let i = 0;i < this.samplesArr.length;i++) {
-            this.samples.push(i)
-          }
+          this.samplesArr.forEach((value, key) => {
+            this.samples.push(key)
+          })
           this.initD3()
         } else {
           this.$message.error('请求错误!')
@@ -99,6 +98,15 @@ export default {
       let width = 800
       let height = 400
       let margin = {left: 100, right: 30, top: 30, bottom: 80}
+
+      let tooltip = d3.select('body')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+        .style('visibility', 'hidden')
+        .style('font-size', '14px')
+      	.style('font-weight', 'bold')
+      	.text('')
 
       for (let i = 0;i < this.events.length;i++) {
         let svg = d3.select('#canvas')
@@ -149,24 +157,15 @@ export default {
           .attr("height", (d) => {
             return y(0) - y(d)
           })
-        //   .on("mouseover", function(d) {
-        //     d3.select(this)
-        //     showtext.attr("x", d3.select(this).attr("x") - 0 + 15)
-        //       .attr("y", d3.select(this).attr("y"))
-        //       .text(function() {
-        //         return d
-        //       })
-        //       .attr("text-anchor", "middle")
-        //   })
-        //   .on("mouseout", function() {
-        //     d3.select(this)
-        //     showtext.text("")
-        //   })
-        //
-        // //添加左侧提示部分包裹层
-        // let showtext = svg.append("text")
-        //   .text("")
-        //   .attr("font-size", '14px')
+          .on('mouseover', (d, i) => {
+            return tooltip.style('visibility', 'visible').text(d)
+          })
+          .on('mousemove', function (d, i) {
+            return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+          })
+          .on('mouseout', function (d, i) {
+            return tooltip.style('visibility', 'hidden')
+          })
 
         svg.append("g")
           .attr("transform", "translate(0," + y(0) + ")")
@@ -183,18 +182,6 @@ export default {
           .style("font-size", "16px")
           .attr('fill', '#000')
           .attr('transform', 'translate(' + 0 + ', 25)')
-
-        function stackMin(serie) {
-          return d3.min(serie, function(d) {
-            return d[0];
-          });
-        }
-
-        function stackMax(serie) {
-          return d3.max(serie, function(d) {
-            return d[1];
-          });
-        }
       }
 
     },

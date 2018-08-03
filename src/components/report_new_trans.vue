@@ -47,7 +47,6 @@
             <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
           </span>
         </el-dialog>
-
       </div>
     </el-main>
   </el-container>
@@ -61,7 +60,8 @@ import imgMenuShowComp from './imgMenuShowComp.vue'
 export default {
   data () {
     return {
-      classcodeShow: false
+      classcodeShow: false,
+      table: null,
     }
   },
   components: {
@@ -72,6 +72,12 @@ export default {
     this.initTable()
   },
   methods: {
+    getPage () {
+      var table = $('#patients').dataTable()
+      console.log(table.fnSettings()._iDisplayStart)  // page start 0 , 25...
+      console.log(table.fnSettings()._iDisplayLength)  // page length 10 , 25...
+      this.table.ajax.reload()  // 重新 load table
+    },
     numFormat (num) {
         num=num.toString().split(".");  // 分隔小数点
         var arr=num[0].split("").reverse();  // 转换成字符数组并且倒序排列
@@ -196,6 +202,7 @@ export default {
                   $('#'+id+' td.details-control').trigger( 'click' );
               } );
           });
+          self.table = table
         })
       },
   }

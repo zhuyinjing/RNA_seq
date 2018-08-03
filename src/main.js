@@ -134,7 +134,7 @@ request.onerror = (e) => {
     timer = setTimeout(function () {
       sessionStorage.clear()
       window.location.href = 'https://colorseq.com/logout'
-    }, 1000*60*5)
+    }, 1000*60*30)
    }
   startTimer()
   document.body.onclick  = startTimer

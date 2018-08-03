@@ -3,12 +3,12 @@
     <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
-    <el-main v-loading="tableLoading" element-loading-text="数据正在加载中，大概需要1分钟左右的时间......">
+    <el-main >
       <imgMenuShowComp></imgMenuShowComp>
 
-      <degComp></degComp>
+      <div class="" v-loading="tableLoading" element-loading-text="数据正在加载中，大概需要1分钟左右的时间......">
+        <degComp></degComp>
 
-      <div class="">
         <el-card class="" style="width:900px;" shadow="hover">
           <div class="" style="display:inline-block;width:42%;vertical-align:top;">
             <div class="">
@@ -387,6 +387,10 @@ export default {
 
       let dbName = "deg"
       var request = indexedDB.open(dbName)
+      request.onupgradeneeded = (e) => {
+        this.db = e.target.result
+        var objectStore = this.db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
+      }
       request.onsuccess = (e) => {
         console.log("success!");
         this.db = e.target.result
@@ -403,7 +407,8 @@ export default {
                   // deg 列表存到 indexedDB 里
                   let temp = {
                     name: 'deg' + _case + _control,
-                    value: res.data.message.data
+                    value: res.data.message.data,
+                    degFilterArgs: res.data.message.param
                   }
                   // 开启一个事务
                   var tx = this.db.transaction(['degTable'], 'readwrite');
@@ -423,6 +428,9 @@ export default {
               })
             } else {
               this.tableLoading = false
+              this.$store.commit("setdegGeneSum", degData.value.length)
+              this.originFilterArgs = degData.degFilterArgs
+              this.$store.commit("setdegFilterArgs", degData.degFilterArgs)
               this.initTable(degData.value)
             }
         }

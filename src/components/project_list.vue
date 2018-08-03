@@ -98,6 +98,17 @@ export default {
       this.axios.get('/server/projects?username=' + this.$store.state.username).then((res) => {
         this.projectList = res.data.projects
         for (let i in this.projectList) {
+          function parseDate(input, format) {
+            format = format || 'yyyy-mm-dd'; // default format
+            var parts = input.match(/(\d+)/g),
+                i = 0, fmt = {};
+            // extract date-part indexes from the format
+            format.replace(/(yyyy|dd|mm)/g, function(part) { fmt[part] = i++; });
+
+            return new Date(parts[fmt['yyyy']], parts[fmt['mm']]-1, parts[fmt['dd']]);
+          }
+          // let a = parseDate(this.projectList[i]['openTime'])
+          // this.projectList[i]['openTime'] = a
           let d = new Date(this.projectList[i]['openTime'])
           this.projectList[i]['openTime'] = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         }

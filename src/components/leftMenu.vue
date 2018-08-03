@@ -40,7 +40,8 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span class="title-style">可变剪切分析</span>
-          <el-menu-item index="6-1" @click="ASprofile">ASprofile 分析</el-menu-item>
+          <el-menu-item index="6-1" @click="ASprofile">可变剪切事件数量统计</el-menu-item>
+          <el-menu-item index="6-2" @click="ASprofilePercent">可变剪切事件百分比统计</el-menu-item>
         </el-menu-item-group>
     </el-menu>
   </div>
@@ -119,6 +120,10 @@ export default {
     ASprofile () {
       this.$store.commit('setleftMenuIndex', '6-1')
       this.$router.push({'name': 'ASprofile'})
+    },
+    ASprofilePercent () {
+      this.$store.commit('setleftMenuIndex', '6-2')
+      this.$router.push({'name': 'ASprofilePercent'})
     },
     heatmap (_case, _control, index) {
       this.$store.commit('setleftMenuIndex', '5-' + index + '-2')

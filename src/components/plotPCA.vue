@@ -17,12 +17,16 @@
         <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
         <!-- <div style="margin: 15px 0;"></div> -->
         <el-checkbox-group v-model="checkedPCA" @change="handlecheckedPCAChange">
-          <el-checkbox style="width:20%" v-for="pca in checkboxValue" :label="pca" :key="pca">PC{{pca}}</el-checkbox>
+          <el-checkbox style="width:20%" v-for="(pca, index) in checkboxValue" :label="pca" :key="pca" v-show="percentVariance[index] > 0.01?true:false">PC{{pca}} ( {{(percentVariance[index] * 100).toFixed(0)}}% )</el-checkbox>
         </el-checkbox-group>
 
         <br>
         <el-button type="primary" @click="initD3()">确定</el-button>
         <el-button type="info" @click="clearChecked()">清空</el-button>
+        &nbsp;&nbsp;&nbsp;
+        点的半径：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
+        &nbsp;&nbsp;&nbsp;
+        点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>
 
         <div class="container"></div>
 
@@ -49,6 +53,8 @@ export default {
       minValue: [],
       nameSampleMap: {},
       percentVariance: [],
+      radius: 6,
+      opacity: 0.7,
     }
   },
   components: {
@@ -141,6 +147,15 @@ export default {
       // color 配色
       var colorRandom = d3.scaleOrdinal(d3.schemeCategory20)
 
+      let tooltip = d3.select('body')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+        .style('visibility', 'hidden')
+        .style('font-size', '14px')
+      	.style('font-weight', 'bold')
+      	.text('')
+
       var svgG = d3.select(".container")
         .append("svg")
         .attr("class", "d3svg")
@@ -161,7 +176,6 @@ export default {
     					.attr("y", -20)
     					.attr("dy", "-0.3em")
     					.text(function(){
-                // return "PC" + self.checkedPCA[0] + ": " + (self.percentVariance[self.checkedPCA[0] - 1] * 100).toFixed(0) + "% " + "variance";
     						return "PC" + self.checkedPCA[0];
     					});
         svg.append("text")
@@ -169,7 +183,6 @@ export default {
     					.attr("y", -5)
     					.attr("dy", "-0.3em")
     					.text(function(){
-                // return "PC" + self.checkedPCA[0] + ": " + (self.percentVariance[self.checkedPCA[0] - 1] * 100).toFixed(0) + "% " + "variance";
     						return "(" + (self.percentVariance[self.checkedPCA[0] - 1] * 100).toFixed(0) + "%)";
     					});
         //  y轴文字
@@ -178,9 +191,7 @@ export default {
     					.attr("y", height / 2)
               .attr("dy", "-0.3em")
               .style('text-anchor', 'start')
-              // .attr('transform', 'rotate(-90' + ' ' + 200 + ' ' + '220)')
     					.text(function(){
-                // return "PC" + self.checkedPCA[1] + ": " + (self.percentVariance[self.checkedPCA[1] - 1] * 100).toFixed(0) + "% " + "variance";
                 return "PC" + self.checkedPCA[1];
     					});
           svg.append("text")
@@ -188,9 +199,7 @@ export default {
       					.attr("y", height / 2 + 20)
                 .attr("dy", "-0.3em")
                 .style('text-anchor', 'start')
-                // .attr('transform', 'rotate(-90' + ' ' + 200 + ' ' + '220)')
       					.text(function(){
-                  // return "PC" + self.checkedPCA[1] + ": " + (self.percentVariance[self.checkedPCA[1] - 1] * 100).toFixed(0) + "% " + "variance";
                   return "(" + (self.percentVariance[self.checkedPCA[1] - 1] * 100).toFixed(0) + "%)";
       					});
         //y轴比例尺
@@ -261,39 +270,20 @@ export default {
           .attr("cy", function(d, i) {
             return yScale(d['value'][self.checkedPCA[1] - 1])
           })
-          .attr("r", function(d) {
-            return 6
-          })
+          .attr("r", self.radius)
           .attr("fill", function(d) {
             return colorRandom(colorRandom(self.nameSampleMap[d['name']]['condition']))
           })
-          .style("opacity","0.7")
-          .on("mouseover", function(d) {
-            d3.select(this)
-              // .attr("r", d3.select(this).attr("r") * 1.6)
-            showtext.attr("x", function() {
-                return xScale(d['value'][self.checkedPCA[0] - 1])
-              })
-              .attr("y", function() {
-                return yScale(d['value'][self.checkedPCA[1] - 1]) - d3.select(this).attr("r") * 1.6 - 20
-              })
-              .text(function() {
-                return d.name
-              })
-              .attr("text-anchor", "middle")
+          .style("opacity",self.opacity)
+          .on('mouseover', (d, i) => {
+            return tooltip.style('visibility', 'visible').text(d.name)
           })
-          .on("mouseout", function() {
-            d3.select(this)
-              // .attr("r", d3.select(this).attr("r") / 1.6)
-            showtext.text("")
+          .on('mousemove', function (d, i) {
+            return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
           })
-
-        //添加左侧提示部分包裹层
-        let detail = cover.append("g")
-        let showtext = svg.append("text")
-          .text("")
-          .attr("font-size", '14px')
-
+          .on('mouseout', function (d, i) {
+            return tooltip.style('visibility', 'hidden')
+          })
       } else {
         var width = width2 / self.checkedPCA.length
         var height = height2 / self.checkedPCA.length
@@ -323,7 +313,6 @@ export default {
               .attr("transform", "translate(" + "0 ," + height + ")")
               .call(xAxis)
               .style("font-size", "14px")
-            // d3.selectAll('.domain').remove() // 删除多余的两端刻度线
             //添加网格-----------
             // gridlines in x axis function
             function make_x_gridlines() {
@@ -368,38 +357,21 @@ export default {
                 return yScale(d['value'][arr[i] - 1])
               })
               .attr("r", function(d) {
-                return self.checkedPCA.length > 6 ? 2 : 10 / (arr.length - 1)
+                return self.radius
               })
               .attr("fill", function(d) {
                 return colorRandom(self.nameSampleMap[d['name']]['condition'])
               })
-              .style("opacity","0.7")
-              .on("mouseover", function(d) {
-                d3.select(this)
-                  // .attr("r", d3.select(this).attr("r") * 1.6)
-                showtext.attr("x", function() {
-                    return xScale(0)
-                  })
-                  .attr("y", function() {
-                    return yScale(0)
-                  })
-                  .text(function() {
-                    return d.name
-                  })
-                  .attr("text-anchor", "middle")
+              .style("opacity", self.opacity)
+              .on('mouseover', (d, i) => {
+                return tooltip.style('visibility', 'visible').text(d.name)
               })
-              .on("mouseout", function() {
-                d3.select(this)
-                  // .attr("r", d3.select(this).attr("r") / 1.6)
-                showtext.text("")
+              .on('mousemove', function (d, i) {
+                return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
               })
-
-            //添加左侧提示部分包裹层
-            let detail = cover.append("g")
-            let showtext = svg.append("text")
-              .text("")
-              .attr("font-size", '14px')
-
+              .on('mouseout', function (d, i) {
+                return tooltip.style('visibility', 'hidden')
+              })
           }
           //  x轴文字
           svgG.append("text")
@@ -422,7 +394,6 @@ export default {
       					.attr("y", height / 2 + (i * height))
                 .attr("dy", "-0.3em")
                 .style('text-anchor', 'start')
-                // .attr('transform', 'rotate(-90' + ' ' + 50 * (i+1) + ' ' + 80 * (i+1) +')')
       					.text(function(){
                   return "PC" + self.checkedPCA[i];
       					});
@@ -431,7 +402,6 @@ export default {
       					.attr("y", height / 2 + 20 + (i * height))
                 .attr("dy", "-0.3em")
                 .style('text-anchor', 'start')
-                // .attr('transform', 'rotate(-90' + ' ' + 50 * (i+1) + ' ' + 80 * (i+1) +')')
       					.text(function(){
                   return "(" + (self.percentVariance[self.checkedPCA[i] - 1] * 100).toFixed(0) + "%" + ")";
       					});
