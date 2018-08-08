@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height:calc(100% - 62px);margin-top:2px">
+  <el-container id="canvas" style="height:calc(100% - 62px);margin-top:2px">
     <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
       <leftMenu style="margin-top:5px"></leftMenu>
     </el-aside>
@@ -17,6 +17,7 @@
         <h2>项目{{$store.state.projectName}}基本信息</h2>
         <p>物种：<span class="latinNameStyle">{{this.displayLatinName}}</span> ( {{this.displayName}} )</p>
         <p>参考基因组：{{this.genome}}</p>
+        <!-- <button type="button" name="button" @click="pdf()">test test test </button> -->
 
         <h2>项目实验设计</h2>
         <div class="tableStyle">
@@ -51,6 +52,8 @@
 <script>
 import leftMenu from './leftMenu.vue'
 import imgMenuShowComp from './imgMenuShowComp.vue'
+import * as jsPDF from 'jspdf'
+
 export default {
   data () {
     return {
@@ -69,6 +72,37 @@ export default {
     this.getValue()
   },
   methods: {
+    pdf () {
+      // html2canvas(document.body, {
+      //     onrendered:function(canvas) {
+      //
+      //         //返回图片dataURL，参数：图片格式和清晰度(0-1)
+      //         var pageData = canvas.toDataURL('image/jpeg', 1.0);
+      //
+      //         //方向默认竖直，尺寸ponits，格式a4[595.28,841.89]
+      //         var pdf = new jsPDF('', 'pt', 'a4');
+      //
+      //         //addImage后两个参数控制添加图片的尺寸，此处将页面高度按照a4纸宽高比列进行压缩
+      //         pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28/canvas.width * canvas.height );
+      //
+      //         pdf.save('stone.pdf');
+      //
+      //     }
+      // })
+      // printJS({
+  	  //   printable: 'canvas',
+  	  //   type: 'html',
+      //   showModal: true,
+      //   targetStyles: ['*']
+	    //  })
+
+      // var pdf = new jsPDF('p', 'pt', 'a4')
+      // $('#canvas').css("background", "#fff")
+      // pdf.addHTML($("#canvas"),{pagesplit: false, retina: true}, () => {
+      //   pdf.internal.scaleFactor = 3.75;
+      //   pdf.output("save", "test.pdf")
+      // })
+    },
     getValue () {
       this.axios.get('/server/rnaseq_report_summary?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&speciesId=' + this.$store.state.species).then((res) => {
         if (res.data.message_type === 'success') {

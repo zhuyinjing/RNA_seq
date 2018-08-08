@@ -16,6 +16,98 @@
 
         <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
 
+        <el-card class="" shadow="hover" style="width:1400px;min-width:1400px">
+          <div class="" style="display:inline-block;vertical-align:top;">
+            <div class="">
+              <div class="labelStyle">
+                <label for="maxpval" class="label-font">gene</label>
+              </div>
+              <el-input
+                style="width:200px;"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入内容,以英文逗号分隔"
+                v-model="genetextarea">
+              </el-input>
+            </div>
+             <br>
+            <div class="">
+              <div class="labelStyle">
+                <label for="maxfdr" class="label-font">reference TranscriptId</label>
+              </div>
+              <el-input
+                style="width:200px;"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容,以英文逗号分隔"
+                v-model="referenceTranscriptIdtextarea">
+              </el-input>
+            </div>
+          </div>
+          <div class="" style="display:inline-block;vertical-align:top;">
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">class code</label>
+              </div>
+              <el-input
+                style="width:220px;"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容,以英文逗号分隔"
+                v-model="classCodetextarea">
+              </el-input>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">exonNum from</label>
+              </div>
+             <el-input style="width: 100px;" size='mini' v-model="exonNumStart"></el-input>
+            to  <el-input style="width: 100px;" size='mini' v-model="exonNumEnd"></el-input>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">transcript length from</label>
+              </div>
+              <el-input style="width: 100px;" size='mini' v-model="transcriptLengthStart"></el-input>
+           to <el-input style="width: 100px;" size='mini' v-model="transcriptLengthEnd"></el-input>
+            </div>
+          </div>
+          <div class="" style="display:inline-block;vertical-align:top;">
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">coding probability from</label>
+              </div>
+              <el-input style="width: 100px;" size='mini' v-model="codingProbabilityStart"></el-input>
+           to <el-input style="width: 100px;" size='mini' v-model="codingProbabilityEnd"></el-input>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">peptide length from</label>
+              </div>
+              <el-input style="width: 100px;" size='mini' v-model="peptideLengthStart"></el-input>
+           to <el-input style="width: 100px;" size='mini' v-model="peptideLengthEnd"></el-input>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+                <label class="radio-inline control-label">coding</label>
+              </div>
+              <el-checkbox v-model="coding">coding</el-checkbox>
+              <el-checkbox v-model="noncoding">noncoding</el-checkbox>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+              </div>
+              <el-button type="primary" @click="search()">查询</el-button>
+            </div>
+          </div>
+        </el-card>
+        <br>
+
         <!-- <div class="overflow-auto"> -->
         <div class="">
           <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
@@ -62,6 +154,19 @@ export default {
     return {
       classcodeShow: false,
       table: null,
+      genetextarea: null,
+      referenceTranscriptIdtextarea: null,
+      classCodetextarea: null,
+      exonNumStart: null,
+      exonNumEnd: null,
+      transcriptLengthStart: null,
+      transcriptLengthEnd: null,
+      peptideLengthStart: null,
+      peptideLengthEnd: null,
+      codingProbabilityStart: null,
+      codingProbabilityEnd: null,
+      coding: false,
+      noncoding: false,
     }
   },
   components: {
@@ -72,6 +177,12 @@ export default {
     this.initTable()
   },
   methods: {
+    search () {
+      this.initTable()
+      setTimeout(() => {
+        this.table.ajax.reload()  // 重新 load table
+      }, 0)
+    },
     getPage () {
       var table = $('#patients').dataTable()
       console.log(table.fnSettings()._iDisplayStart)  // page start 0 , 25...
@@ -97,6 +208,26 @@ export default {
         return res;
     },
     initTable () {
+      let exonNumStart = this.exonNumStart?this.exonNumStart:0
+      let exonNumEnd = this.exonNumEnd?this.exonNumEnd:2147483647
+      let transcriptLengthStart = this.transcriptLengthStart?this.transcriptLengthStart:0
+      let transcriptLengthEnd = this.transcriptLengthEnd?this.transcriptLengthEnd:2147483647
+      let codingProbabilityStart = this.codingProbabilityStart?this.codingProbabilityStart:0
+      let codingProbabilityEnd = this.codingProbabilityEnd?this.codingProbabilityEnd:1
+      let peptideLengthStart = this.peptideLengthStart?this.peptideLengthStart:0
+      let peptideLengthEnd = this.peptideLengthEnd?this.peptideLengthEnd:2147483647
+      let codingtemp = []
+      if (this.coding === true) {
+        codingtemp.push("coding")
+      }
+      if (this.noncoding === true) {
+        codingtemp.push("noncoding")
+      }
+      if (codingtemp.length === 0) {
+        codingtemp = null
+      } else {
+        codingtemp.join(',')
+      }
       let self = this
       $(document).ready(function() {
           var table = $('#patients').DataTable({
@@ -116,7 +247,8 @@ export default {
               "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
               "sAjaxDataProp" : "aData",
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/server/new_transcripts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username,
+              // "sAjaxSource" : "/server/new_transcripts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username,
+              "sAjaxSource" : "/server/new_transcripts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username + "&gene=" + self.genetextarea + "&referenceTranscriptId=" + self.referenceTranscriptIdtextarea + "&classCode=" + self.classCodetextarea + "&exonNumStart=" + exonNumStart + "&exonNumEnd=" + exonNumEnd + "&transcriptLengthStart=" + transcriptLengthStart + "&transcriptLengthEnd=" + transcriptLengthEnd + "&peptideLengthStart=" + peptideLengthStart + "&peptideLengthEnd=" + peptideLengthEnd + "&codingProbabilityStart=" + codingProbabilityStart + "&codingProbabilityEnd=" + codingProbabilityEnd + "&label=" + codingtemp,
               "aoColumns" : [ {
                   "class": "details-control",
                   "orderable": false,
@@ -175,6 +307,8 @@ export default {
                     "<div class='detailDiv font-overflow'>sequence: " + d.sequence + "</div>"
           }
           var detailRows = [];
+          // 防止报 _detailsShow undefined 错误
+          $('#patients tbody').off('click', 'tr td.details-control');
           $('#patients tbody').on( 'click', 'tr td.details-control', function () {
               var tr = $(this).closest('tr');
               var row = table.row( tr );
@@ -229,8 +363,23 @@ export default {
 .overflow-auto {
   overflow: auto;
 }
+.label-font {
+  font-size: 14px;
+}
 .overflow-auto {
   overflow: auto;
+}
+.labelStyle {
+  display:inline-block;
+  width:170px;
+  text-align:end;
+}
+.filterbtnDiv {
+  float: right;
+  margin-bottom: 10px;
+}
+.text-align-center {
+  text-align: center;
 }
 </style>
 <style>
