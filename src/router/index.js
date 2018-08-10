@@ -28,6 +28,7 @@ const app_heatmap_input_project = resolve => require(['@/components/app_heatmap_
 const report_ma_plot = resolve => require(['@/components/report_ma_plot'], resolve)
 const ASprofile = resolve => require(['@/components/ASprofile'], resolve)
 const ASprofilePercent = resolve => require(['@/components/ASprofilePercent'], resolve)
+const forceGraph = resolve => require(['@/components/forceGraph'], resolve)
 
 Vue.use(Router)
 
@@ -183,6 +184,11 @@ export default new Router({
       path: '/ASprofilePercent',
       name: 'ASprofilePercent',
       component: ASprofilePercent
+    },
+    {
+      path: '/forceGraph',
+      name: 'forceGraph',
+      component: forceGraph
     },
   ]
 })

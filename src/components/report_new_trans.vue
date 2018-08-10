@@ -154,9 +154,9 @@ export default {
     return {
       classcodeShow: false,
       table: null,
-      genetextarea: null,
-      referenceTranscriptIdtextarea: null,
-      classCodetextarea: null,
+      genetextarea: '',
+      referenceTranscriptIdtextarea: '',
+      classCodetextarea: '',
       exonNumStart: null,
       exonNumEnd: null,
       transcriptLengthStart: null,
@@ -208,6 +208,7 @@ export default {
         return res;
     },
     initTable () {
+      this.genetextarea = this.genetextarea.replace(/\s/g,'')
       let exonNumStart = this.exonNumStart?this.exonNumStart:0
       let exonNumEnd = this.exonNumEnd?this.exonNumEnd:2147483647
       let transcriptLengthStart = this.transcriptLengthStart?this.transcriptLengthStart:0

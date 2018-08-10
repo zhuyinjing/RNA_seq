@@ -99,7 +99,7 @@ export default {
       let containerWidth = document.getElementById("container").clientWidth
       var svg = d3.select("#chart")
           .attr("width", containerWidth)
-          .attr("height", 650)
+          .attr("height", 560)
       var margin = {
           top: 20,
           right: 50,
@@ -107,7 +107,7 @@ export default {
           left: 40
         },
         width = containerWidth - 80 - margin.left - margin.right,
-        height = 650 - margin.top - margin.bottom,
+        height = 560 - margin.top - margin.bottom,
         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       var x0 = d3.scaleBand()
@@ -167,7 +167,7 @@ export default {
           return height - y(d.value);
         })
         .attr("fill", function(d) {
-          return z(d.key);
+          return z(self.$store.state.info.experimentDesign.nameSampleMap[d.key]['condition']);
         })
         .on('mouseover', function (d, i) {
           return tooltip.style('visibility', 'visible').text(d.key + ' : ' + self.numFormat(d.value))
@@ -218,11 +218,14 @@ export default {
       //   .text(function(d) {
       //     return d;
       //   });
-
+      let conditionArr = []
+      for (let k in this.$store.state.info.experimentDesign.conditionNumMap) {
+        conditionArr.push(k)
+      }
       var legend = g.append("g")
         .attr("font-size", 10)
         .selectAll("g")
-        .data(keys.slice().reverse())
+        .data(conditionArr)
         .enter().append("g")
         .attr("transform", function(d, i) {
           return "translate(0," + i * 16 + ")";

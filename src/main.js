@@ -12,6 +12,16 @@ import 'datatables/media/js/jquery.dataTables.min.js'
 import Highcharts from 'highcharts/highstock';
 import HighchartsMore from 'highcharts/highcharts-more';
 import Highmaps from 'highcharts/modules/map';
+import 'datatables.net-bs';
+// import 'datatables.net-bs/css/dataTables.bootstrap.css';
+import jsZip from 'jszip';
+import 'datatables.net-buttons-bs';
+// import 'datatables.net-buttons-bs/css/buttons.bootstrap.css';
+import 'datatables.net-buttons/js/buttons.colVis.min';
+import 'datatables.net-buttons/js/dataTables.buttons.min';
+import 'datatables.net-buttons/js/buttons.flash.min';
+import 'datatables.net-buttons/js/buttons.html5.min';
+window.JSZip = jsZip;
 
 import {
   Dialog,
@@ -57,7 +67,6 @@ import {
 
 HighchartsMore(Highcharts)
 Highmaps(Highcharts);
-
 Vue.use(Dialog);
 Vue.use(Menu);
 Vue.use(Submenu);
