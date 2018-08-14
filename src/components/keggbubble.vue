@@ -59,7 +59,7 @@ export default {
             left: 400,
             top: 40,
             right: 200,
-            bottom: 60
+            bottom: 80
           }
 
           var width = initHeight - padding.left - padding.bottom

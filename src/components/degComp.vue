@@ -13,7 +13,7 @@
       <el-button type="info" :class="{'activebtn': $route.path === '/heatmapsvg'}" @click="heatmapsvg()">基因热图svg</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/ppi_chord_plot'}" @click="ppi_chord_plot()">蛋白互作图</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/enrichment_analysis'}" @click="enrichment_analysis()">富集分析</el-button>
-      <!-- <el-button type="info" :class="{'activebtn': $route.path === '/forceGraph'}" @click="forceGraph()">力导向图</el-button> -->
+      <el-button type="info" :class="{'activebtn': $route.path === '/forceGraph'}" @click="forceGraph()">蛋白互作网络图</el-button>
     </div>
     <br>
   </div>

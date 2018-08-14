@@ -24,6 +24,45 @@
         <p>L<sub>i</sub>：基因 i 的外显子长度的总和。</p>
         <p>在一个样本中一个基因的 TPM：先对每个基因的read数用基因的长度进行校正，之后再用校正后的这个基因 read 数 (N<sub>i</sub>/L<sub>i</sub>) 与校正后的这个样本的所有 read 求商。</p>
 
+        <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
+          <div class="" style="display:inline-block;vertical-align:top;">
+            <div class="">
+              <div class="labelStyle">
+                <label for="maxpval" class="label-font">geneId</label>
+              </div>
+              <el-input
+                style="width:400px;"
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容,以英文逗号分隔"
+                v-model="textareaGeneId">
+              </el-input>
+            </div>
+          </div>
+          <div class="" style="display:inline-block;vertical-align:top;">
+            <div class="">
+              <div class="labelStyle">
+                <label for="maxpval" class="label-font">geneName</label>
+              </div>
+              <el-input
+                style="width:400px;"
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容,以英文逗号分隔"
+                v-model="textareaGeneName">
+              </el-input>
+            </div>
+            <br>
+            <div class="">
+              <div class="labelStyle">
+              </div>
+              <el-button style="float:right" type="info" @click="clear()">清空</el-button>
+              <el-button style="float:right;margin-right:10px;" type="primary" @click="search()">查询</el-button>
+            </div>
+          </div>
+        </el-card>
+        <br>
+
         <!-- <div class="overflow-auto"> -->
         <div class="">
           <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
@@ -54,7 +93,9 @@ export default {
           "mDataProp" : "geneId"
       }, {
           "mDataProp" : "geneName"
-      }]
+      }],
+      textareaGeneName: '',
+      textareaGeneId: ''
     }
   },
   components: {
@@ -83,8 +124,8 @@ export default {
           }
           // table head 按照 a～z 排序
           this.tpmsArray.sort()
-          this.tpmsArray.unshift('geneId')
           this.tpmsArray.unshift('geneName')
+          this.tpmsArray.unshift('geneId')
         }
         this.initTable()
       })
@@ -109,7 +150,7 @@ export default {
               "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
               "sAjaxDataProp" : "aData",
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username,
+              "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
               "aoColumns" : self.arr,
               // "aoColumnDefs":[{"aTargets":[2][1],"mRender":function(){
               //        return "<a href=#>1441</a>"}
@@ -117,9 +158,16 @@ export default {
           });
         })
       },
-    backReport () {
-      this.$router.push({'name': 'report'})
-    },
+      search () {
+        this.initTable()
+        setTimeout(() => {
+          this.table.ajax.reload()  // 重新 load table
+        }, 0)
+      },
+      clear () {
+        this.textareaGeneName = ''
+        this.textareaGeneId = ''
+      },
   }
 }
 </script>
@@ -143,5 +191,28 @@ export default {
 }
 .clear {
   clear: both;
+}
+.labelStyle {
+  display: inline-block;
+  width: 95px;
+  text-align: end;
+}
+
+.filterbtnDiv {
+  float: right;
+  margin-bottom: 10px;
+}
+
+.text-align-center {
+  text-align: center;
+}
+.label-font {
+  font-size: 14px;
+}
+
+.input-style {
+  height: 20px;
+  /* margin-right: 20px; */
+  margin-top: 10px;
 }
 </style>

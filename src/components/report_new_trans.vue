@@ -103,6 +103,7 @@
               <div class="labelStyle">
               </div>
               <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="info" @click="clear()">清空</el-button>
             </div>
           </div>
         </el-card>
@@ -339,6 +340,21 @@ export default {
           });
           self.table = table
         })
+      },
+      clear () {
+        this.genetextarea = ''
+        this.referenceTranscriptIdtextarea = ''
+        this.classCodetextarea = ''
+        this.exonNumStart = null
+        this.exonNumEnd = null
+        this.transcriptLengthStart = null
+        this.transcriptLengthEnd = null
+        this.peptideLengthStart = null
+        this.peptideLengthEnd = null
+        this.codingProbabilityStart = null
+        this.codingProbabilityEnd = null
+        this.coding = false
+        this.noncoding = false
       },
   }
 }

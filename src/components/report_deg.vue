@@ -385,7 +385,7 @@ export default {
             {
               extend: 'excel',
               text: '导出 excel',
-            }, ,
+            },
             {
               extend: 'copy',
               text: '复制所有',

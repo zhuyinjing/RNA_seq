@@ -244,7 +244,7 @@ export default {
 
                   yAxis: {
                       title: {
-                          text: 'Read Counts'
+                          text: 'TPMs'
                       }
                   },
 
@@ -265,7 +265,7 @@ export default {
                   },
 
                   series: [{
-                      name: 'Read Counts',
+                      name: 'TPMs',
                       data: [
                       ]
                   }
