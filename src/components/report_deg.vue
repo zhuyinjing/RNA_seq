@@ -141,7 +141,6 @@ export default {
     '$route': 'getTabelValueReset2'
   },
   methods: {
-
     saveData() {
       let table = $('#exampledeg').DataTable()
       let data = []
@@ -178,7 +177,8 @@ export default {
         formData.append('caseSample', this.$store.state._case)
         formData.append('controlSample', this.$store.state._control)
         formData.append('degList', data)
-        formData.append('geneVarInfo', JSON.stringify(geneVarInfo))
+        formData.append('degFilterParams', JSON.stringify(geneVarInfo))
+        formData.append('species', this.$store.state.species)
         this.axios.post('/server/save_deg_list', formData).then((res) => {
           if (res.data.message_type === 'success') {
             this.getStatus()

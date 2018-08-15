@@ -29,6 +29,10 @@ const report_ma_plot = resolve => require(['@/components/report_ma_plot'], resol
 const ASprofile = resolve => require(['@/components/ASprofile'], resolve)
 const ASprofilePercent = resolve => require(['@/components/ASprofilePercent'], resolve)
 const forceGraph = resolve => require(['@/components/forceGraph'], resolve)
+const app_enrichment_input = resolve => require(['@/components/app_enrichment_input'], resolve)
+const app_enrichment = resolve => require(['@/components/app_enrichment'], resolve)
+const app_force_input = resolve => require(['@/components/app_force_input'], resolve)
+const app_force = resolve => require(['@/components/app_force'], resolve)
 
 Vue.use(Router)
 
@@ -189,6 +193,26 @@ export default new Router({
       path: '/forceGraph',
       name: 'forceGraph',
       component: forceGraph
+    },
+    {
+      path: '/app_enrichment_input',
+      name: 'app_enrichment_input',
+      component: app_enrichment_input
+    },
+    {
+      path: '/app_enrichment',
+      name: 'app_enrichment',
+      component: app_enrichment
+    },
+    {
+      path: '/app_force_input',
+      name: 'app_force_input',
+      component: app_force_input
+    },
+    {
+      path: '/app_force',
+      name: 'app_force',
+      component: app_force
     },
   ]
 })

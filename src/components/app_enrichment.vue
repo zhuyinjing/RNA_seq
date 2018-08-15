@@ -1,132 +1,131 @@
 <template>
-<el-container style="height:calc(100% - 62px);margin-top:2px">
-  <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
-    <leftMenu style="margin-top:5px"></leftMenu>
-  </el-aside>
-  <el-main>
-    <imgMenuShowComp></imgMenuShowComp>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside v-show="$store.state.appmenuShow" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+      <appLeftMenu></appLeftMenu>
+    </el-aside>
+    <el-main>
+      <appImgMenuShowComp></appImgMenuShowComp>
 
-    <degComp></degComp>
+      <div class="">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="KEGG" name="KEGG">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="转录因子" name="转录因子">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example1">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Biosample_term_name</td>
+                  <td>Biosample_type</td>
+                  <td>Biosample_life_stage</td>
+                  <td>Biosample_sex</td>
+                  <td>Biosample_age</td>
+                  <td>Experiment_target</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level3）" name="level3.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example2">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level4）" name="level4.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example3">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+          <el-tab-pane label="GO（level5）" name="level5.GO">
+            <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example4">
+              <thead>
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Term</td>
+                  <td>Ontology</td>
+                  <td>GeneRatio</td>
+                  <td>BgRatio</td>
+                  <td>log2foldE</td>
+                  <td>pvalue</td>
+                  <td>p.adjust</td>
+                  <td>qvalue</td>
+                  <td>geneID</td>
+                  <td>Count</td>
+                </tr>
+              </thead>
+            </table>
+          </el-tab-pane>
+        </el-tabs>
 
-    <div class="">
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="KEGG" name="KEGG">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example0">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="转录因子" name="转录因子">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example1">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Biosample_term_name</td>
-                <td>Biosample_type</td>
-                <td>Biosample_life_stage</td>
-                <td>Biosample_sex</td>
-                <td>Biosample_age</td>
-                <td>Experiment_target</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level3）" name="level3.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example2">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level4）" name="level4.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example3">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-        <el-tab-pane label="GO（level5）" name="level5.GO">
-          <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example4">
-            <thead>
-              <tr>
-                <td></td>
-                <td>ID</td>
-                <td>Term</td>
-                <td>Ontology</td>
-                <td>GeneRatio</td>
-                <td>BgRatio</td>
-                <td>log2foldE</td>
-                <td>pvalue</td>
-                <td>p.adjust</td>
-                <td>qvalue</td>
-                <td>geneID</td>
-                <td>Count</td>
-              </tr>
-            </thead>
-          </table>
-        </el-tab-pane>
-      </el-tabs>
+      </div>
 
-    </div>
-  </el-main>
-</el-container>
+    </el-main>
+  </el-container>
+
 </template>
 
 <script>
-import leftMenu from './leftMenu.vue'
-import degComp from './degComp.vue'
-import imgMenuShowComp from './imgMenuShowComp.vue'
+import appLeftMenu from './app_leftMenu.vue'
+import appImgMenuShowComp from './appImgMenuShowComp.vue'
 
 export default {
-  data() {
+  data () {
     return {
       activeName: 'KEGG',
       head0: [],
@@ -136,52 +135,18 @@ export default {
       tbval3: [],
       tbval4: [],
       TFvalue: null,
-      deg: null,
     }
   },
   components: {
-    leftMenu,
-    degComp,
-    imgMenuShowComp
+    appLeftMenu,
+    appImgMenuShowComp
   },
-  created() {
-    // 从 indexeddb 获取 deg 列表 点击 + 号可以查看 name
-    this.getdegList()
+  created () {
   },
-  mounted() {
+  mounted () {
     this.handleClick2()
   },
   methods: {
-    getdegList() {
-      let _case = sessionStorage.getItem('_case')
-      let _control = sessionStorage.getItem('_control')
-      let dbName = "deg"
-      var request = indexedDB.open(dbName)
-      request.onerror = (e) => {}
-      request.onupgradeneeded = (e) => {
-        this.db = e.target.result
-        var objectStore = this.db.createObjectStore("degTable", {
-          keyPath: 'name',
-          autoIncrement: true
-        })
-      }
-      request.onsuccess = (e) => {
-        console.log("success!");
-        this.db = e.target.result
-        this.setDeg(_case, _control)
-      }
-      request.onerror = (e) => {
-        console.log("error!");
-      }
-    },
-    setDeg(_case, _control) {
-      var tx = this.db.transaction(['degTable'], 'readwrite')
-      var store = tx.objectStore('degTable')
-      var req = store.get('deg' + _case + _control)
-      req.onsuccess = (e) => {
-        this.deg = e.target.result.value
-      }
-    },
     handleClick(tab, event) {
       if (tab.label === '转录因子') {
         if (!this.TFvalue) {
@@ -935,114 +900,28 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  float: left;
-  /* width: 60%; */
-  width: calc(100% - 350px);
-  padding: 0 20px;
-  margin: 19px auto;
+.margin-top-200 {
+  margin-top: 200px;
 }
-
-.cursor-pointer {
-  cursor: pointer;
+.labelStyle {
+  display:inline-block;
+  width:200px;
+  text-align:end;
 }
-
-.tagsDiv {
-  display: inline-block;
-  width: 500px;
-  height: 500px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
+.filterbtn {
+  margin-left:240px;
+  margin-top:-100px;
 }
-
-.tagDiv {
-  margin: 5px;
-}
-
-.tag {
-  margin: 5px;
-  background-color: rgba(64, 158, 255, .1);
-  padding: 0 10px;
-  height: 32px;
-  line-height: 30px;
-  font-size: 12px;
-  color: #409EFF;
-  border-radius: 4px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid rgba(64, 158, 255, .2);
-  white-space: nowrap;
-  /* display: inline-block; */
-}
-
-.geneListTableDiv {
-  height: 800px;
-  overflow-y: auto;
-}
-
-#geneListTable.gridtable {
-  width: 100%;
-  text-align: center;
+.label-font {
   font-size: 14px;
-  color: #333333;
-  border-width: 1px;
-  border-color: #ebeef5;
-  border-collapse: collapse;
 }
-
-#geneListTable.gridtable th {
-  color: #333;
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #ebeef5;
-}
-
-#geneListTable.gridtable td {
-  border-width: 1px;
-  padding: 8px;
-  border-style: solid;
-  border-color: #ebeef5;
-  background-color: #ffffff;
-}
-
-.bgcolor {
-  background-color: #f9f9f9 !important;
+.input-style{
+  margin-right: 20px;
+  margin-top: 10px;
 }
 </style>
 <style media="screen">
-.el-tabs__content {
-  overflow: auto;
-}
-
-td.details-control {
-  background: url('../assets/img/details_open.png') no-repeat center center;
-  cursor: pointer;
-}
-
-tr.details td.details-control {
-  background: url('../assets/img/details_close.png') no-repeat center center;
-}
-
-.font-overflow {
-  word-break: break-all;
-  word-wrap: break-word;
-}
-
-#example0_wrapper,
-#example4_wrapper,
-#example1_wrapper,
-#example2_wrapper,
-#example3_wrapper,
-#example4_wrapper {
-  overflow: auto !important;
-}
-
-.red {
-  color: red;
-}
-
-.green {
-  color: green;
+.color_scales {
+  z-index: 9 !important;
 }
 </style>

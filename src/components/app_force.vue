@@ -1,37 +1,34 @@
 <template>
-<el-container style="height:calc(100% - 62px);margin-top:2px">
-  <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
-    <leftMenu style="margin-top:5px"></leftMenu>
-  </el-aside>
-  <el-main>
-    <imgMenuShowComp></imgMenuShowComp>
+  <el-container style="height:calc(100% - 62px);margin-top:2px">
+    <el-aside v-show="$store.state.appmenuShow" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
+      <appLeftMenu></appLeftMenu>
+    </el-aside>
+    <el-main>
+      <appImgMenuShowComp></appImgMenuShowComp>
 
-    <degComp></degComp>
+      是否显示离散的基因：
+      <el-switch
+        v-model="singleGeneShow"
+        active-color="#409EFF"
+        active-text="显示"
+        inactive-text="隐藏"
+        @change="singleGeneShowChange()"
+      >
+      </el-switch>
 
-    是否显示离散的基因：
-    <el-switch
-      v-model="singleGeneShow"
-      active-color="#409EFF"
-      active-text="显示"
-      inactive-text="隐藏"
-      @change="singleGeneShowChange()"
-    >
-    </el-switch>
+      <div id="canvas"></div>
+    </el-main>
+  </el-container>
 
-    <div id="canvas"></div>
-
-  </el-main>
-</el-container>
 </template>
 
 <script>
-import leftMenu from './leftMenu.vue'
-import degComp from './degComp.vue'
-import imgMenuShowComp from './imgMenuShowComp.vue'
+import appLeftMenu from './app_leftMenu.vue'
+import appImgMenuShowComp from './appImgMenuShowComp.vue'
 import * as d3 from 'd3'
 
 export default {
-  data() {
+  data () {
     return {
       originNodes: null,
       singleNodes: null,
@@ -40,11 +37,10 @@ export default {
     }
   },
   components: {
-    leftMenu,
-    degComp,
-    imgMenuShowComp
+    appLeftMenu,
+    appImgMenuShowComp,
   },
-  mounted() {
+  mounted () {
     this.getValue()
   },
   methods: {
@@ -186,7 +182,7 @@ export default {
         .enter().append("line")
         .attr("stroke-width", function(d) {
           return lineScale(d.value);
-        })
+        });
 
       node = g.append("g")
         .attr("class", "nodes")
@@ -208,36 +204,22 @@ export default {
           }
         })
         .on("mouseover", function(d, i, o) {
-          let currentd = d.id
           var connectedNodeIds = graph
             .links
             .filter(x => x.source.id == d.id || x.target.id == d.id)
-            .map(x => x.source.id == d.id ? x.target.id : x.source.id)
+            .map(x => x.source.id == d.id ? x.target.id : x.source.id);
 
           d3.select(".nodes")
             .selectAll("circle")
             .attr("fill", function(c) {
               if (connectedNodeIds.indexOf(c.id) > -1 || c.id == d.id) return "red";
               else return '#e49433'
-            })
-
-          d3.select(".links")
-            .selectAll("line")
-            .style("stroke", function(d,c) {
-              if ((d.target.id === currentd && connectedNodeIds.indexOf(d.source.id) > -1) || (d.source.id === currentd && connectedNodeIds.indexOf(d.target.id) > -1)) {
-                return 'red'
-              } else {
-                return '#999'
-              }
-            })
+            });
         })
         .on("mouseout", function(d) {
           d3.select(".nodes")
             .selectAll("circle")
             .attr("fill", "#e49433");
-          d3.select(".links")
-            .selectAll("line")
-            .style("stroke", '#999')
         })
         .call(d3.drag()
           .on("start", dragstarted)
@@ -254,7 +236,6 @@ export default {
           .attr("dy", ".35em")
           .attr("text-anchor", "middle")
           .on("mouseover", function(d, i, o) {
-            let currentd = d.id
             var connectedNodeIds = graph
               .links
               .filter(x => x.source.id == d.id || x.target.id == d.id)
@@ -266,23 +247,11 @@ export default {
                 if (connectedNodeIds.indexOf(c.id) > -1 || c.id == d.id) return "red";
                 else return '#e49433'
               });
-            d3.select(".links")
-              .selectAll("line")
-              .style("stroke", function(d,c) {
-                if ((d.target.id === currentd && connectedNodeIds.indexOf(d.source.id) > -1) || (d.source.id === currentd && connectedNodeIds.indexOf(d.target.id) > -1)) {
-                  return 'red'
-                } else {
-                  return '#999'
-                }
-              });
           })
           .on("mouseout", function(d) {
             d3.select(".nodes")
               .selectAll("circle")
               .attr("fill", "#e49433");
-            d3.select(".links")
-              .selectAll("line")
-              .style("stroke", '#999')
           })
           .call(d3.drag()
             .on("start", dragstarted)
@@ -370,17 +339,6 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  float: left;
-  /* width: 60%; */
-  width: calc(100% - 350px);
-  padding: 0 20px;
-  margin: 19px auto;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
 </style>
 <style media="screen">
 #zoom-layer:active {
