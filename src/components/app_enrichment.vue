@@ -159,7 +159,7 @@ export default {
     },
     handleClick2() {
       let self = this
-      this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'KEGG' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+      this.axios.get('/server/app_enrich?username=' + this.$store.state.username + '&speciesId=' + this.$store.state.species + '&type=' + 'KEGG').then((res) => {
         if (res.data.message_type === 'success') {
           $('#example0').dataTable().fnDestroy()
           var table = $('#example0').DataTable({
@@ -312,7 +312,7 @@ export default {
           })
         }
       })
-      this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'TF' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+      this.axios.get('/server/app_enrich?username=' + this.$store.state.username + '&speciesId=' + this.$store.state.species + '&type=' + 'TF').then((res) => {
         if (res.data.message_type === 'success') {
           this.TFvalue = res.data.message
           $('#example1').dataTable().fnDestroy()
@@ -467,7 +467,7 @@ export default {
           })
         }
       })
-      this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_3.GO' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+      this.axios.get('/server/app_enrich?username=' + this.$store.state.username + '&speciesId=' + this.$store.state.species + '&type=' + 'level_3.GO').then((res) => {
         if (res.data.message_type === 'success') {
           $('#example2').dataTable().fnDestroy()
           var table = $('#example2').DataTable({
@@ -610,7 +610,7 @@ export default {
           })
         }
       })
-      this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_4.GO' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+      this.axios.get('/server/app_enrich?username=' + this.$store.state.username + '&speciesId=' + this.$store.state.species + '&type=' + 'level_4.GO').then((res) => {
         if (res.data.message_type === 'success') {
           $('#example3').dataTable().fnDestroy()
           var table = $('#example3').DataTable({
@@ -752,7 +752,7 @@ export default {
           })
         }
       })
-      this.axios.get('/server/enrich?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&type=' + 'level_5.GO' + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
+      this.axios.get('/server/app_enrich?username=' + this.$store.state.username + '&speciesId=' + this.$store.state.species + '&type=' + 'level_5.GO').then((res) => {
         if (res.data.message_type === 'success') {
           $('#example4').dataTable().fnDestroy()
           var table = $('#example4').DataTable({

@@ -28,17 +28,6 @@
             </el-input>
           </div>
         </div>
-        <div class="margin-top-10" v-show="radioName === 'geneID'">
-          <div class="labelStyle"></div>
-          <div class="inline-block" style="width:800px;">
-            <el-input
-              type="textarea"
-              :rows="30"
-              placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
-              v-model="textareaGeneName">
-            </el-input>
-          </div>
-        </div>
         <div class="margin-top-10" v-show="radioName === 'geneId'">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:800px;">
@@ -88,6 +77,7 @@ export default {
         'Human (Homo sapiens)': 9606,
         'Soybean (Clycine max)': 3847,
       },
+      timer: null,
     }
   },
   components: {
@@ -96,12 +86,27 @@ export default {
   },
   mounted () {
   },
+  destroyed () {
+    window.clearInterval(this.timer)
+  },
   methods: {
     submit () {
+      let geneList, infoType
       // 判断 基因ID列表 是否为空
-      if (!this.textareaGeneId.trim() || !this.textareaGeneName.trim()) {
-        this.$message.error('请输入基因列表!');
-        return
+      if (this.radioName === 'geneId') {
+        if (!this.textareaGeneId.trim()) {
+          this.$message.error('请输入基因 ID 列表!');
+          return
+        }
+        geneList = this.textareaGeneId
+        infoType = 1
+      } else {
+        if (!this.textareaGeneName.trim()) {
+          this.$message.error('请输入基因 Name 列表!');
+          return
+        }
+        geneList = this.textareaGeneName
+        infoType = 2
       }
       // 正则 替换 逗号 空格 为 换行
       this.textareaGeneId = this.textareaGeneId.replace(/(\,|\s)+/g, '\n')
@@ -113,17 +118,29 @@ export default {
       })
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
-      formData.append('genelist', this.textareaGeneId)
-      formData.append('speciesId', this.$store.state.speciesArr[this.specie])
-      this.axios.post('/server/ppi_chord_plot.app', formData).then((res) => {
-        if (res.data.message_type === 'warn') {
-          this.$message.error(res.data.message)
+      formData.append('geneList', geneList)
+      formData.append('speciesId', this.speciesArr[this.specie])
+      formData.append('infoType', infoType)
+      this.$store.commit('setspecies', this.speciesArr[this.specie])
+      this.axios.post('/server/enrich_do', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.getStatus()
         } else {
-          this.$store.commit('setppiJson', res.data.message)
-          this.$router.push({'name': 'app_enrichment'})
+          this.$message.error(res.data.message)
+          this.loading.close()
         }
-        this.loading.close()
       })
+    },
+    getStatus () {
+      this.timer = setInterval(() => {
+        this.axios.get('/server/enrich_do_status?username=' + this.$store.state.username).then((res) => {
+          if (res.data.message_type === 'success') {
+            this.loading.close()
+            window.clearInterval(this.timer)
+            this.$route.push('app_enrichment')
+          }
+        })
+      }, 1000)
     },
   }
 }
