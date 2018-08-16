@@ -528,10 +528,3 @@ export default {
   text-align: center;
 }
 </style>
-<style media="screen">
-.btn-default {
-  width: 80px !important;
-  height: 35px !important;
-  cursor: pointer;
-}
-</style>

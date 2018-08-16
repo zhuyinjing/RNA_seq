@@ -67,11 +67,10 @@ export default {
 
           var svgG = d3.select(".container")
             .append("svg")
-            .attr("class", "test")
+            .attr("class", "d3bubblesvg")
             .attr("width", initWidth)
             .attr("height", initHeight)
-            .style("padding-right", padding.right)
-            .style("padding-bottom", padding.bottom)
+            .style("overflow", "visible")
           var svg = svgG.append('g').attr('transform','translate('+padding.left+','+padding.top+')')
 
           //添加y轴坐标轴
@@ -354,5 +353,9 @@ export default {
 <style media="screen">
 .grid .tick line {
   stroke: #cccccc4d;
+}
+.d3bubblesvg {
+  padding-right: 200px;
+  padding-bottom: 80px;
 }
 </style>

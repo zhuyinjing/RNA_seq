@@ -28,7 +28,7 @@
         &nbsp;&nbsp;&nbsp;
         点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>
 
-        <div class="container"></div>
+        <div class="container margin-top-10"></div>
 
       </div>
     </el-main>
@@ -119,9 +119,9 @@ export default {
         this.$message('最多选择10个PC，请修改您的选项！')
         return
       }
-      let hassvg = d3.selectAll('.d3svg')
+      let hassvg = d3.selectAll('.d3pcasvg')
       if (hassvg) {
-        d3.selectAll('.d3svg').remove()
+        d3.selectAll('.d3pcasvg').remove()
       }
       let self = this
       var initWidth = this.checkedPCA.length > 8 ? this.checkedPCA.length * 100 : 800
@@ -135,7 +135,6 @@ export default {
         right: 150,
         bottom: 20
       }
-
       var width1 = initWidth - padding.left - padding.bottom
       var height1 = initHeight - padding.top - padding.bottom
 
@@ -158,13 +157,9 @@ export default {
 
       var svgG = d3.select(".container")
         .append("svg")
-        .attr("class", "d3svg")
+        .attr("class", "d3pcasvg")
         .attr("width", width1)
         .attr("height", height1)
-        .style("padding-left", padding.left)
-        .style("padding-right", padding.right)
-        .style("padding-top", padding.top)
-        .style("padding-bottom", padding.bottom)
 
       if (this.checkedPCA.length === 2) {
         var width = width2
@@ -279,7 +274,7 @@ export default {
             return tooltip.style('visibility', 'visible').text(d.name)
           })
           .on('mousemove', function (d, i) {
-            return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+            return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
           })
           .on('mouseout', function (d, i) {
             return tooltip.style('visibility', 'hidden')
@@ -367,7 +362,7 @@ export default {
                 return tooltip.style('visibility', 'visible').text(d.name)
               })
               .on('mousemove', function (d, i) {
-                return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+                return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
               })
               .on('mouseout', function (d, i) {
                 return tooltip.style('visibility', 'hidden')
@@ -463,9 +458,20 @@ export default {
 .el-checkbox+.el-checkbox {
   margin-left: 0 !important;
 }
+.margin-top-10 {
+  margin-top: 10px;
+}
+
 </style>
 <style media="screen">
 .grid .tick line {
   stroke: #cccccc4d;
+}
+.d3pcasvg {
+  padding-left: 80px;
+  padding-top: 40px;
+  padding-right: 150px;
+  padding-bottom: 20px;
+  overflow: visible;
 }
 </style>

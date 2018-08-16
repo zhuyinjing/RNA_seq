@@ -33,7 +33,7 @@
               <el-input
                 style="width:400px;"
                 type="textarea"
-                :rows="4"
+                :rows="3"
                 placeholder="请输入内容,以英文逗号分隔"
                 v-model="textareaGeneId">
               </el-input>
@@ -47,7 +47,7 @@
               <el-input
                 style="width:400px;"
                 type="textarea"
-                :rows="4"
+                :rows="3"
                 placeholder="请输入内容,以英文逗号分隔"
                 v-model="textareaGeneName">
               </el-input>
@@ -208,11 +208,5 @@ export default {
 }
 .label-font {
   font-size: 14px;
-}
-
-.input-style {
-  height: 20px;
-  /* margin-right: 20px; */
-  margin-top: 10px;
 }
 </style>

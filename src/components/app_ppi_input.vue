@@ -10,7 +10,6 @@
         <div class="margin-top-10">
           <div class="labelStyle">
             <label for="maxpval" class="label-font">输入基因ID列表</label>
-            <!-- <i class="el-icon-question label-font cursor-pointer"></i> -->
           </div>
           <div class="inline-block">
             <!-- <el-radio v-model="radioName" label="geneName">按 geneName 输入</el-radio> -->
@@ -27,7 +26,6 @@
               v-model="textareaGeneName">
             </el-input>
           </div>
-          <!-- <el-button type="text">(example)</el-button> -->
         </div>
         <div class="margin-top-10" v-show="radioName === 'geneId'">
           <div class="labelStyle"></div>

@@ -161,7 +161,7 @@ export default {
       xmax: 3,
       ymin: 0,
       ymax: 12,
-      radius: 1.5,
+      radius: 1.8,
       width: 800,
       height: 600,
       xLeftOptions: {
@@ -300,7 +300,7 @@ export default {
           return tooltip.style('visibility', 'visible').text(d[2])
         })
         .on('mousemove', function (d, i) {
-          return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+          return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
         })
         .on('mouseout', function (d, i) {
           return tooltip.style('visibility', 'hidden')

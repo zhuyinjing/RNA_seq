@@ -13,6 +13,11 @@
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
       <el-button type="danger" @click="project_list()">查看项目列表</el-button>
       <img src="http://colorseq.com/server/username" alt="" class='display-none'>
+      <p class="suggestStyle">建议使用浏览器：
+        <a href="https://chrome.en.softonic.com/" target="_blank">Chrome</a> &nbsp;
+        <a href="https://safari.en.softonic.com/" target="_blank">Safari</a> &nbsp;
+        <a href="http://www.firefox.com.cn/" target="_blank">Firefox</a>
+      </p>
     </div>
     <login ref="loginDiv"></login>
 
@@ -76,5 +81,12 @@ export default {
   background: #e6e6e6;
   padding-left: 50px;
   font-size: 12px;
+}
+.suggestStyle {
+  color: #999;
+  margin-top: 50px;
+}
+a:hover, a:visited, a:link, a:active {
+  color: #999;
 }
 </style>

@@ -161,7 +161,7 @@ export default {
             return tooltip.style('visibility', 'visible').text(d)
           })
           .on('mousemove', function (d, i) {
-            return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+            return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
           })
           .on('mouseout', function (d, i) {
             return tooltip.style('visibility', 'hidden')

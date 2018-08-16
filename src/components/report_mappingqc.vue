@@ -86,7 +86,7 @@ export default {
     this.initTable()
   },
   methods: {
-    initD3() {
+    initD3 () {
       let self = this
       let tooltip = d3.select('body')
       	.append('div')
@@ -173,7 +173,7 @@ export default {
           return tooltip.style('visibility', 'visible').text(d.key + ' : ' + self.numFormat(d.value))
         })
         .on('mousemove', function (d, i) {
-          return tooltip.style('top', (event.pageY-10)+'px').style('left',(event.pageX+10)+'px')
+          return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
         })
         .on('mouseout', function (d, i) {
           return tooltip.style('visibility', 'hidden')
