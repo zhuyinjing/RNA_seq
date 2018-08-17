@@ -18,35 +18,41 @@
       <p>物种：<span class="latinNameStyle">{{this.displayLatinName}}</span> ( {{this.displayName}} )</p>
       <p>参考基因组：{{this.genome}}</p>
 
-      <!-- <button type="button" name="button" @click="pdf()">test test test </button> -->
+      <h2>
+        项目实验设计
+        <!-- <el-tooltip content="生成pdf" placement="right" effect="dark">
+          <i class="el-icon-printer cursor-pointer" @click="pdf()"></i>
+        </el-tooltip> -->
+      </h2>
+      <div class="" id="canvas">
+        <div class="tableStyle">
+          <p class="p-font-style">实验条件一览</p>
+          <table class="gridtable">
+            <tr>
+              <th>实验条件</th>
+              <th>样本名称</th>
+            </tr>
+            <tr v-for="(item, value, index) in $store.state.info.experimentDesign.nameSampleMap">
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="degtable">
+          <p class="p-font-style">差异表达基因比对条件</p>
+          <table class="gridtable">
+            <tr>
+              <th>实验组</th>
+              <th>对照组</th>
+            </tr>
+            <tr v-for="(item, index) in $store.state.info.experimentDesign.experiments">
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
 
-      <h2>项目实验设计</h2>
-      <div class="tableStyle">
-        <p class="p-font-style">实验条件一览</p>
-        <table class="gridtable" id="canvas">
-          <tr>
-            <th>实验条件</th>
-            <th>样本名称</th>
-          </tr>
-          <tr v-for="(item, value, index) in $store.state.info.experimentDesign.nameSampleMap">
-            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
-            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="degtable">
-        <p class="p-font-style">差异表达基因比对条件</p>
-        <table class="gridtable">
-          <tr>
-            <th>实验组</th>
-            <th>对照组</th>
-          </tr>
-          <tr v-for="(item, index) in $store.state.info.experimentDesign.experiments">
-            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
-            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
-          </tr>
-        </table>
-      </div>
     </div>
   </el-main>
 </el-container>
@@ -66,6 +72,7 @@ export default {
       displayLatinName: null,
       displayName: null,
       genome: null,
+      dialog: false,
     }
   },
   components: {
@@ -81,13 +88,6 @@ export default {
       // html2canvas(document.getElementById("canvas")).then(canvas => {
       //   var contentWidth = canvas.width;
       //   var contentHeight = canvas.height;
-      //   // 加水印
-      //   var ctx = canvas.getContext("2d");
-      //   ctx.rotate(Math.PI / 180 * 20);
-      //   ctx.font = "60px microsoft yahei";
-      //   ctx.fillStyle = "rgba(255,255,255,1)";
-      //   ctx.strokeText("colorseq", 250, 50);
-      //   // 加水印
       //   //一页pdf显示html页面生成的canvas高度;
       //   var pageHeight = contentWidth / 592.28 * 841.89;
       //   //未生成pdf的html页面高度
@@ -117,7 +117,7 @@ export default {
       //     }
       //   }
       //
-      //   pdf.save('个人报告.pdf');
+      //   pdf.save('项目实验设计.pdf');
       // });
       // html2canvas(document.body, {
       //     onrendered:function(canvas) {

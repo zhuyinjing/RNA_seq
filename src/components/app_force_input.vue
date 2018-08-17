@@ -16,7 +16,7 @@
               type="textarea"
               :rows="20"
               placeholder="请输入 ID 列表"
-              v-model="textareaMatrix">
+              v-model="textareaGeneId">
             </el-input>
           </div>
         </div>
@@ -26,7 +26,7 @@
           </div>
           <div class="inline-block" style="width:300px;">
             <el-select class="input-style" v-model="specie" placeholder="请选择">
-              <el-option :value="key" v-for="(item, key) in speciesArr" :key="key">{{key}}</el-option>
+              <el-option :value="key" v-for="(item, key) in $store.state.speciesArr" :key="key">{{key}}</el-option>
             </el-select>
           </div>
         </div>
@@ -48,13 +48,9 @@ import appImgMenuShowComp from './appImgMenuShowComp.vue'
 export default {
   data () {
     return {
-      textareaMatrix: '',
+      textareaGeneId: '',
       loading: null,
       specie: 'Human (Homo sapiens)',
-      speciesArr:{
-        'Human (Homo sapiens)': 9606,
-        'Soybean (Clycine max)': 3847,
-      },
     }
   },
   components: {
@@ -68,11 +64,11 @@ export default {
   methods: {
     submit () {
       // 判断 基因 ID 列表 是否为空
-      if (!this.textareaMatrix.trim()) {
+      if (!this.textareaGeneId.trim()) {
         this.$message.error('请输入基因 ID 列表!')
         return
       }
-      this.textareaMatrix = this.textareaMatrix.replace(/(\,|\s)+/g, '\n')
+      this.textareaGeneId = this.textareaGeneId.replace(/(\,|\s)+/g, '\n')
       this.loading = this.$loading({
         lock: true,
         text: '列表正在处理中...请稍等...',
@@ -81,14 +77,21 @@ export default {
       })
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
-      this.axios.post('/server/upload_heatmap_by_project', formData).then((res) => {
+      formData.append('speciesId', this.$store.state.speciesArr[this.specie])
+      formData.append('geneList', this.textareaGeneId)
+      // 设置 vuex 物种id
+      this.$store.commit('setspecies', this.$store.state.speciesArr[this.specie])
+      this.axios.post('/server/deg_effect_of_force_diagram.app', formData).then((res) => {
         if (res.data.message_type === 'success') {
-          this.$message.success('热图生成完成!')
-          this.$store.commit('setheatmapJson', res.data.message)
+          this.$message.success('蛋白互作网络图生成完成!')
+          this.$store.commit('setppiJson', res.data.message)
           this.$router.push({'name': 'app_force'})
         } else {
           this.$message.error(res.data.message)
         }
+        this.loading.close()
+      }).catch((e) => {
+        this.$message.error('请求错误!')
         this.loading.close()
       })
     },

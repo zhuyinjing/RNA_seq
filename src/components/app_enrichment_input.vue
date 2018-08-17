@@ -112,7 +112,7 @@ export default {
       this.textareaGeneId = this.textareaGeneId.replace(/(\,|\s)+/g, '\n')
       this.loading = this.$loading({
         lock: true,
-        text: '列表正在处理中...请稍等...可能需要等待1分钟左右的时间...',
+        text: '列表正在处理中...请稍等...可能需要等待1～2分钟左右的时间...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
@@ -136,11 +136,12 @@ export default {
         this.axios.get('/server/enrich_do_status?username=' + this.$store.state.username).then((res) => {
           if (res.data.message_type === 'success') {
             this.loading.close()
+            this.$message.success('富集分析已完成!')
             window.clearInterval(this.timer)
-            this.$route.push('app_enrichment')
+            this.$router.push('app_enrichment')
           }
         })
-      }, 1000)
+      }, 2000)
     },
   }
 }

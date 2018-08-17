@@ -147,6 +147,17 @@ export default {
     this.handleClick2()
   },
   methods: {
+    async getGeneName (list) {
+      let geneName = ''
+      let formData = new FormData()
+      formData.append('geneInfoList', list)
+      formData.append('speciesId', this.$store.state.species)
+      formData.append('infoType', 1)
+      await this.axios.post('/server/transform_gene_id_name', formData).then((res) => {
+        geneName = res.data.join(' ')
+      })
+      return geneName
+    },
     handleClick(tab, event) {
       if (tab.label === '转录因子') {
         if (!this.TFvalue) {
@@ -271,24 +282,6 @@ export default {
           $('#example0 tbody').on('click', 'tr td:nth-child(2)', function(e) {
             // var name = $(this).text();
           });
-          function format(d) {
-            let str = ""
-            let idArr = d[8].split('/')
-            for (let j = 0; j < idArr.length; j++) {
-              for (let i = 0; i < self.deg.length; i++) {
-                if (self.deg[i]['target_id'] === idArr[j]) {
-                  if (self.deg[i]['log2FoldChange'] > 0) {
-                    str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
-                  } else {
-                    str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
-                  }
-                  break
-                }
-              }
-            }
-            return str
-            // return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
-          }
           var detailRows = [];
           $('#example0 tbody').off('click', 'tr td.details-control');
           $('#example0 tbody').on('click', 'tr td.details-control', function() {
@@ -303,7 +296,7 @@ export default {
               detailRows.splice(idx, 1);
             } else {
               tr.addClass('details');
-              row.child(format(row.data())).show();
+              self.getGeneName(row.data()[8].split('/')).then( res => row.child(res).show() )
               // Add to the 'open' array
               if (idx === -1) {
                 detailRows.push(tr.attr('id'));
@@ -426,24 +419,6 @@ export default {
             },
           });
 
-          function format(d) {
-            let str = ""
-            let idArr = d[13].split('/')
-            for (let j = 0; j < idArr.length; j++) {
-              for (let i = 0; i < self.deg.length; i++) {
-                if (self.deg[i]['target_id'] === idArr[j]) {
-                  if (self.deg[i]['log2FoldChange'] > 0) {
-                    str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
-                  } else {
-                    str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
-                  }
-                  break
-                }
-              }
-            }
-            return str
-            // return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
-          }
           var detailRows = [];
           $('#example1 tbody').off('click', 'tr td.details-control');
           $('#example1 tbody').on('click', 'tr td.details-control', function() {
@@ -458,7 +433,7 @@ export default {
               detailRows.splice(idx, 1);
             } else {
               tr.addClass('details');
-              row.child(format(row.data())).show();
+              self.getGeneName(row.data()[13].split('/')).then( res => row.child(res).show() )
               // Add to the 'open' array
               if (idx === -1) {
                 detailRows.push(tr.attr('id'));
@@ -569,24 +544,6 @@ export default {
             },
           });
 
-          function format(d) {
-            let str = ""
-            let idArr = d[9].split('/')
-            for (let j = 0; j < idArr.length; j++) {
-              for (let i = 0; i < self.deg.length; i++) {
-                if (self.deg[i]['target_id'] === idArr[j]) {
-                  if (self.deg[i]['log2FoldChange'] > 0) {
-                    str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
-                  } else {
-                    str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
-                  }
-                  break
-                }
-              }
-            }
-            return str
-            // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
-          }
           var detailRows = [];
           $('#example2 tbody').off('click', 'tr td.details-control');
           $('#example2 tbody').on('click', 'tr td.details-control', function() {
@@ -601,7 +558,7 @@ export default {
               detailRows.splice(idx, 1);
             } else {
               tr.addClass('details');
-              row.child(format(row.data())).show();
+              self.getGeneName(row.data()[9].split('/')).then( res => row.child(res).show() )
               // Add to the 'open' array
               if (idx === -1) {
                 detailRows.push(tr.attr('id'));
@@ -711,24 +668,6 @@ export default {
             },
           });
 
-          function format(d) {
-            let str = ""
-            let idArr = d[9].split('/')
-            for (let j = 0; j < idArr.length; j++) {
-              for (let i = 0; i < self.deg.length; i++) {
-                if (self.deg[i]['target_id'] === idArr[j]) {
-                  if (self.deg[i]['log2FoldChange'] > 0) {
-                    str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
-                  } else {
-                    str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
-                  }
-                  break
-                }
-              }
-            }
-            return str
-            // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
-          }
           var detailRows = [];
           $('#example3 tbody').off('click', 'tr td.details-control');
           $('#example3 tbody').on('click', 'tr td.details-control', function() {
@@ -743,7 +682,7 @@ export default {
               detailRows.splice(idx, 1);
             } else {
               tr.addClass('details');
-              row.child(format(row.data())).show();
+              self.getGeneName(row.data()[9].split('/')).then( res => row.child(res).show() )
               // Add to the 'open' array
               if (idx === -1) {
                 detailRows.push(tr.attr('id'));
@@ -853,24 +792,6 @@ export default {
             },
           });
 
-          function format(d) {
-            let str = ""
-            let idArr = d[9].split('/')
-            for (let j = 0; j < idArr.length; j++) {
-              for (let i = 0; i < self.deg.length; i++) {
-                if (self.deg[i]['target_id'] === idArr[j]) {
-                  if (self.deg[i]['log2FoldChange'] > 0) {
-                    str = str.concat(' ' + '<span class="red">' + self.deg[i]['name'] + '</span>' + ' ')
-                  } else {
-                    str = str.concat(' ' + '<span class="green">' + self.deg[i]['name'] + '</span>' + ' ')
-                  }
-                  break
-                }
-              }
-            }
-            return str
-            // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
-          }
           var detailRows = [];
           $('#example4 tbody').off('click', 'tr td.details-control');
           $('#example4 tbody').on('click', 'tr td.details-control', function() {
@@ -885,7 +806,7 @@ export default {
               detailRows.splice(idx, 1);
             } else {
               tr.addClass('details');
-              row.child(format(row.data())).show();
+              self.getGeneName(row.data()[9].split('/')).then( res => row.child(res).show() )
               // Add to the 'open' array
               if (idx === -1) {
                 detailRows.push(tr.attr('id'));
@@ -923,5 +844,31 @@ export default {
 <style media="screen">
 .color_scales {
   z-index: 9 !important;
+}
+.el-tabs__content {
+  overflow: auto;
+}
+
+td.details-control {
+  background: url('../assets/img/details_open.png') no-repeat center center;
+  cursor: pointer;
+}
+
+tr.details td.details-control {
+  background: url('../assets/img/details_close.png') no-repeat center center;
+}
+
+.font-overflow {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+#example0_wrapper,
+#example4_wrapper,
+#example1_wrapper,
+#example2_wrapper,
+#example3_wrapper,
+#example4_wrapper {
+  overflow: auto !important;
 }
 </style>

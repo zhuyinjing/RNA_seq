@@ -41,24 +41,15 @@ export default {
     appImgMenuShowComp,
   },
   mounted () {
-    this.getValue()
+    this.originNodes = this.$store.state.ppiJson.relevanceGeneNodes
+    this.singleNodes = this.$store.state.ppiJson.discreteGeneNodes
+    this.graph = {
+      "nodes": this.$store.state.ppiJson.relevanceGeneNodes,
+      "links": this.$store.state.ppiJson.scoreMatrixList
+    }
+    this.initD3()
   },
   methods: {
-    getValue () {
-      this.axios.get('/server/deg_effect_of_force_diagram?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&caseSample=' + this.$store.state._case + '&controlSample=' + this.$store.state._control).then((res) => {
-        if (res.data.message_type === 'success') {
-          this.originNodes = res.data.message.relevanceGeneNodes
-          this.singleNodes = res.data.message.discreteGeneNodes
-          this.graph = {
-            "nodes": res.data.message.relevanceGeneNodes,
-            "links": res.data.message.scoreMatrixList
-          }
-          this.initD3()
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
     singleGeneShowChange () {
       let hassvg = d3.selectAll('g')
       if (hassvg) {
@@ -182,7 +173,7 @@ export default {
         .enter().append("line")
         .attr("stroke-width", function(d) {
           return lineScale(d.value);
-        });
+        })
 
       node = g.append("g")
         .attr("class", "nodes")
@@ -204,22 +195,36 @@ export default {
           }
         })
         .on("mouseover", function(d, i, o) {
+          let currentd = d.id
           var connectedNodeIds = graph
             .links
             .filter(x => x.source.id == d.id || x.target.id == d.id)
-            .map(x => x.source.id == d.id ? x.target.id : x.source.id);
+            .map(x => x.source.id == d.id ? x.target.id : x.source.id)
 
           d3.select(".nodes")
             .selectAll("circle")
             .attr("fill", function(c) {
               if (connectedNodeIds.indexOf(c.id) > -1 || c.id == d.id) return "red";
               else return '#e49433'
-            });
+            })
+
+          d3.select(".links")
+            .selectAll("line")
+            .style("stroke", function(d,c) {
+              if ((d.target.id === currentd && connectedNodeIds.indexOf(d.source.id) > -1) || (d.source.id === currentd && connectedNodeIds.indexOf(d.target.id) > -1)) {
+                return 'red'
+              } else {
+                return '#999'
+              }
+            })
         })
         .on("mouseout", function(d) {
           d3.select(".nodes")
             .selectAll("circle")
             .attr("fill", "#e49433");
+          d3.select(".links")
+            .selectAll("line")
+            .style("stroke", '#999')
         })
         .call(d3.drag()
           .on("start", dragstarted)
@@ -236,6 +241,7 @@ export default {
           .attr("dy", ".35em")
           .attr("text-anchor", "middle")
           .on("mouseover", function(d, i, o) {
+            let currentd = d.id
             var connectedNodeIds = graph
               .links
               .filter(x => x.source.id == d.id || x.target.id == d.id)
@@ -247,11 +253,23 @@ export default {
                 if (connectedNodeIds.indexOf(c.id) > -1 || c.id == d.id) return "red";
                 else return '#e49433'
               });
+            d3.select(".links")
+              .selectAll("line")
+              .style("stroke", function(d,c) {
+                if ((d.target.id === currentd && connectedNodeIds.indexOf(d.source.id) > -1) || (d.source.id === currentd && connectedNodeIds.indexOf(d.target.id) > -1)) {
+                  return 'red'
+                } else {
+                  return '#999'
+                }
+              });
           })
           .on("mouseout", function(d) {
             d3.select(".nodes")
               .selectAll("circle")
               .attr("fill", "#e49433");
+            d3.select(".links")
+              .selectAll("line")
+              .style("stroke", '#999')
           })
           .call(d3.drag()
             .on("start", dragstarted)

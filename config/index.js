@@ -18,15 +18,7 @@ module.exports = {
           '/server': '/server/'
         }
       },
-      // '/projects': {
-      //   target: 'http://10.10.10.34:7002',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '/projects': '/projects/'
-      //   }
-      // }
     },
-
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
