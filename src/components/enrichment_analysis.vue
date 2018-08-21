@@ -234,10 +234,12 @@ export default {
             'buttons': [{
                 extend: 'csv',
                 text: '导出 csv',
+                filename: 'ColorSeq' + ' ' + self.$store.state._case + ' vs ' + self.$store.state._control
               },
               {
                 extend: 'excel',
                 text: '导出 excel',
+                filename: 'ColorSeq' + ' ' + self.$store.state._case + ' vs ' + self.$store.state._control
               }
             ],
             "iDisplayLength": 25,
@@ -321,7 +323,7 @@ export default {
                 }
               }
             }
-            return str
+            return '<div class="detailDiv">' + str + '</div>'
             // return  "<div>geneID: "+ d[8].replace(/\//g, ' ') +"</div>"
           }
           var detailRows = [];
@@ -476,7 +478,7 @@ export default {
                 }
               }
             }
-            return str
+            return '<div class="detailDiv">' + str + '</div>'
             // return  "<div>geneID: "+ d[13].replace(/\//g, ' ') +"</div>"
           }
           var detailRows = [];
@@ -619,7 +621,7 @@ export default {
                 }
               }
             }
-            return str
+            return '<div class="detailDiv">' + str + '</div>'
             // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
           }
           var detailRows = [];
@@ -761,7 +763,7 @@ export default {
                 }
               }
             }
-            return str
+            return '<div class="detailDiv">' + str + '</div>'
             // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
           }
           var detailRows = [];
@@ -903,7 +905,7 @@ export default {
                 }
               }
             }
-            return str
+            return '<div class="detailDiv">' + str + '</div>'
             // return  "<div>geneID: "+ d[9].replace(/\//g, ' ') +"</div>"
           }
           var detailRows = [];

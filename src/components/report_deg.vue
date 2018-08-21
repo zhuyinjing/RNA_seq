@@ -381,21 +381,27 @@ export default {
           buttons: [{
               extend: 'csv',
               text: '导出 csv',
+              filename: 'ColorSeq' + ' ' + self.$store.state._case + ' vs ' + self.$store.state._control
             },
             {
               extend: 'excel',
               text: '导出 excel',
+              filename: 'ColorSeq' + ' ' + self.$store.state._case + ' vs ' + self.$store.state._control
             },
             {
               extend: 'copy',
               text: '复制所有',
+              header: false,  // header 不复制
+              title: null,    // 不显示 网页的 title
             },
             {
               extend: 'copy',
               text: '复制 ID',
               exportOptions: {
                 columns: [0]
-              }
+              },
+              header: false,
+              title: null,
             },
           ]
         });

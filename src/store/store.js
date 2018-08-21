@@ -1,11 +1,13 @@
 import 'es6-promise/auto'
 import Vuex from 'vuex'
 import Vue from 'vue'
+import * as html2canvas from 'html2canvas'
+import * as jsPDF from 'jspdf'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    username: '',
+    username: 'test',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -33,7 +35,7 @@ export default new Vuex.Store({
     },
     menuShow: true,
     appmenuShow: true,
-    speciesArr:{
+    speciesArr: {
       'Human (Homo sapiens)': 9606,
       'Mouse (Mus musculus)': 10090,
       'Soybean (Clycine max)': 3847,
@@ -104,6 +106,61 @@ export default new Vuex.Store({
     setappmenuShow: (state, data) => {
       sessionStorage.setItem('appmenuShow', data)
       state.appmenuShow = data
+    },
+    d3savePDF: (state, data) => {
+      let that = this
+      html2canvas(document.getElementById("d3container")).then(canvas => {
+        var contentWidth = canvas.width;
+        var contentHeight = canvas.height;
+        //一页pdf显示html页面生成的canvas高度;
+        var pageHeight = contentWidth / 592.28 * 841.89;
+        //未生成pdf的html页面高度
+        var leftHeight = contentHeight;
+        //页面偏移
+        var position = 0;
+        //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+        var imgWidth = 595.28;
+        var imgHeight = 592.28 / contentWidth * contentHeight;
+
+        var pageData = canvas.toDataURL('image/jpeg', 1.0);
+        var pdf = new jsPDF('', 'pt', 'a4');
+
+        //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+        //当内容未超过pdf一页显示的范围，无需分页
+        if (leftHeight < pageHeight) {
+          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        } else {
+          while (leftHeight > 0) {
+            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+            leftHeight -= pageHeight;
+            position -= 841.89;
+            //避免添加空白页
+            if (leftHeight > 0) {
+              pdf.addPage();
+            }
+          }
+        }
+        pdf.save(data + '.pdf');
+      });
+    },
+    d3saveSVG: (state, data) => {
+      var svg = document.getElementById('d3container');
+      //you need to clone your SVG otherwise it will disappear after saving
+      var clone = svg.cloneNode(true);
+      var svgDocType = document.implementation.createDocumentType('svg', "-//W3C//DTD SVG 1.1//EN", "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd");
+      var svgDoc = document.implementation.createDocument('http://www.w3.org/2000/svg', 'svg', svgDocType);
+
+      svgDoc.replaceChild(clone, svgDoc.documentElement);
+      var svgData = (new XMLSerializer()).serializeToString(svgDoc);
+      var a = document.createElement('a');
+      a.href = 'data:image/svg+xml; charset=utf8, ' + encodeURIComponent(svgData.replace(/></g, '>\n\r<'));
+      a.download = data + '.svg';
+      a.innerHTML = 'download the svg file';
+
+      //Hack alert: create a temporary link to download the svg
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     },
   }
 })

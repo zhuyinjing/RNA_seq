@@ -16,7 +16,10 @@
       >
       </el-switch>
 
-      <div id="canvas"></div>
+      <div id="canvas" style="height:960px"></div>
+
+      <appTableComp></appTableComp>
+
     </el-main>
   </el-container>
 
@@ -25,6 +28,7 @@
 <script>
 import appLeftMenu from './app_leftMenu.vue'
 import appImgMenuShowComp from './appImgMenuShowComp.vue'
+import appTableComp from './app_tableComp.vue'
 import * as d3 from 'd3'
 
 export default {
@@ -39,6 +43,7 @@ export default {
   components: {
     appLeftMenu,
     appImgMenuShowComp,
+    appTableComp,
   },
   mounted () {
     this.originNodes = this.$store.state.ppiJson.relevanceGeneNodes

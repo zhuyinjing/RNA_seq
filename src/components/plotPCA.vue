@@ -21,14 +21,16 @@
         </el-checkbox-group>
 
         <br>
-        <el-button type="primary" @click="initD3()">确定</el-button>
-        <el-button type="info" @click="clearChecked()">清空</el-button>
+        <el-button type="primary" size="small" @click="initD3()">确定</el-button>
+        <el-button type="info" size="small" @click="clearChecked()">清空</el-button>
         &nbsp;&nbsp;&nbsp;
         点的半径：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
         &nbsp;&nbsp;&nbsp;
-        点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>
+        点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>&nbsp;
+        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
 
-        <div class="container margin-top-10"></div>
+        <div class="margin-top-10" id="d3container"></div>
 
       </div>
     </el-main>
@@ -154,8 +156,7 @@ export default {
         .style('font-size', '14px')
       	.style('font-weight', 'bold')
       	.text('')
-
-      var svgG = d3.select(".container")
+      var svgG = d3.select("#d3container")
         .append("svg")
         .attr("class", "d3pcasvg")
         .attr("width", width1)

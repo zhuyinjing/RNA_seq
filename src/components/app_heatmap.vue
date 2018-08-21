@@ -18,11 +18,13 @@
             <p>WARN：下列基因在所选择的项目及样本中无表达信息，这可能是由于这些基因在所选择的样本中表达水平过低导致的</p>
             <el-input
               type="textarea"
-              :rows="10"
+              :rows="3"
               placeholder=""
               v-model="textarea">
             </el-input>
           </div>
+
+          <!-- <appTableComp></appTableComp> -->
 
         </div>
     </el-main>
@@ -34,6 +36,7 @@
 import appLeftMenu from './app_leftMenu.vue'
 import appImgMenuShowComp from './appImgMenuShowComp.vue'
 import heatmapComp from './heatmapComp.vue'
+// import appTableComp from './app_tableComp.vue'
 
 import Highcharts from 'highcharts/highstock';
 export default {
@@ -45,7 +48,8 @@ export default {
   components: {
     appLeftMenu,
     appImgMenuShowComp,
-    heatmapComp
+    heatmapComp,
+    // appTableComp
   },
   created () {
     if (this.$store.state.heatmapJson.invalidGeneList) {

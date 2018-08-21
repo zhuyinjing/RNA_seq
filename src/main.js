@@ -110,10 +110,6 @@ Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$message = Message;
-// 请求发送前
-// axios.interceptors.request.use((config) => {
-//   return config
-// })
 
 //  每一次登录进来 都清一下 indexedDB 的 degTable 表
 let db
@@ -150,6 +146,7 @@ request.onerror = (e) => {
   document.body.onkeyup  = startTimer
   document.body.onclick  = startTimer
   document.body.ontouchend  = startTimer
+  // document.body.onmousewheel  = startTimer
 
 if (sessionStorage.username) {
   store.state.username = sessionStorage.username

@@ -11,6 +11,8 @@
 
         <ppiComp></ppiComp>
 
+        <appTableComp></appTableComp>
+
       </div>
     </el-main>
   </el-container>
@@ -20,6 +22,7 @@
 import appLeftMenu from './app_leftMenu.vue'
 import appImgMenuShowComp from './appImgMenuShowComp.vue'
 import ppiComp from './ppiComp.vue'
+import appTableComp from './app_tableComp.vue'
 
 export default {
   data () {
@@ -29,7 +32,8 @@ export default {
   components: {
     appLeftMenu,
     appImgMenuShowComp,
-    ppiComp
+    ppiComp,
+    appTableComp
   },
   mounted () {
   },

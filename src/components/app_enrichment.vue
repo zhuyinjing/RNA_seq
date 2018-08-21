@@ -111,6 +111,9 @@
               </thead>
             </table>
           </el-tab-pane>
+          <el-tab-pane label="输入基因列表" name="输入基因列表">
+            <appTableComp></appTableComp>
+          </el-tab-pane>
         </el-tabs>
 
       </div>
@@ -123,6 +126,7 @@
 <script>
 import appLeftMenu from './app_leftMenu.vue'
 import appImgMenuShowComp from './appImgMenuShowComp.vue'
+import appTableComp from './app_tableComp.vue'
 
 export default {
   data () {
@@ -139,7 +143,8 @@ export default {
   },
   components: {
     appLeftMenu,
-    appImgMenuShowComp
+    appImgMenuShowComp,
+    appTableComp,
   },
   created () {
   },
@@ -156,7 +161,7 @@ export default {
       await this.axios.post('/server/transform_gene_id_name', formData).then((res) => {
         geneName = res.data.join(' ')
       })
-      return geneName
+      return '<div class="detailDiv">' + geneName + '</div>'
     },
     handleClick(tab, event) {
       if (tab.label === '转录因子') {

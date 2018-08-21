@@ -23,10 +23,12 @@
 
       <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 G 代表 Billion）。</p>
 
-      <div id="metrics_bar"></div>
+      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '比对结果统计')">生成 PDF</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '比对结果统计')">生成 SVG</el-button>
+
 
       <div class="">
-        <div id="container">
+        <div id="d3container">
           <svg id="chart"></svg>
         </div>
 
@@ -96,7 +98,7 @@ export default {
         .style('font-size', '14px')
         .style('font-weight', 'bold')
       	.text('')
-      let containerWidth = document.getElementById("container").clientWidth
+      let containerWidth = document.getElementById("d3container").clientWidth
       var svg = d3.select("#chart")
           .attr("width", containerWidth)
           .attr("height", 560)
@@ -108,7 +110,7 @@ export default {
         },
         width = containerWidth - 80 - margin.left - margin.right,
         height = 560 - margin.top - margin.bottom,
-        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
       var x0 = d3.scaleBand()
         .rangeRound([0, width])
@@ -275,7 +277,6 @@ export default {
         //   .text(function(d) {
         //     return d;
         //   });
-
     },
     numFormat(num) {
       num = num.toString().split("."); // 分隔小数点

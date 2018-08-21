@@ -10,7 +10,8 @@
 
       <div class="">
         <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
-
+        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
         <div>
               <div class="yrange display-inline-block vertical-align-top" v-show="rangeShow">
                 <el-slider
@@ -25,7 +26,7 @@
               </el-slider>
               </div>
 
-              <div id="canvas" class="display-inline-block vertical-align-top"></div>
+              <div id="d3container" class="display-inline-block vertical-align-top"></div>
 
               <div class="clear"></div>
 
@@ -265,7 +266,7 @@ export default {
       this.xRightOptions.max = this.ymax
       this.xLeftOptions.width = this.width / 2  - 40
       this.xRightOptions.height = this.height  - 50
-      let svg = d3.select('#canvas')
+      let svg = d3.select('#d3container')
         .append('svg')
         .attr('id', 'svg')
         .attr('width', width)
