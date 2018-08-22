@@ -8,6 +8,9 @@
 
       <degComp></degComp>
 
+      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '基因热图')">生成 PDF</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '基因热图')">生成 SVG</el-button>
+
       <div class="">
         <div class="icon-func-div">
           <span class="font-size-12">ID显示</span>
@@ -20,7 +23,7 @@
           </el-switch>
         </div>
 
-        <div id="chart"></div>
+        <div id="d3container"></div>
 
         </div>
     </el-main>
@@ -33,8 +36,6 @@ import degComp from './degComp.vue'
 import imgMenuShowComp from './imgMenuShowComp.vue'
 
 import * as d3 from 'd3'
-
-import Highcharts from 'highcharts/highstock';
 export default {
   data () {
     return {
@@ -133,7 +134,7 @@ export default {
               				.range([(d3.rgb(0,255,0)).darker(1), (d3.rgb(19,3,3)).darker(1), (d3.rgb(255,0,0)).darker(0.7)]);
 
               // 设置chart，svg
-              var svg = d3.select("#chart").append("svg") // 选择“chart”（就是div），加入一个svg，设置属性跟div一样大
+              var svg = d3.select("#d3container").append("svg") // 选择“chart”（就是div），加入一个svg，设置属性跟div一样大
                   .attr("width", width + margin.left + margin.right)
                   .attr("height", height + margin.top + margin.bottom)
                   .attr("class", "d3svg")

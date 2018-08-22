@@ -13,9 +13,10 @@
         <p>$$  \frac{500 + 2000}{2} = 1250 $$</p>
         Y 轴坐标为
         <p>$$ \log_{2}{\frac{500}{2000}} = -2 $$</p>
-
+        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'MA plot')">生成 PDF</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'MA plot')">生成 SVG</el-button>
         <div class="min-width-div">
-              <div id="canvas" class="display-inline-block vertical-align-top"></div>
+              <div id="d3container" class="display-inline-block vertical-align-top"></div>
 
               <div class="clear"></div>
 
@@ -131,7 +132,7 @@ export default {
       ymax: 3,
       radius: 1.8,
       width: 800,
-      height: 600,
+      height: 605,
       pvalue: 0.05,
       FDR: 0.05,
       log2FoldChange: 1,
@@ -205,7 +206,7 @@ export default {
       let width = this.width
       let height = this.height
       let padding = {left: 50, right: 30, top: 30, bottom: 30}
-      let svg = d3.select('#canvas')
+      let svg = d3.select('#d3container')
         .append('svg')
         .attr('id', 'svg')
         .attr('width', width)
@@ -375,6 +376,7 @@ export default {
       if (self.xLeft !== 0 || self.yTop !== 0) {
         self.circleColor()
       }
+      d3.selectAll(".red").style("fill", "red")
     },
     xLeftChange () {
       let self = this
@@ -452,6 +454,7 @@ path{
   clear: both;
 }
 .min-width-div {
+  padding-top: 10px;
   min-width: 900px;
 }
 </style>
@@ -462,9 +465,6 @@ path{
 }
 .margin-0-auto {
   margin: 0 auto;
-}
-.red {
-  fill: red;
 }
 .text-align-center {
   text-align: center;

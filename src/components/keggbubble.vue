@@ -14,7 +14,10 @@
 
         <h2>KEGG 气泡图 </h2>
 
-        <div class="container"></div>
+        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'KEGG 富集分析气泡图')">生成 PDF</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'KEGG 富集分析气泡图')">生成 SVG</el-button>
+
+        <div id="d3container"></div>
 
         <a :href="href" target="_blank" ref="aTag"></a>
 
@@ -65,12 +68,11 @@ export default {
           var width = initHeight - padding.left - padding.bottom
           var height = initWidth - padding.top - padding.bottom
 
-          var svgG = d3.select(".container")
+          var svgG = d3.select("#d3container")
             .append("svg")
             .attr("class", "d3bubblesvg")
-            .attr("width", initWidth)
-            .attr("height", initHeight)
-            .style("overflow", "visible")
+            .attr("width", initWidth + padding.right)
+            .attr("height", initHeight + padding.bottom)
           var svg = svgG.append('g').attr('transform','translate('+padding.left+','+padding.top+')')
 
           //添加y轴坐标轴
@@ -264,7 +266,7 @@ export default {
   		var maxValueText = svg.append("text")
   					.attr("class","valueText")
   					.attr("x", width + 100)
-  					.attr("y", height - 200)
+  					.attr("y", height - 190)
   					.attr("dy", "-0.3em")
   					.text(function(){
   						return d3.min(self.tableValue , function (d) {
@@ -332,7 +334,8 @@ export default {
   						return (d3.max(self.tableValue , function (d) {
               				  return Number(d.gene_ratio) })).toFixed(3);
   					});
-
+    // 网格线颜色
+    d3.selectAll('.tick').selectAll("line").style("stroke", "#cccccc4d")
     },
   }
 }
@@ -348,14 +351,5 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
-}
-</style>
-<style media="screen">
-.grid .tick line {
-  stroke: #cccccc4d;
-}
-.d3bubblesvg {
-  padding-right: 200px;
-  padding-bottom: 80px;
 }
 </style>

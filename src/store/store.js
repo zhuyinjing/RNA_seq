@@ -117,7 +117,7 @@ export default new Vuex.Store({
         //未生成pdf的html页面高度
         var leftHeight = contentHeight;
         //页面偏移
-        var position = 0;
+        var position = 10;
         //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
         var imgWidth = 595.28;
         var imgHeight = 592.28 / contentWidth * contentHeight;
@@ -128,7 +128,7 @@ export default new Vuex.Store({
         //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
         //当内容未超过pdf一页显示的范围，无需分页
         if (leftHeight < pageHeight) {
-          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+          pdf.addImage(pageData, 'JPEG', 0, 10, imgWidth, imgHeight);
         } else {
           while (leftHeight > 0) {
             pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)

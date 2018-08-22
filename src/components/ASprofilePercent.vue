@@ -14,7 +14,10 @@
 
       <h2>可变剪切事件百分比统计</h2>
 
-      <div id="canvas"></div>
+      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件百分比统计')">生成 PDF</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件百分比统计')">生成 SVG</el-button>
+
+      <div id="d3container"></div>
 
     </div>
   </el-main>
@@ -69,7 +72,7 @@ export default {
       let width = 900
       let height = 600
 
-      let svg = d3.select('#canvas')
+      let svg = d3.select('#d3container')
         .append('svg')
         .attr('id', 'svg')
         .attr('width', 1000)

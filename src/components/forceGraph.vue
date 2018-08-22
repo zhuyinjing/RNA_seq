@@ -8,6 +8,9 @@
 
     <degComp></degComp>
 
+    <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '蛋白互作网络图')">生成 PDF</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '蛋白互作网络图')">生成 SVG</el-button>
+    <br><br>
     是否显示离散的基因：
     <el-switch
       v-model="singleGeneShow"
@@ -18,7 +21,7 @@
     >
     </el-switch>
 
-    <div id="canvas"></div>
+    <div id="d3container"></div>
 
   </el-main>
 </el-container>
@@ -79,9 +82,9 @@ export default {
     },
     initD3() {
       // 屏幕宽度
-      let containerWidth = document.getElementById("canvas").clientWidth
+      let containerWidth = document.getElementById("d3container").clientWidth
 
-      let svg = d3.select('#canvas')
+      let svg = d3.select('#d3container')
         .append('svg')
         .attr('id', 'svg')
         .attr('width', 1200)
@@ -364,6 +367,7 @@ export default {
           d.picked = d.previouslyPicked = false;
         })
       }
+      d3.selectAll(".links").selectAll("line").style("stroke", "#999").style("stroke-opacity", 0.6)
     },
   }
 }
@@ -385,11 +389,6 @@ export default {
 <style media="screen">
 #zoom-layer:active {
   cursor: move;
-}
-
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
 }
 
 .nodes circle {

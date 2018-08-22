@@ -133,12 +133,12 @@ export default {
 
       var padding = {
         left: 80,
-        top: 40,
+        top: 50,
         right: 150,
         bottom: 20
       }
-      var width1 = initWidth - padding.left - padding.bottom
-      var height1 = initHeight - padding.top - padding.bottom
+      var width1 = initWidth + padding.right
+      var height1 = initHeight + padding.bottom
 
       var arr = this.checkedPCA
 
@@ -165,7 +165,7 @@ export default {
       if (this.checkedPCA.length === 2) {
         var width = width2
         var height = height2
-        var svg = svgG.append('g').attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+        var svg = svgG.append('g').attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
         //  x轴文字
         svg.append("text")
     					.attr("x", width / 2)
@@ -285,7 +285,7 @@ export default {
         var height = height2 / self.checkedPCA.length
         for (let i = 0; i < arr.length; i++) {
           for (let j = 0; j < arr.length; j++) {
-            var svg = svgG.append('g').attr('transform', 'translate(' + (j * (width) + (0)) + ',' + (i * (height) + (0)) + ')')
+            var svg = svgG.append('g').attr('transform', 'translate(' + (j * (width) + (padding.left)) + ',' + (i * (height) + (padding.top)) + ')')
             // var svg = svgG.append('g').attr('transform','translate('+ (j * (width) + (j* 10))  +','+ (i * (height) + (i* 10)) +')')
             //y轴比例尺
             var yScale = d3.scaleLinear().range([height, 0])
@@ -371,31 +371,31 @@ export default {
           }
           //  x轴文字
           svgG.append("text")
-      					.attr("x", (width / 2.5) + (i * width))
-      					.attr("y", -15)
+      					.attr("x", (width / 2.5) + (i * width) + padding.left)
+      					.attr("y", -15 + padding.top)
       					.attr("dy", "-0.3em")
       					.text(function(){
       						return "PC" + self.checkedPCA[i];
       					});
           svgG.append("text")
-      					.attr("x", (width / 2.5) + (i * width))
-      					.attr("y", -2)
+      					.attr("x", (width / 2.5) + (i * width) + padding.left)
+      					.attr("y", -2 + padding.top)
       					.attr("dy", "-0.3em")
       					.text(function(){
       						return "(" + (self.percentVariance[self.checkedPCA[i] - 1] * 100).toFixed(0) + "%" + ")";
       					});
           //  y轴文字
           svgG.append("text")
-      					.attr("x", -60)
-      					.attr("y", height / 2 + (i * height))
+      					.attr("x", -60 + padding.left)
+      					.attr("y", height / 2 + (i * height) + padding.top)
                 .attr("dy", "-0.3em")
                 .style('text-anchor', 'start')
       					.text(function(){
                   return "PC" + self.checkedPCA[i];
       					});
           svgG.append("text")
-      					.attr("x", -60)
-      					.attr("y", height / 2 + 20 + (i * height))
+      					.attr("x", -60 + padding.left)
+      					.attr("y", height / 2 + 20 + (i * height) + padding.top)
                 .attr("dy", "-0.3em")
                 .style('text-anchor', 'start')
       					.text(function(){
@@ -404,38 +404,38 @@ export default {
         }
       }
 
-
       //  去掉多余的 path class='domain'
       d3.selectAll(".xaxis .domain").remove();
       d3.selectAll(".yaxis .domain").remove();
 
       //  右侧颜色图例
       svgG.append("text")
-        .attr("x", width1 + 10)
-        .attr("y", 20)
+        .attr("x", width1 - padding.right + 10)
+        .attr("y", padding.top + 20)
         .attr("dy", "-0.3em")
         .text(function() {
           return "group";
         });
       for (let i = 0; i < self.conditionArr.length; i++) {
         svgG.append("rect")
-          .attr("x", width1 + 10) // rect 横坐标无需改动
-          .attr("y", 25 + 30 * i)
+          .attr("x", width1 - padding.right + 10) // rect 横坐标无需改动
+          .attr("y", padding.top + 25 + 30 * i)
           .attr("width", 30)
           .attr("height", 30)
           .attr("fill", "white")
           .attr("stroke", "#999")
         svgG.append("circle")
-          .attr("cx", width1 + 10 + 15) // 圆心x坐标无需改动
-          .attr("cy", (25 + 30 * i) + 15)
+          .attr("cx", width1 - padding.right + 10 + 15) // 圆心x坐标无需改动
+          .attr("cy", padding.top + (25 + 30 * i) + 15)
           .attr("r", 8)
           .attr("fill", colorRandom(self.conditionArr[i]))
         svgG.append("text")
-          .attr("x", width1 + 10 + 40) // text x坐标无需改动
-          .attr("y", 50 + 30 * i)
+          .attr("x", width1 - padding.right + 10 + 40) // text x坐标无需改动
+          .attr("y", padding.top + 50 + 30 * i)
           .attr("dy", "-0.3em")
           .text(self.conditionArr[i]);
       }
+      d3.selectAll('.tick').selectAll("line").style("stroke", "#cccccc4d")
     },
 
 
@@ -465,14 +465,7 @@ export default {
 
 </style>
 <style media="screen">
-.grid .tick line {
+/* .grid .tick line {
   stroke: #cccccc4d;
-}
-.d3pcasvg {
-  padding-left: 80px;
-  padding-top: 40px;
-  padding-right: 150px;
-  padding-bottom: 20px;
-  overflow: visible;
-}
+} */
 </style>

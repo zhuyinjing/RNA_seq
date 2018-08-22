@@ -37,8 +37,11 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <el-button type="primary" @click="initD3()">提交</el-button>
       </div>
+      <br>
+      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件数量统计')">生成 PDF</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件数量统计')">生成 SVG</el-button>
 
-      <div id="canvas"></div>
+      <div id="d3container"></div>
 
     </div>
   </el-main>
@@ -109,7 +112,7 @@ export default {
       	.text('')
 
       for (let i = 0;i < this.events.length;i++) {
-        let svg = d3.select('#canvas')
+        let svg = d3.select('#d3container')
           .append('svg')
           .attr('id', 'svg')
           .attr('width', width)

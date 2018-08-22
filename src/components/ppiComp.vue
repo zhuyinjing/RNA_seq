@@ -1,6 +1,10 @@
 <template>
   <div class="">
-    <svg width="800" height="800"></svg>
+    <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '蛋白互作图')">生成 PDF</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '蛋白互作图')">生成 SVG</el-button>
+    <div id="d3container">
+      <svg width="800" height="800"></svg>
+    </div>
   </div>
 </template>
 

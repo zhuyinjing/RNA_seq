@@ -10,8 +10,8 @@
 
       <div class="">
         <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button>
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
+        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '火山图')">生成 PDF</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '火山图')">生成 SVG</el-button>
         <div>
               <div class="yrange display-inline-block vertical-align-top" v-show="rangeShow">
                 <el-slider
@@ -376,6 +376,8 @@ export default {
       if (self.xLeft !== 0 || self.yTop !== 0) {
         self.circleColor()
       }
+      d3.selectAll(".red").style("fill", "red")
+      d3.selectAll(".green").style("fill", "green")
     },
     xLeftChange () {
       let self = this
@@ -470,12 +472,6 @@ path{
 }
 .margin-0-auto {
   margin: 0 auto;
-}
-.green {
-  fill: green;
-}
-.red {
-  fill: red;
 }
 .text-align-center {
   text-align: center;
