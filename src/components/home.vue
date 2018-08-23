@@ -3,17 +3,14 @@
     <div class="imgStyle">
       <img class="imgStyle" src="../assets/img/lollipop.png" alt="">
     </div>
-    <!-- <div class="textStyle">
-      <h1>ColorSeq</h1>
-    </div> -->
     <div class="textStyle">
-      <h1>专业、深度、可视化的高通量生物数据分析平台</h1>
+      <h1>{{$t('home.introduction')}}</h1>
     </div>
     <div class="textStyle">
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
-      <el-button type="danger" @click="project_list()">查看项目列表</el-button>
+      <el-button type="danger" @click="project_list()">{{$t('home.project_button')}}</el-button>
       <img src="http://colorseq.com/server/username" alt="" class='display-none'>
-      <p class="suggestStyle">建议使用浏览器：
+      <p class="suggestStyle">{{$t('home.suggest_browser')}}:
         <a href="https://chrome.en.softonic.com/" target="_blank">Chrome</a> &nbsp;
         <a href="https://safari.en.softonic.com/" target="_blank">Safari</a> &nbsp;
         <a href="http://www.firefox.com.cn/" target="_blank">Firefox</a>
@@ -21,9 +18,7 @@
     </div>
     <login ref="loginDiv"></login>
 
-    <div class="footer">
-      京ICP备18032172号-1
-    </div>
+    <div class="footer">{{$t('home.footer_font')}}</div>
   </div>
 </template>
 
@@ -63,7 +58,7 @@ export default {
 .imgStyle {
   width: 200px;
   height: 200px;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 .textStyle {
   text-align: center;

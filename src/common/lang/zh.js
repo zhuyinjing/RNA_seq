@@ -1,0 +1,128 @@
+module.exports = {
+  //  按钮
+  button: {
+    confirm: '确定',
+    cancel: '取消',
+    next_step: '下一步',
+    previous_step: '上一步',
+    back: '返回',
+  },
+  //  导航
+  navbar: {
+    home: '首页',
+    project_list: '项目列表',
+    app_tool: '可视化工具',
+    logout: '退出账号',
+  },
+  //  首页
+  home: {
+    introduction: '专业、深度、可视化的高通量生物数据分析平台',
+    project_button: '查看项目列表',
+    suggest_browser: '建议使用浏览器',
+    footer_font: '京ICP备18032172号-1',
+  },
+  //  项目列表
+  project_list: {
+    create_project: '新建项目',
+    project_name: '项目名称',
+    create_time: '创建时间',
+    edit_button: '查看/编辑 实验设计',
+    upload_button: '上传测序文件',
+    run_button: '运行分析',
+    report_button: '查看报告',
+    delete_button: '删除项目',
+    project_introduction: '项目简介',
+    species_type: '物种类型',
+    sequencing_type: '测序类型',
+  },
+  //  编辑实验
+  create_experiment: {
+    edit_experiment: '编辑/更新实验设计',
+    clear_experiment: '清空实验设计',
+    experiment_list: '实验条件一览',
+    experiment_condition: '实验条件',
+    sample_name: '样本名称',
+    case_control: '差异表达基因比对条件',
+    case: '实验组',
+    control: '对照组',
+    step1: '第一步：填写实验条件',
+    add_condition: '增加实验条件',
+    sample_number: '样本数目',
+    case: '实验组',
+    step2: '第二步：填写需要进行差异表达基因对比的条件对',
+  },
+  //  上传测序文件
+  upload_file: {
+    sample_data: '样本数据',
+    file: '文件',
+    upload: '上传',
+    upload_progress: '上传进度',
+  },
+  //  运行分析
+  run_task: {
+    report: '生成报告',
+    run: '运行分析任务',
+    refresh: '刷新任务状态',
+  },
+  //  报告侧边栏
+  leftMenu: {
+    report_home: '报告首页',
+    qc: '质量控制',
+    fastqc: '测序质检',
+    mappingqc: '比对结果质检',
+    trans: '转录本拼接概况',
+    new_trans: '新转录本概况',
+    gene_matrix: '基因表达量',
+    expr_matrix: '基因表达量表格',
+    cluster_all: '样本聚类概览',
+    cluster: '样本聚类',
+    pca: 'PCA 主成分分析',
+    paris: '样本相关性图',
+    deg: '差异表达基因分析',
+    deg_chart: '差异分析后可视化',
+    kegg: 'KEGG 富集分析气泡图',
+    asprofile: '可变剪切分析',
+    asprofile_number: '可变剪切事件数量统计',
+    asprofile_percent: '可变剪切事件百分比统计',
+  },
+  //  报告首页
+  report: {
+    project: '项目',
+    title: '转录组测序简介',
+    introduction: '转录组测序是对样本中所有 RNA 的集合（核糖体 RNA 除外）进行高通量测序。通过转录组测序，理论上可以得到测序样本所有基因的表达水平。结合良好的实验设计，转录组测序可以较为准确的定位到与特定表型相关的基因列表，从而可以为进一步的研究提供较为明确的研究思路。',
+    describe: '基本信息',
+    species: '物种',
+    genome: '参考基因组',
+    experiment: '项目实验设计',
+  },
+  //  测序质检
+  fastqc: {
+    title: '测序数据质量评估简报',
+    filename: '文件名',
+    basic_statistics_paragraph1: '- Encoding 指测序平台的版本和相应的编码版本号，可推测是 Phred33 或是 Phred 64 质量分数的编码方式。',
+    basic_statistics_paragraph2: '- Total Sequences 输入文本的reads的数量。',
+    basic_statistics_paragraph2: '- Total Sequences 输入文本的reads的数量。',
+    basic_statistics_paragraph3: '-Sequence length 测序的长度。',
+    basic_statistics_paragraph4: '- %GC 是我们需要重点关注的一个指标，这个值表示的是全部序列中的 GC 含量，这个数值一般是物种特意的，比如人类细胞就是 42% 左右。',
+    basic_statistics: '基本统计',
+    base_quality_paragraph1: '- 用箱式图的方式展示数据质量，图中每 1 个位置，都是该位置的所有序列的测序质量的一个统计。',
+    base_quality_paragraph2: '纵轴是质量得分，Q =-10*log10(p)，p 为测错的概率。所以一条 reads 某位置出错概率 0.01 时，其 quality 就是 20。横轴是测序序列的位置。',
+    base_quality_paragraph3: '蓝色线是各个位置的平均值的连线。一般要求此图中，所有位置的 10% 分位数大于 20，也就是常说的 Q20 过滤。',
+    base_quality_paragraph4: '- 如果任何碱基质量低于 10，或者是任何中位数低于 25 报警；',
+    base_quality_paragraph5: '- 如果任何碱基质量低于 5，或者是任何中位数低于 20 报错。',
+    base_quality: '碱基质量',
+    per_quality_paragraph1: '- 这一模块是检查在测序平台上，reads 中每一个碱基位置在不同的测序小孔之间的偏离度，偏离度越高，碱基质量越差。',
+    per_quality_paragraph2: '纵轴表示测序小孔，蓝色表示低于平均偏离度，越红则说明偏离平均质量方差越多，也就是说质量越差，本图中都是蓝色表明质量很好。',
+    per_quality_paragraph3: '如果出现质量问题可能是短暂的，如有气泡产生，也可能是长期的，如在某一小孔中存在杂质。',
+    per_quality_paragraph4: '- 偏离度小于平均值2以上报警；',
+    per_quality_paragraph5: '- 偏离度小于平均值5以上不合格。',
+    per_quality: '每瓦质量',
+    sequence_quality_paragraph1: '- 这是为了检测一部分质量特别差的 reads，如果有则会在图上出现多个峰，如在测序仪边缘的 reads。',
+    sequence_quality_paragraph2: '纵轴是 reads 数目，横轴是质量分数，代表不同 Phred 值对应了多少的 reads。 ',
+    sequence_quality_paragraph3: '- 当峰值小于 27（错误率 0.2%）时警报；',
+    sequence_quality_paragraph4: '- 当峰值小于 20（错误率 1%）时不合格。',
+    sequence_quality: '序列质量',
+
+
+  },
+}

@@ -1,16 +1,16 @@
 <template>
   <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
+    <el-tooltip class="item cursor-pointer" effect="dark" :content="$t('button.back')" placement="right">
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
-    <h3>项目：{{this.$store.state.projectName}}</h3>
+    <h3>{{$t('project_list.project_name')}}：{{this.$store.state.projectName}}</h3>
     <div id="container"></div>
     <div class="">
       <transition name="fade">
-        <el-button v-if="runBtnShow" type="primary" @click="startTask()">运行分析任务</el-button>
-        <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">刷新任务状态</el-button>
+        <el-button v-if="runBtnShow" type="primary" @click="startTask()">{{$t('run_task.run')}}</el-button>
+        <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">{{$t('run_task.refresh')}}</el-button>
       </transition>
-      <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> 生成报告</el-button>
+      <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> {{$t('run_task.report')}}</el-button>
       <!-- <el-button v-show="reportBtnShow" type="" @click="result()" plain><i class="el-icon-printer"></i> 结果导入ABrowse</el-button> -->
     </div>
   </div>

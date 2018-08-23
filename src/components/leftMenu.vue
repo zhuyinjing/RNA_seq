@@ -1,29 +1,29 @@
 <template>
   <div>
     <el-menu v-show="isCollapse" style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
-        <el-menu-item index="0-0" @click="report">报告首页</el-menu-item>
+        <el-menu-item index="0-0" @click="report">{{$t('leftMenu.report_home')}}</el-menu-item>
         <el-menu-item-group>
-          <span slot="" class="title-style">质量控制</span>
-          <el-menu-item index="1-0" @click="report_fastqc">测序质检</el-menu-item>
-          <el-menu-item index="1-1" @click="report_mappingqc">比对结果质检</el-menu-item>
+          <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
+          <el-menu-item index="1-0" @click="report_fastqc">{{$t('leftMenu.fastqc')}}</el-menu-item>
+          <el-menu-item index="1-1" @click="report_mappingqc">{{$t('leftMenu.mappingqc')}}</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">转录本拼接概况</span>
-          <el-menu-item index="2-0" @click="report_new_trans">新转录本概况</el-menu-item>
+          <span class="title-style">{{$t('leftMenu.trans')}}</span>
+          <el-menu-item index="2-0" @click="report_new_trans">{{$t('leftMenu.new_trans')}}</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">基因表达量</span>
-          <el-menu-item index="3-0" @click="report_expr_matrix">基因表达量表格（TPM）</el-menu-item>
+          <span class="title-style">{{$t('leftMenu.gene_matrix')}}</span>
+          <el-menu-item index="3-0" @click="report_expr_matrix">{{$t('leftMenu.expr_matrix')}}（TPM）</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">样本聚类概览</span>
-          <el-menu-item index="4-0" @click="plotCluster">样本聚类</el-menu-item>
-          <el-menu-item index="4-1" @click="plotPCA">PCA 主成分分析</el-menu-item>
+          <span class="title-style">{{$t('leftMenu.cluster_all')}}</span>
+          <el-menu-item index="4-0" @click="plotCluster">{{$t('leftMenu.cluster')}}</el-menu-item>
+          <el-menu-item index="4-1" @click="plotPCA">{{$t('leftMenu.pca')}}</el-menu-item>
           <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a> -->
-          <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3" >样本相关性图</el-menu-item></a>
+          <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3">{{$t('leftMenu.paris')}}</el-menu-item></a>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">差异表达基因分析</span>
+          <span class="title-style">{{$t('leftMenu.deg')}}</span>
           <el-menu-item :index="'5-' + index + '-1'" @click="report_deg(item['_case'], item['_control'], index)" v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index">{{item['_case']}} vs {{item['_control']}}</el-menu-item>
           <!-- <el-menu-item-group v-for="(item, index) in $store.state.info.experimentDesign.experiments" :key="index"> -->
             <!-- <span slot="" style="font-size:14px">比较：{{item['_case']}} vs {{item['_control']}}</span> -->
@@ -35,13 +35,13 @@
           <!-- </el-menu-item-group> -->
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">差异分析后可视化</span>
-          <el-menu-item index="5-1" @click="keggbubble">KEGG 富集分析气泡图</el-menu-item>
+          <span class="title-style">{{$t('leftMenu.deg_chart')}}</span>
+          <el-menu-item index="5-1" @click="keggbubble">{{$t('leftMenu.kegg')}}</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">可变剪切分析</span>
-          <el-menu-item index="6-1" @click="ASprofile">可变剪切事件数量统计</el-menu-item>
-          <el-menu-item index="6-2" @click="ASprofilePercent">可变剪切事件百分比统计</el-menu-item>
+          <span class="title-style">{{$t('leftMenu.asprofile')}}</span>
+          <el-menu-item index="6-1" @click="ASprofile">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
+          <el-menu-item index="6-2" @click="ASprofilePercent">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>
         </el-menu-item-group>
     </el-menu>
   </div>

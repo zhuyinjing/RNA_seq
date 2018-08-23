@@ -10,19 +10,19 @@
     </div>
     <div class="min-width-div" v-if="projectShow">
       <div class="createbtn">
-        <el-button type="primary" plain @click="createProjectDialog = true">+ 新建项目</el-button>
+        <el-button type="primary" plain @click="createProjectDialog = true">+ {{$t('project_list.create_project')}}</el-button>
       </div>
       <div class="tableDiv">
         <div class="table-item" v-for="item in projectList">
           <div class="titleDiv">
-            项目名称：{{item.name}} 创建时间：{{item.openTime}}
+            {{$t('project_list.project_name')}}：{{item.name}} {{$t('project_list.create_time')}}：{{item.openTime}}
           </div>
           <div class="btnDiv">
-            <el-button @click="createExperiment(item)">查看/编辑 实验设计<i class="el-icon-menu el-icon--right"></i></el-button>
-            <el-button @click="upload(item)">上传测序文件<i class="el-icon-upload el-icon--right"></i></el-button>
-            <el-button @click="runTask(item)">运行分析<i class="el-icon-caret-right el-icon--right"></i></el-button>
-            <el-button @click="report(item)">查看报告<i class="el-icon-document el-icon--right"></i></el-button>
-            <el-button disabled class="float-right" type="danger" @click="deleteProject(item.id)">删除项目<i class="el-icon-delete el-icon--right"></i></el-button>
+            <el-button @click="createExperiment(item)">{{$t('project_list.edit_button')}}<i class="el-icon-menu el-icon--right"></i></el-button>
+            <el-button @click="upload(item)">{{$t('project_list.upload_button')}}<i class="el-icon-upload el-icon--right"></i></el-button>
+            <el-button @click="runTask(item)">{{$t('project_list.run_button')}}<i class="el-icon-caret-right el-icon--right"></i></el-button>
+            <el-button @click="report(item)">{{$t('project_list.report_button')}}<i class="el-icon-document el-icon--right"></i></el-button>
+            <el-button disabled class="float-right" type="danger" @click="deleteProject(item.id)">{{$t('project_list.delete_button')}}<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
         </div>
       </div>
@@ -30,30 +30,30 @@
 
     <login ref="loginDiv"></login>
 
-    <el-dialog title="新建项目" :visible.sync="createProjectDialog" width="30%">
+    <el-dialog :title="$t('project_list.create_project')" :visible.sync="createProjectDialog" width="30%">
       <el-form :model="form">
-        <el-form-item label="项目名称">
+        <el-form-item :label="$t('project_list.project_name')">
           <el-input v-model="form.name" auto-complete="off" clearable></el-input>
         </el-form-item>
-        <el-form-item label="项目简介">
+        <el-form-item :label="$t('project_list.project_introduction')">
           <el-input v-model="form.description" auto-complete="off" clearable></el-input>
         </el-form-item>
         <div class="margin-bottom-10">
-          <label for="">物种类型</label>
+          <label for="">{{$t('project_list.species_type')}}</label>
         </div>
-        <el-select v-model="form.species" placeholder="物种类型">
+        <el-select v-model="form.species" :placeholder="$t('project_list.species_type')">
           <el-option :value="key" v-for="(item, key) in $store.state.speciesArr" :key="key">{{key}}</el-option>
         </el-select>
         <div class="selectDiv">
-          <label for="">测序类型</label>
+          <label for="">{{$t('project_list.sequencing_type')}}</label>
         </div>
-        <el-select v-model="form.type" placeholder="物种类型">
+        <el-select v-model="form.type" :placeholder="$t('project_list.species_type')">
           <el-option v-for="item in typeList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="createProjectDialog = false">取消</el-button>
-        <el-button type="primary" @click="createClick()">新建</el-button>
+        <el-button @click="createProjectDialog = false">{{$t('button.cancel')}}</el-button>
+        <el-button type="primary" @click="createClick()">{{$t('button.confirm')}}</el-button>
       </div>
   </el-dialog>
 

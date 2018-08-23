@@ -8,51 +8,51 @@
         <imgMenuShowComp></imgMenuShowComp>
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>测序质检</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$t('leftMenu.fastqc')}}</el-breadcrumb-item>
         </el-breadcrumb>
-        <h2>测序数据质量评估简报</h2>
+        <h2>{{$t('fastqc.title')}}</h2>
         <table class="gridtable">
           <thead>
             <tr>
-              <th>文件名</th>
+              <th>{{$t('fastqc.filename')}}</th>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - Encoding 指测序平台的版本和相应的编码版本号，可推测是 Phred33 或是 Phred 64 质量分数的编码方式。 <br>
-                  - Total Sequences 输入文本的reads的数量。<br>
-                  Sequence length 测序的长度。<br>
-                  - %GC 是我们需要重点关注的一个指标，这个值表示的是全部序列中的 GC 含量，这个数值一般是物种特意的，比如人类细胞就是 42% 左右。
+                  {{$t('fastqc.basic_statistics_paragraph1')}} <br>
+                  {{$t('fastqc.basic_statistics_paragraph2')}} <br>
+                  {{$t('fastqc.basic_statistics_paragraph3')}} <br>
+                  {{$t('fastqc.basic_statistics_paragraph4')}} <br>
                 </div>
-                <th>基本统计</th>
+                <th>{{$t('fastqc.basic_statistics')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 用箱式图的方式展示数据质量，图中每 1 个位置，都是该位置的所有序列的测序质量的一个统计。<br>
-                  纵轴是质量得分，Q =-10*log10(p)，p 为测错的概率。所以一条 reads 某位置出错概率 0.01 时，其 quality 就是 20。横轴是测序序列的位置。<br>
-                  蓝色线是各个位置的平均值的连线。一般要求此图中，所有位置的 10% 分位数大于 20，也就是常说的 Q20 过滤。<br>
-                  - 如果任何碱基质量低于 10，或者是任何中位数低于 25 报警；<br>
-                  - 如果任何碱基质量低于 5，或者是任何中位数低于 20 报错。
+                  {{$t('fastqc.base_quality_paragraph1')}}<br>
+                  {{$t('fastqc.base_quality_paragraph2')}}<br>
+                  {{$t('fastqc.base_quality_paragraph3')}}<br>
+                  {{$t('fastqc.base_quality_paragraph4')}}<br>
+                  {{$t('fastqc.base_quality_paragraph5')}}<br>
                 </div>
-                <th>碱基质量</th>
+                <th>{{$t('fastqc.base_quality')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 这一模块是检查在测序平台上，reads 中每一个碱基位置在不同的测序小孔之间的偏离度，偏离度越高，碱基质量越差。<br>
-                  纵轴表示测序小孔，蓝色表示低于平均偏离度，越红则说明偏离平均质量方差越多，也就是说质量越差，本图中都是蓝色表明质量很好。<br>
-                  如果出现质量问题可能是短暂的，如有气泡产生，也可能是长期的，如在某一小孔中存在杂质。 <br>
-                  - 偏离度小于平均值2以上报警；<br>
-                  - 偏离度小于平均值5以上不合格。
+                  {{$t('fastqc.per_quality_paragraph1')}}<br>
+                  {{$t('fastqc.per_quality_paragraph2')}}<br>
+                  {{$t('fastqc.per_quality_paragraph3')}}<br>
+                  {{$t('fastqc.per_quality_paragraph4')}}<br>
+                  {{$t('fastqc.per_quality_paragraph5')}}<br>
                 </div>
-                <th>每瓦质量</th>
+                <th>{{$t('fastqc.per_quality')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 这是为了检测一部分质量特别差的 reads，如果有则会在图上出现多个峰，如在测序仪边缘的 reads。<br>
-                  纵轴是 reads 数目，横轴是质量分数，代表不同 Phred 值对应了多少的 reads。 <br>
-                  - 当峰值小于 27（错误率 0.2%）时警报； <br>
-                  - 当峰值小于 20（错误率 1%）时不合格。
+                  {{$t('fastqc.sequence_quality_paragraph1')}}<br>
+                  {{$t('fastqc.sequence_quality_paragraph2')}}<br>
+                  {{$t('fastqc.sequence_quality_paragraph3')}}<br>
+                  {{$t('fastqc.sequence_quality_paragraph4')}}<br>
                 </div>
-                <th>序列质量</th>
+                <th>{{$t('fastqc.sequence_quality')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">

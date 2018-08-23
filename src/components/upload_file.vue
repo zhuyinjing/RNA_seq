@@ -1,30 +1,30 @@
 <template>
   <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
+    <el-tooltip class="item cursor-pointer" effect="dark" :content="$t('button.back')" placement="right">
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
     <div class="margin-top-10">
-      <span class="p-font-style">样本数据：</span>
+      <span class="p-font-style">{{$t('upload_file.sample_data')}}：</span>
         <el-select v-model="sample_name" placeholder="请选择" @change="change()" :disabled="disabled">
           <el-option v-for="item in message.nameSampleMap" :key="item.name" :value="item.name"></el-option>
         </el-select>
     </div>
       <div class="fileDivStyle">
-        <span class="p-font-style">文件1:</span>
+        <span class="p-font-style">{{$t('upload_file.file')}}1:</span>
         <input type="file" name="" ref="file1">
       </div>
       <div class="fileDivStyle">
-        <span class="p-font-style">文件2:</span>
+        <span class="p-font-style">{{$t('upload_file.file')}}2:</span>
         <input type="file" name="" ref="file2">
       </div>
-      <el-button type="primary" @click="upload()" :disabled="disabled">上 传</el-button>
-      <p class="p-font-style">上传进度：</p>
+      <el-button type="primary" @click="upload()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
+      <p class="p-font-style">{{$t('upload_file.upload_progress')}}：</p>
       <el-progress :percentage="progress"></el-progress>
     <div class="">
-      <p class="p-font-style">实验条件一览</p>
+      <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
       <table class="gridtable">
         <tr>
-            <th>样本名称</th><th>fastq 文件</th>
+            <th>{{$t('create_experiment.sample_name')}}</th><th>fastq {{$t('upload_file.file')}}</th>
         </tr>
         <tr v-for="item in message.nameSampleMap">
             <td>{{item.name}}</td>

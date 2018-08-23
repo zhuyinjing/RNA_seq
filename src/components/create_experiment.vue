@@ -1,18 +1,18 @@
 <template>
   <div class="content">
-    <el-tooltip class="item cursor-pointer" effect="dark" content="返回" placement="right">
+    <el-tooltip class="item cursor-pointer" effect="dark" :content="$t('button.back')" placement="right">
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
-    <p>项目名称: {{this.$store.state.projectName}}</p>
+    <p>{{$t('project_list.project_name')}}: {{this.$store.state.projectName}}</p>
     <div class="">
-      <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>编辑/更新实验设计</el-button>
-      <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>清空实验设计</el-button>
+      <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>{{$t('create_experiment.edit_experiment')}}</el-button>
+      <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>{{$t('create_experiment.clear_experiment')}}</el-button>
     </div>
     <div class="tableStyle">
-      <p class="p-font-style">实验条件一览</p>
+      <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
       <table class="gridtable">
         <tr>
-            <th>实验条件</th><th>样本名称</th>
+            <th>{{$t('create_experiment.experiment_condition')}}</th><th>{{$t('create_experiment.sample_name')}}</th>
         </tr>
         <tr v-for="(item, value, index) in message.nameSampleMap">
             <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
@@ -21,10 +21,10 @@
       </table>
     </div>
     <div class="degtable">
-      <p class="p-font-style">差异表达基因比对条件</p>
+      <p class="p-font-style">{{$t('create_experiment.case_control')}}</p>
       <table class="gridtable">
         <tr>
-            <th>实验组</th><th>对照组</th>
+            <th>{{$t('create_experiment.case')}}</th><th>{{$t('create_experiment.control')}}</th>
         </tr>
         <tr v-for="(item, index) in message.experiments">
             <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
@@ -33,19 +33,19 @@
       </table>
     </div>
 
-    <el-dialog  title="第一步：填写实验条件" :visible.sync="step1Dialog" width="30%">
+    <el-dialog  :title="$t('create_experiment.step1')" :visible.sync="step1Dialog" width="30%">
       <el-button type="danger" @click="addCondition()">
         <i class="el-icon-circle-plus"></i>
-        增加实验条件
+        {{$t('create_experiment.add_condition')}}
       </el-button>
       <div class="padding-10-5" v-for="item in condition">
-        实验条件
+        {{$t('create_experiment.experiment_condition')}}
         <el-input
           class="conditioninput width-100"
           v-model="item.option"
           clearable>
         </el-input>
-        样本数目
+        {{$t('create_experiment.sample_number')}}
         <el-input
           class="numberinput width-100"
           v-model="item.number"
@@ -54,18 +54,18 @@
         <i class="el-icon-remove cursor-poiter" @click="deleteOption(item)"></i>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="step1Dialog = false">取消</el-button>
-        <el-button type="danger" @click="nextStepClick()">下一步</el-button>
+        <el-button @click="step1Dialog = false">{{$t('button.cancel')}}</el-button>
+        <el-button type="danger" @click="nextStepClick()">{{$t('button.next_step')}}</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="第二步：填写需要进行差异表达基因对比的条件对" :visible.sync="step2Dialog" width="30%">
+    <el-dialog :title="$t('create_experiment.step2')" :visible.sync="step2Dialog" width="30%">
       <div class="padding-10-5" v-for="item in experiments">
          <i class="el-icon-remove cursor-poiter" @click="deleteVs(item)"></i>&nbsp;&nbsp;&nbsp;{{item['_case']}} <i class="el-icon-refresh cursor-poiter" @click="refresh(item)"></i> {{item['_control']}}
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="step1Dialog = true;step2Dialog = false">上一步</el-button>
-        <el-button type="danger" @click="createExperiment()">完成</el-button>
+        <el-button @click="step1Dialog = true;step2Dialog = false">{{$t('button.previous_step')}}</el-button>
+        <el-button type="danger" @click="createExperiment()">{{$t('button.confirm')}}</el-button>
       </div>
     </el-dialog>
 
