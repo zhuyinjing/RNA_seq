@@ -13,8 +13,10 @@
         <p>$$  \frac{500 + 2000}{2} = 1250 $$</p>
         Y 轴坐标为
         <p>$$ \log_{2}{\frac{500}{2000}} = -2 $$</p>
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'MA plot')">生成 PDF</el-button>
+        <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'MA plot')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'MA plot')">生成 SVG</el-button>
+        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+
         <div class="min-width-div">
               <div id="d3container" class="display-inline-block vertical-align-top"></div>
 

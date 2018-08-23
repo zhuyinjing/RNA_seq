@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '基因热图')">生成 PDF</el-button>
-    
+    <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '基因热图')">生成 PDF</el-button> -->
+
     <div id="d3container" style="display:flex">
       <div class="" style="float:left;width:900px;">
         <div id="microarrays_dendrogram" class=""></div>

@@ -18,8 +18,10 @@
         <p>Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">全文链接</a>]</p>
         <p>“Show branch length” 选项打开以后，树状图的枝干长度会体现样本之间的距离远近。</p>
 
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button>
+        <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
+        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+        
         <br><br>
 
         <label id="show-length">

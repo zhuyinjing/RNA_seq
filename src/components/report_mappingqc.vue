@@ -23,9 +23,9 @@
 
       <p>如下图所示，横坐标表示各类 reads 回贴位置，纵坐标表示每个细胞中回贴到相应位置的 reads 的数目（纵坐标轴上大写的 G 代表 Billion）。</p>
 
-      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '比对结果统计')">生成 PDF</el-button>
+      <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '比对结果统计')">生成 PDF</el-button> -->
       <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '比对结果统计')">生成 SVG</el-button>
-
+      <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
       <div class="">
         <div id="d3container">
@@ -62,6 +62,7 @@
 
     </div>
     <div class="clear"></div>
+
   </el-main>
 </el-container>
 </template>

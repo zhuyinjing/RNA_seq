@@ -6,8 +6,10 @@
     <el-main>
       <appImgMenuShowComp></appImgMenuShowComp>
 
-      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件百分比统计')">生成 PDF</el-button>
+      <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件百分比统计')">生成 PDF</el-button> -->
       <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件百分比统计')">生成 SVG</el-button>
+      <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+      
       <br><br>
       是否显示离散的基因：
       <el-switch

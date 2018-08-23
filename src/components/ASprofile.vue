@@ -38,8 +38,9 @@
         <el-button type="primary" @click="initD3()">提交</el-button>
       </div>
       <br>
-      <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件数量统计')">生成 PDF</el-button>
+      <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件数量统计')">生成 PDF</el-button> -->
       <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件数量统计')">生成 SVG</el-button>
+      <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
       <div id="d3container"></div>
 

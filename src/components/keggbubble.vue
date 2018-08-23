@@ -14,8 +14,9 @@
 
         <h2>KEGG 气泡图 </h2>
 
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'KEGG 富集分析气泡图')">生成 PDF</el-button>
+        <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'KEGG 富集分析气泡图')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'KEGG 富集分析气泡图')">生成 SVG</el-button>
+        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div id="d3container"></div>
 

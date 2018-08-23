@@ -10,8 +10,10 @@
 
       <div class="">
         <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '火山图')">生成 PDF</el-button>
+        <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '火山图')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '火山图')">生成 SVG</el-button>
+        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+
         <div>
               <div class="yrange display-inline-block vertical-align-top" v-show="rangeShow">
                 <el-slider

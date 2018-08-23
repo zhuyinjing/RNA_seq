@@ -27,8 +27,9 @@
         点的半径：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
         &nbsp;&nbsp;&nbsp;
         点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>&nbsp;
-        <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button>
+        <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
+        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div class="margin-top-10" id="d3container"></div>
 

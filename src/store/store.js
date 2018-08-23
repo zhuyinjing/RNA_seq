@@ -1,8 +1,8 @@
 import 'es6-promise/auto'
 import Vuex from 'vuex'
 import Vue from 'vue'
-import * as html2canvas from 'html2canvas'
-import * as jsPDF from 'jspdf'
+// import * as html2canvas from 'html2canvas'
+// import * as jsPDF from 'jspdf'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -42,6 +42,7 @@ export default new Vuex.Store({
       'Zebrafish (Danio rerio)': 7955,
       'Thale cress (Arabidopsis thaliana)': 3702
     },
+    svgDescribeShow: false,
   },
   mutations: {
     setusername: (state, data) => {
@@ -107,42 +108,44 @@ export default new Vuex.Store({
       sessionStorage.setItem('appmenuShow', data)
       state.appmenuShow = data
     },
-    d3savePDF: (state, data) => {
-      let that = this
-      html2canvas(document.getElementById("d3container")).then(canvas => {
-        var contentWidth = canvas.width;
-        var contentHeight = canvas.height;
-        //一页pdf显示html页面生成的canvas高度;
-        var pageHeight = contentWidth / 592.28 * 841.89;
-        //未生成pdf的html页面高度
-        var leftHeight = contentHeight;
-        //页面偏移
-        var position = 10;
-        //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
-        var imgWidth = 595.28;
-        var imgHeight = 592.28 / contentWidth * contentHeight;
-
-        var pageData = canvas.toDataURL('image/jpeg', 1.0);
-        var pdf = new jsPDF('', 'pt', 'a4');
-
-        //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
-        //当内容未超过pdf一页显示的范围，无需分页
-        if (leftHeight < pageHeight) {
-          pdf.addImage(pageData, 'JPEG', 0, 10, imgWidth, imgHeight);
-        } else {
-          while (leftHeight > 0) {
-            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
-            leftHeight -= pageHeight;
-            position -= 841.89;
-            //避免添加空白页
-            if (leftHeight > 0) {
-              pdf.addPage();
-            }
-          }
-        }
-        pdf.save(data + '.pdf');
-      });
-    },
+    // d3savePDF: (state, data) => {
+    //   let that = this
+    //   html2canvas(document.getElementById("d3container")).then(canvas => {
+    //     var contentWidth = canvas.width;
+    //     var contentHeight = canvas.height;
+    //     console.log(contentWidth);
+    //     console.log(contentHeight);
+    //     //一页pdf显示html页面生成的canvas高度;
+    //     var pageHeight = contentWidth / 592.28 * 841.89;
+    //     //未生成pdf的html页面高度
+    //     var leftHeight = contentHeight;
+    //     //页面偏移
+    //     var position = 10;
+    //     //a4纸的尺寸[595.28,841.89]，html页面生成的canvas在pdf中图片的宽高
+    //     var imgWidth = 595.28;
+    //     var imgHeight = 592.28 / contentWidth * contentHeight;
+    //
+    //     var pageData = canvas.toDataURL('image/jpeg', 1.0);
+    //     var pdf = new jsPDF('', 'pt', 'a4');
+    //
+    //     //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+    //     //当内容未超过pdf一页显示的范围，无需分页
+    //     if (leftHeight < pageHeight) {
+    //       pdf.addImage(pageData, 'JPEG', 0, 10, imgWidth, imgHeight);
+    //     } else {
+    //       while (leftHeight > 0) {
+    //         pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+    //         leftHeight -= pageHeight;
+    //         position -= 841.89;
+    //         //避免添加空白页
+    //         if (leftHeight > 0) {
+    //           pdf.addPage();
+    //         }
+    //       }
+    //     }
+    //     pdf.save(data + '.pdf');
+    //   });
+    // },
     d3saveSVG: (state, data) => {
       var svg = document.getElementById('d3container');
       //you need to clone your SVG otherwise it will disappear after saving
