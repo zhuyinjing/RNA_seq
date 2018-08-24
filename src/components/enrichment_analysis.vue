@@ -29,7 +29,7 @@
             </thead>
           </table>
         </el-tab-pane>
-        <el-tab-pane label="转录因子" name="转录因子">
+        <el-tab-pane :label="$t('enrichment_analysis.trans')" :name="$t('enrichment_analysis.trans')">
           <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" id="example1">
             <thead>
               <tr>

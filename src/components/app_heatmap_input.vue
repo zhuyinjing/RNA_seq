@@ -9,12 +9,12 @@
       <div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">基因表达矩阵</label>
+            <label for="maxpval" class="label-font">{{$t('app.gene_matrix')}}</label>
             <!-- <i class="el-icon-question label-font cursor-pointer"></i> -->
           </div>
           <div class="inline-block">
-            <el-radio v-model="radioMatrix" label="content">手动输入</el-radio>
-            <el-radio v-model="radioMatrix" label="file">上传文件</el-radio>
+            <el-radio v-model="radioMatrix" label="content">{{$t('input.hand')}}</el-radio>
+            <el-radio v-model="radioMatrix" label="file">{{$t('input.file')}}</el-radio>
           </div>
         </div>
         <div class="margin-top-10" v-show="radioMatrix === 'content'">
@@ -23,7 +23,7 @@
             <el-input
               type="textarea"
               :rows="20"
-              placeholder="请输入内容"
+              :placeholder="$t('input.content')"
               v-model="textareaMatrix">
             </el-input>
           </div>
@@ -33,17 +33,17 @@
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
             <input type="file" name="" ref="fileMatrix" accept=".csv, .tsv">
-            <p class="span-font">支持文件类型：tsv, csv</p>
+            <p class="span-font">{{$t('input.support')}}：tsv, csv</p>
           </div>
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">分组信息</label>
+            <label for="maxpval" class="label-font">{{$t('app.group')}}</label>
             <!-- <i class="el-icon-question label-font cursor-pointer"></i> -->
           </div>
           <div class="inline-block">
-            <el-radio v-model="radioGroup" label="content">手动输入</el-radio>
-            <el-radio v-model="radioGroup" label="file">上传文件</el-radio>
+            <el-radio v-model="radioGroup" label="content">{{$t('input.hand')}}</el-radio>
+            <el-radio v-model="radioGroup" label="file">{{$t('input.file')}}</el-radio>
           </div>
         </div>
         <div class="margin-top-10" v-show="radioGroup === 'content'">
@@ -52,7 +52,7 @@
             <el-input
               type="textarea"
               :rows="5"
-              placeholder="请输入内容"
+              :placeholder="$t('input.content')"
               v-model="textareaGroup">
             </el-input>
           </div>
@@ -62,14 +62,14 @@
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
             <input type="file" name="" ref="fileGroup" accept=".csv, .tsv">
-            <p class="span-font">支持文件类型：tsv, csv</p>
+            <p class="span-font">{{$t('input.support')}}：tsv, csv</p>
           </div>
         </div>
 
         <div class="">
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="maxpval" class="label-font">基因距离计算方法</label>
+              <label for="maxpval" class="label-font">{{$t('app.gene_distance')}}</label>
             </div>
             <el-select class="input-style" v-model="row_distance" placeholder="请选择">
               <el-option-group label="Favourites">
@@ -101,7 +101,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="maxfdr" class="label-font">基因linkage计算方法</label>
+              <label for="maxfdr" class="label-font">{{$t('app.gene_linkage')}}</label>
             </div>
             <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
               <el-option value="average">average</el-option>
@@ -115,7 +115,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="minfc" class="label-font">样本距离计算方法</label>
+              <label for="minfc" class="label-font">{{$t('app.sample_distance')}}</label>
             </div>
             <el-select class="input-style" v-model="column_distance" placeholder="请选择">
               <el-option-group label="Favourites">
@@ -147,7 +147,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label class="label-font">样本linkage计算方法</label>
+              <label class="label-font">{{$t('app.sample_linkage')}}</label>
             </div>
             <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
               <el-option value="average">average</el-option>
@@ -163,7 +163,7 @@
         <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
-            <el-button type="primary" @click="submit()">提交</el-button>
+            <el-button type="primary" @click="submit()">{{$t('button.submit')}}</el-button>
           </div>
         </div>
 

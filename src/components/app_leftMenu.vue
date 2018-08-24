@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_heatmap_input' || $route.path === '/app_heatmap'}" @click="app_heatmap_input">基因热图 (用户自定义)</el-button> <br><br>
-    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_heatmap_input_project' || $route.path === '/app_heatmap_project'}" @click="app_heatmap_input_project">基因热图 (基于项目数据)</el-button> <br><br>
-    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_ppi_input' || $route.path === '/app_ppi'}" @click="app_ppi_input">蛋白互作图</el-button> <br><br>
-    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_enrichment_input' || $route.path === '/app_enrichment'}" @click="app_enrichment_input">富集分析</el-button> <br><br>
-    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_force_input' || $route.path === '/app_force'}" @click="app_force_input">蛋白互作网络图</el-button>
+    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_heatmap_input' || $route.path === '/app_heatmap'}" @click="app_heatmap_input">{{$t('app.heatmap')}}</el-button> <br><br>
+    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_heatmap_input_project' || $route.path === '/app_heatmap_project'}" @click="app_heatmap_input_project">{{$t('app.heatmap_base_project')}}</el-button> <br><br>
+    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_ppi_input' || $route.path === '/app_ppi'}" @click="app_ppi_input">{{$t('button.ppi')}}</el-button> <br><br>
+    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_enrichment_input' || $route.path === '/app_enrichment'}" @click="app_enrichment_input">{{$t('button.enrichment')}}</el-button> <br><br>
+    <el-button type="info" class="btnStyle" :class="{'activebtn': $route.path === '/app_force_input' || $route.path === '/app_force'}" @click="app_force_input">{{$t('button.force')}}</el-button>
   </div>
 </template>
 

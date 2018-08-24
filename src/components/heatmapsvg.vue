@@ -9,12 +9,12 @@
       <degComp></degComp>
 
       <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '基因热图')">生成 PDF</el-button> -->
-      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '基因热图')">生成 SVG</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '基因热图')">{{$t('button.svg')}}</el-button>
       <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
       <div class="">
         <div class="icon-func-div">
-          <span class="font-size-12">ID显示</span>
+          <span class="font-size-12">{{$t('d3.gene_id_show')}}</span>
           <el-switch
             v-model="idShow"
             active-text=""

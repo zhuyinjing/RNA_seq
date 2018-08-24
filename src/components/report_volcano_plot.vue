@@ -9,9 +9,9 @@
       <degComp></degComp>
 
       <div class="">
-        <p>火山图（Volcano Plot）的横纵坐标分别显示基因差异表达的两个重要指标（ 横坐标为 log2FoldChange，越偏离原点差异倍数越大；纵坐标为 -log10(pvalue)，该值越大，说明差异越显著 ）。通过火山图，可以非常直观地筛选出在两样本间发生显著差异表达的基因。</p>
+        <p>{{$t('volcano_plot.introduction')}}</p>
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '火山图')">生成 PDF</el-button> -->
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '火山图')">生成 SVG</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '火山图')">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div>
@@ -46,10 +46,10 @@
 
               <table class="gridtable" v-show="rangeShow">
                 <tr>
-                    <th>参数</th><th>操作</th>
+                    <th>{{$t('d3.args')}}</th><th>{{$t('d3.option')}}</th>
                 </tr>
                 <tr>
-                  <td>y轴显示</td>
+                  <td>{{$t('d3.y_axis')}}</td>
                   <td>
                     <el-switch
                       style="display: block"
@@ -64,7 +64,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>是否显示基因名</td>
+                  <td>{{$t('d3.gene_name_show')}}</td>
                   <td>
                     <el-switch
                       style="display: block"
@@ -77,7 +77,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>显示基因个数</td>
+                  <td>{{$t('d3.gene_num')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
                   </td>
@@ -95,43 +95,43 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>x轴最小值</td>
+                  <td>{{$t('d3.xmin')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="xmin" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>x轴最大值</td>
+                  <td>{{$t('d3.xmax')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>y轴最小值</td>
+                  <td>{{$t('d3.ymin')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>y轴最大值</td>
+                  <td>{{$t('d3.ymax')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>宽</td>
+                  <td>{{$t('d3.width')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>高</td>
+                  <td>{{$t('d3.height')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>点的半径</td>
+                  <td>{{$t('d3.radius')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
                   </td>

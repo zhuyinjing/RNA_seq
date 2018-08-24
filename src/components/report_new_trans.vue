@@ -8,13 +8,13 @@
         <imgMenuShowComp></imgMenuShowComp>
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>新转录本概况</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$t('leftMenu.new_trans')}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>新转录本概况</h2>
+        <h2>{{$t('leftMenu.new_trans')}}</h2>
 
-        <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>查看classcode说明</el-button>
+        <el-button type="primary" class="margin-bottom-btn" @click="classcodeShow = true"><i class="el-icon-question"></i>{{$t('new_trans.view_classcode')}}</el-button>
 
         <el-card class="" shadow="hover" style="width:1400px;min-width:1400px">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -26,7 +26,7 @@
                 style="width:200px;"
                 type="textarea"
                 :rows="3"
-                placeholder="请输入内容,以英文逗号分隔"
+                :placeholder="$t('input.split')"
                 v-model="genetextarea">
               </el-input>
             </div>
@@ -39,7 +39,7 @@
                 style="width:200px;"
                 type="textarea"
                 :rows="2"
-                placeholder="请输入内容,以英文逗号分隔"
+                :placeholder="$t('input.split')"
                 v-model="referenceTranscriptIdtextarea">
               </el-input>
             </div>
@@ -53,7 +53,7 @@
                 style="width:220px;"
                 type="textarea"
                 :rows="2"
-                placeholder="请输入内容,以英文逗号分隔"
+                :placeholder="$t('input.split')"
                 v-model="classCodetextarea">
               </el-input>
             </div>
@@ -102,8 +102,8 @@
             <div class="">
               <div class="labelStyle">
               </div>
-              <el-button type="primary" @click="search()">查询</el-button>
-              <el-button type="info" @click="clear()">清空</el-button>
+              <el-button type="primary" @click="search()">{{$t('button.select')}}</el-button>
+              <el-button type="info" @click="clear()">{{$t('button.clear')}}</el-button>
             </div>
           </div>
         </el-card>
@@ -131,13 +131,13 @@
 
 
         <el-dialog
-          title="说明"
+          :title="$t('button.describe')"
           :visible.sync="classcodeShow"
           width="40%"
           center>
           <img src="../assets/img/classcode.gif" alt="" class="imgStyle">
           <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="classcodeShow = false">关闭</el-button>
+            <el-button type="primary" @click="classcodeShow = false">{{$t('button.close')}}</el-button>
           </span>
         </el-dialog>
       </div>

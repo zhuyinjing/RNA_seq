@@ -9,11 +9,11 @@
       <div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">输入基因ID列表</label>
+            <label for="maxpval" class="label-font">{{$t('input.gene_id_list')}}</label>
           </div>
           <div class="inline-block">
             <!-- <el-radio v-model="radioName" label="geneName">按 geneName 输入</el-radio> -->
-            <el-radio v-model="radioName" label="geneId">按 geneId 输入</el-radio>
+            <el-radio v-model="radioName" label="geneId">{{$t('input.gene_id')}}</el-radio>
           </div>
         </div>
         <div class="margin-top-10" v-show="radioName === 'geneName'">
@@ -22,7 +22,7 @@
             <el-input
               type="textarea"
               :rows="30"
-              placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
+              :placeholder="$t('input.split_method')"
               v-model="textareaGeneName">
             </el-input>
           </div>
@@ -33,7 +33,7 @@
             <el-input
               type="textarea"
               :rows="30"
-              placeholder="请输入 geneId 列表, 可以用逗号、空格或者换行符分隔"
+              :placeholder="$t('input.split_method')"
               v-model="textareaGeneId">
             </el-input>
           </div>
@@ -41,7 +41,7 @@
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label class="label-font">选择物种</label>
+            <label class="label-font">{{$t('app.choose_sample')}}</label>
           </div>
           <div class="inline-block" style="width:300px;">
             <el-select class="input-style" v-model="specie" placeholder="请选择">
@@ -52,7 +52,7 @@
         <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
-            <el-button type="primary" @click="submit()">提交</el-button>
+            <el-button type="primary" @click="submit()">{{$t('button.submit')}}</el-button>
           </div>
         </div>
       </div>

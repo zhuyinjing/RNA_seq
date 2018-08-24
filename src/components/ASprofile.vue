@@ -8,14 +8,14 @@
       <imgMenuShowComp></imgMenuShowComp>
 
       <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item>可变剪切事件数量统计</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('leftMenu.asprofile_number')}}</el-breadcrumb-item>
       </el-breadcrumb>
 
-      <h2>可变剪切事件数量统计</h2>
+      <h2>{{$t('leftMenu.asprofile_number')}}</h2>
 
       <div class="" style="min-width:1100px">
-        <label for="">可变剪切事件</label>
+        <label for="">{{$t('ASprofile.asprofile_event')}}</label>
         <el-select v-model="events" multiple placeholder="请选择" style="width:400px;">
           <el-option
             v-for="item in eventsArr"
@@ -25,7 +25,7 @@
           </el-option>
         </el-select>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <label for="">样本</label>
+        <label for="">{{$t('sample')}}</label>
         <el-select v-model="samples" multiple placeholder="请选择" style="width:400px;">
           <el-option
             v-for="(item,key) in samplesArr"
@@ -35,11 +35,11 @@
           </el-option>
         </el-select>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <el-button type="primary" @click="initD3()">提交</el-button>
+        <el-button type="primary" @click="initD3()">{{$t('button.submit')}}</el-button>
       </div>
       <br>
       <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '可变剪切事件数量统计')">生成 PDF</el-button> -->
-      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件数量统计')">生成 SVG</el-button>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '可变剪切事件数量统计')">{{$t('button.svg')}}</el-button>
       <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
       <div id="d3container"></div>

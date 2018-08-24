@@ -56,39 +56,39 @@
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 图中红色曲线是实际的测序 GC 含量分布图，而蓝色曲线则是理论分布（正态分布，不过均值不一定都是 50%，而是由平均 GC 含量推断的）。<br>
-                  如果红色曲线形状存在比较大的偏差，往往是由于文库的污染造成的。<br>
-                  红色曲线越平滑越好，越接近蓝色曲线越好。形状接近正态但偏离理论分布的情况提示我们可能有系统偏差。 <br>
-                  - 偏离理论分布的 reads 超过 15% 时发出警报； <br>
-                  - 超过30%时报不合格。
+                  {{$t('fastqc.gc_paragraph1')}}<br>
+                  {{$t('fastqc.gc_paragraph2')}}<br>
+                  {{$t('fastqc.gc_paragraph3')}}<br>
+                  {{$t('fastqc.gc_paragraph4')}}<br>
+                  {{$t('fastqc.gc_paragraph5')}}<br>
                 </div>
-                <th>GC含量</th>
+                <th>{{$t('fastqc.gc')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 纵轴是百分含量，横轴是 read 的位置，当测序仪不能确切地测定出某一个碱基时就会标注为 N，<br>
-                  正常情况下 N 的比例是很小的，所以图上常常看到一条直线。当看到有峰时，说明测序出了问题。 <br>
-                  - 当任意位置的 N 的比例超过 5% 警报； <br>
-                  - 超过 20% 不合格。
+                  {{$t('fastqc.invalid_base_paragraph1')}}<br>
+                  {{$t('fastqc.invalid_base_paragraph2')}}<br>
+                  {{$t('fastqc.invalid_base_paragraph3')}}<br>
+                  {{$t('fastqc.invalid_base_paragraph4')}}<br>
                 </div>
-                <th>无效碱基含量</th>
+                <th>{{$t('fastqc.invalid_base')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 每次测序仪测出来的长度在理论上应该是完全相等的，但是总会有一些偏差，<br>
-                  当测序的长度有很大不同时，则表明测序仪在此次测序过程中产生的数据不可信，但对于某些测序平台，具有不同的 read 长度是完全正常的。 <br>
-                  - 当 reads 长度不一致时警告； <br>
-                  - 当有长度为 0 的 read 时不合格。
+                  {{$t('fastqc.sequence_length_paragraph1')}}<br>
+                  {{$t('fastqc.sequence_length_paragraph2')}}<br>
+                  {{$t('fastqc.sequence_length_paragraph3')}}<br>
+                  {{$t('fastqc.sequence_length_paragraph4')}}<br>
                 </div>
-                <th>序列长度分布</th>
+                <th>{{$t('fastqc.sequence_length')}}</th>
               </el-tooltip>
               <el-tooltip placement="top" effect="light">
                 <div slot="content">
-                  - 此图衡量的是序列中两端 adapter 的情况，如果在 fastqc 分析的时候 -a（指定含 adapters 序列文件）选项没有内容，则默认使用图例中的通用 adapter 序列进行统计。 <br>
-                  - 含有 adapter 超过所有 reads 的 5% 的警告； <br>
-                  - 超过 10% 不合格。
+                  {{$t('fastqc.joint_contamination_paragraph1')}}<br>
+                  {{$t('fastqc.joint_contamination_paragraph2')}}<br>
+                  {{$t('fastqc.joint_contamination_paragraph3')}}<br>
                 </div>
-                <th>接头污染</th>
+                <th>{{$t('fastqc.joint_contamination')}}</th>
               </el-tooltip>
             </tr>
           </thead>

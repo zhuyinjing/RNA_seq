@@ -9,12 +9,12 @@
       <degComp></degComp>
 
       <div class="">
-        <p>MA plot 展示了基因在样本间的表达量丰度和表达量变化之间的关系。MA plot 的 X 轴是基因在比对的两类样本中的丰度平均值，Y 轴是为 log2(表达差异倍数取)，Y 轴是在衡量基因表达量的变化，表明一个基因在实验组中上调还是下调。例如 A vs B 的差异表达基因 G，在样本 A 中的表达量为 500，在样本 B 中的表达量为 2000，则 X 轴坐标为是
+        <p>{{$t('ma_plot.introduction')}}
         <p>$$  \frac{500 + 2000}{2} = 1250 $$</p>
-        Y 轴坐标为
+        {{$t('ma_plot.yaxis_introduction')}}
         <p>$$ \log_{2}{\frac{500}{2000}} = -2 $$</p>
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'MA plot')">生成 PDF</el-button> -->
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'MA plot')">生成 SVG</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', 'MA plot')">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div class="min-width-div">
@@ -24,7 +24,7 @@
 
               <table class="gridtable" v-show="rangeShow">
                 <tr>
-                    <th>参数</th><th>操作</th>
+                    <th>{{$t('d3.args')}}</th><th>{{$t('d3.option')}}</th>
                 </tr>
                 <tr>
                   <td>pvalue &le;</td>
@@ -39,13 +39,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Log2FoldChange (绝对值) &ge;</td>
+                  <td>Log2FoldChange ({{$t('deg.abs')}}) &ge;</td>
                   <td>
                     <el-input-number size="mini" v-model="log2FoldChange" :step="0.1" @change="xLeftChange"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>是否显示基因名</td>
+                  <td>{{$t('d3.gene_name_show')}}</td>
                   <td>
                     <el-switch
                       style="display: block"
@@ -58,49 +58,49 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>显示基因个数</td>
+                  <td>{{$t('d3.gene_num')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="showNum" @change="getData" :min="0" label="描述文字"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>x轴最小值</td>
+                  <td>{{$t('d3.xmin')}}</td>
                   <td>
                     <el-input-number size="mini" :min=0 v-model="xmin" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>x轴最大值</td>
+                  <td>{{$t('d3.xmax')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="xmax" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>y轴最小值</td>
+                  <td>{{$t('d3.ymin')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="ymin" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>y轴最大值</td>
+                  <td>{{$t('d3.ymax')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="ymax" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>宽</td>
+                  <td>{{$t('d3.width')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="width" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>高</td>
+                  <td>{{$t('d3.height')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="height" @change="initD3"></el-input-number>
                   </td>
                 </tr>
                 <tr>
-                  <td>点的半径</td>
+                  <td>{{$t('d3.radius')}}</td>
                   <td>
                     <el-input-number size="mini" v-model="radius" :min="0" :step="0.1" @change="initD3"></el-input-number>
                   </td>

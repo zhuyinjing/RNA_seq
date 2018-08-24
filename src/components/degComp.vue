@@ -2,18 +2,18 @@
   <div class="" style="min-width:900px;">
     <h2 class="text-align-center"> {{$store.state._case}} vs {{$store.state._control}} </h2>
     <el-card class="text-align-center">
-      当前差异表达基因筛选条件：P-Value <= {{$store.state.degFilterArgs.pvalue}}, FDR <= {{$store.state.degFilterArgs.FDR}},  | Log2(FoldChange) | >= {{$store.state.degFilterArgs.log2FoldChange}} &nbsp;
-      差异表达基因数目：{{$store.state.degGeneSum}}
+      {{$t('deg.filter_condition')}}：P-Value <= {{$store.state.degFilterArgs.pvalue}}, FDR <= {{$store.state.degFilterArgs.FDR}},  | Log2(FoldChange) | >= {{$store.state.degFilterArgs.log2FoldChange}} &nbsp;
+      {{$t('deg.filter_total')}}：{{$store.state.degGeneSum}}
     </el-card> <br>
     <div class="margin-bottom-20">
-      <el-button type="info" :class="{'activebtn': $route.path === '/report_deg'}" @click="report_deg()">差异基因</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/report_volcano_plot'}" @click="report_volcano_plot()">火山图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/report_deg'}" @click="report_deg()">{{$t('button.deg')}}</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/report_volcano_plot'}" @click="report_volcano_plot()">{{$t('button.volcano')}}</el-button>
       <el-button type="info" :class="{'activebtn': $route.path === '/report_ma_plot'}" @click="report_ma_plot()">MA plot</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/heatmap'}" @click="heatmap()">基因热图</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/heatmapsvg'}" @click="heatmapsvg()">基因热图svg</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/ppi_chord_plot'}" @click="ppi_chord_plot()">蛋白互作图</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/enrichment_analysis'}" @click="enrichment_analysis()">富集分析</el-button>
-      <el-button type="info" :class="{'activebtn': $route.path === '/forceGraph'}" @click="forceGraph()">蛋白互作网络图</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/heatmap'}" @click="heatmap()">{{$t('button.heatmap')}}</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/heatmapsvg'}" @click="heatmapsvg()">{{$t('button.heatmap')}}svg</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/ppi_chord_plot'}" @click="ppi_chord_plot()">{{$t('button.ppi')}}</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/enrichment_analysis'}" @click="enrichment_analysis()">{{$t('button.enrichment')}}</el-button>
+      <el-button type="info" :class="{'activebtn': $route.path === '/forceGraph'}" @click="forceGraph()">{{$t('button.force')}}</el-button>
     </div>
     <br>
   </div>

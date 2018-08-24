@@ -8,20 +8,20 @@
         <imgMenuShowComp></imgMenuShowComp>
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>样本聚类图</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$t('cluster.title')}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>样本聚类图</h2>
+        <h2>{{$t('cluster.title')}}</h2>
 
-        <p>样本聚类热图，图中矩阵色块颜色的深浅，可以直观的显示不同样本的基因表达模式的接近程度。左侧的树状结构图表示样本聚类的结果，基因表达模式更接近的样本，在数据结构图中的位置更接近。样本距离的计算采用欧式距离，样本间的 linkage 计算方法为 ward，使用的聚类工具是 R 语言的 fastcluster 软件，参考文献：</p>
-        <p>Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">全文链接</a>]</p>
-        <p>“Show branch length” 选项打开以后，树状图的枝干长度会体现样本之间的距离远近。</p>
+        <p>{{$t('cluster.introduction')}}</p>
+        <p>{{$t('mappingqc.references')}}：Daniel Müllner, fastcluster: Fast Hierarchical, Agglomerative Clustering Routines for R and Python, Journal of Statistical Software 53 (2013), no. 9, 1–18 [<a href="http://www.jstatsoft.org/v53/i09/" target="_blank">{{$t('mappingqc.link')}}</a>]</p>
+        <p>{{$t('cluster.describe')}}</p>
 
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button> -->
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-        
+
         <br><br>
 
         <label id="show-length">

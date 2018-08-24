@@ -8,21 +8,21 @@
         <imgMenuShowComp></imgMenuShowComp>
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>基因表达量表格</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$t('leftMenu.expr_matrix')}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>基因表达量表格</h2>
+        <h2>{{$t('leftMenu.expr_matrix')}}</h2>
 
-        <p>一个基因表达水平的直接体现就是看有多少 reads 回帖到该基因区域，这个可以称之为基因的表达丰度。在转录组的分析中，落在一个基因区域内的 read 数目取决于基因长度和测序深度（一般来说，基因越长 read 数目越多，测序深度越高，则一个基因对应的 read 数目也相对越多），因此我们常用 RPKM、TPM 等作为转录组数据定量的表示方法。它们都是对表达量进行标准化的方法，而标准化的对象就是基因长度与测序深度。</p>
+        <p>{{$t('expr_matrix.introduction')}}</p>
 
-        <p>Transcripts Per Kilobase of exonmodel per Million mapped reads (每千个碱基的转录每百万映射读取的 Transcripts， TPM) 是一种优化的 RPKM 计算方法，TPM 概括了基因的长度、表达量和基因数目。在每个样本内，所有基因的 TPM 值总和为 1M，因此各个样本都可以保证在一个统一的标准下进行基因表达量的比较。</p>
+        <p>{{$t('expr_matrix.describe')}}</p>
 
         <p>$$ TPM_{i} = \frac{ \frac{ N_{i} }{ L_{i} } * 1000000}{\sum_{i=1}^{n} \frac{N_{i}}{L_{i}}}$$</p>
 
-        <p>N<sub>i</sub>：mapping 到基因 i 上的 read 数；</p>
-        <p>L<sub>i</sub>：基因 i 的外显子长度的总和。</p>
-        <p>在一个样本中一个基因的 TPM：先对每个基因的read数用基因的长度进行校正，之后再用校正后的这个基因 read 数 (N<sub>i</sub>/L<sub>i</sub>) 与校正后的这个样本的所有 read 求商。</p>
+        <p>N<sub>i</sub>：{{$t('expr_matrix.Ni')}}</p>
+        <p>L<sub>i</sub>：{{$t('expr_matrix.Li')}}</p>
+        <p>{{$t('expr_matrix.TMP_span1')}} (N<sub>i</sub>/L<sub>i</sub>) {{$t('expr_matrix.TMP_span2')}}</p>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -34,7 +34,7 @@
                 style="width:400px;"
                 type="textarea"
                 :rows="3"
-                placeholder="请输入内容,以英文逗号分隔"
+                :placeholder="$t('input.split')"
                 v-model="textareaGeneId">
               </el-input>
             </div>
@@ -48,7 +48,7 @@
                 style="width:400px;"
                 type="textarea"
                 :rows="3"
-                placeholder="请输入内容,以英文逗号分隔"
+                :placeholder="$t('input.split')"
                 v-model="textareaGeneName">
               </el-input>
             </div>
@@ -56,8 +56,8 @@
             <div class="">
               <div class="labelStyle">
               </div>
-              <el-button style="float:right" type="info" @click="clear()">清空</el-button>
-              <el-button style="float:right;margin-right:10px;" type="primary" @click="search()">查询</el-button>
+              <el-button style="float:right" type="info" @click="clear()">{{$t('button.clear')}}</el-button>
+              <el-button style="float:right;margin-right:10px;" type="primary" @click="search()">{{$t('button.select')}}</el-button>
             </div>
           </div>
         </el-card>

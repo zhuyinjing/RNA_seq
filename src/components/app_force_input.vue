@@ -9,20 +9,20 @@
       <div>
         <div class="margin-top-10">
           <div class="labelStyle vertical-align-top">
-            <label for="maxpval" class="label-font">输入基因 ID 列表</label>
+            <label for="maxpval" class="label-font">{{$t('input.gene_id_list')}}</label>
           </div>
           <div class="inline-block" style="width:800px;">
             <el-input
               type="textarea"
               :rows="20"
-              placeholder="请输入 ID 列表"
+              :placeholder="$t('input.gene_id_list')"
               v-model="textareaGeneId">
             </el-input>
           </div>
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label class="label-font">选择物种</label>
+            <label class="label-font">{{$t('app.choose_sample')}}</label>
           </div>
           <div class="inline-block" style="width:300px;">
             <el-select class="input-style" v-model="specie" placeholder="请选择">
@@ -33,7 +33,7 @@
         <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
-            <el-button type="primary" @click="submit()">提交</el-button>
+            <el-button type="primary" @click="submit()">{{$t('button.submit')}}</el-button>
           </div>
         </div>
       </div>

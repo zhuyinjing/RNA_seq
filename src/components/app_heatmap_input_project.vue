@@ -9,20 +9,20 @@
       <div>
         <div class="margin-top-10">
           <div class="labelStyle vertical-align-top">
-            <label for="maxpval" class="label-font">输入基因 ID 列表</label>
+            <label for="maxpval" class="label-font">{{$t('input.gene_id_list')}}</label>
           </div>
           <div class="inline-block" style="width:800px;">
             <el-input
               type="textarea"
               :rows="20"
-              placeholder="请输入 ID 列表"
+              :placeholder="$t('input.gene_id_list')"
               v-model="textareaMatrix">
             </el-input>
           </div>
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">选择项目</label>
+            <label for="maxpval" class="label-font">{{$t('app.choose_project')}}</label>
           </div>
           <div class="inline-block" style="width:800px;">
             <el-select class="input-style" v-model="project" placeholder="请选择" @change="projectChange()">
@@ -32,7 +32,7 @@
         </div>
         <div class="margin-top-10">
           <div class="labelStyle">
-            <label for="maxpval" class="label-font">选择分组</label>
+            <label for="maxpval" class="label-font">{{$t('app.choose_group')}}</label>
           </div>
           <div class="inline-block" style="width:800px;">
             <el-select v-model="group" multiple placeholder="请选择">
@@ -48,7 +48,7 @@
         <div class="">
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="maxpval" class="label-font">基因距离计算方法</label>
+              <label for="maxpval" class="label-font">{{$t('app.gene_distance')}}</label>
             </div>
             <el-select class="input-style" v-model="row_distance" placeholder="请选择">
               <el-option-group label="Favourites">
@@ -80,7 +80,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="maxfdr" class="label-font">基因linkage计算方法</label>
+              <label for="maxfdr" class="label-font">{{$t('app.gene_linkage')}}</label>
             </div>
             <el-select class="input-style" v-model="row_linkage" placeholder="请选择">
               <el-option value="average">average</el-option>
@@ -94,7 +94,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label for="minfc" class="label-font">样本距离计算方法</label>
+              <label for="minfc" class="label-font">{{$t('app.sample_distance')}}</label>
             </div>
             <el-select class="input-style" v-model="column_distance" placeholder="请选择">
               <el-option-group label="Favourites">
@@ -126,7 +126,7 @@
           </div>
           <div class="margin-top-10">
             <div class="labelStyle">
-              <label class="label-font">样本linkage计算方法</label>
+              <label class="label-font">{{$t('app.sample_linkage')}}</label>
             </div>
             <el-select class="input-style" v-model="column_linkage" placeholder="请选择">
               <el-option value="average">average</el-option>
@@ -142,7 +142,7 @@
         <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
-            <el-button type="primary" @click="submit()">提交</el-button>
+            <el-button type="primary" @click="submit()">{{$t('button.submit')}}</el-button>
           </div>
         </div>
 

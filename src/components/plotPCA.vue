@@ -8,11 +8,11 @@
         <imgMenuShowComp></imgMenuShowComp>
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-          <el-breadcrumb-item :to="{ path: 'report' }">项目 {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>PCA 主成分分析</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$t('leftMenu.pca')}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>PCA 主成分分析</h2>
+        <h2>{{$t('leftMenu.pca')}}</h2>
 
         <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox> -->
         <!-- <div style="margin: 15px 0;"></div> -->
@@ -21,14 +21,14 @@
         </el-checkbox-group>
 
         <br>
-        <el-button type="primary" size="small" @click="initD3()">确定</el-button>
-        <el-button type="info" size="small" @click="clearChecked()">清空</el-button>
+        <el-button type="primary" size="small" @click="initD3()">{{$t('button.confirm')}}</el-button>
+        <el-button type="info" size="small" @click="clearChecked()">{{$t('button.clear')}}</el-button>
         &nbsp;&nbsp;&nbsp;
-        点的半径：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
+        {{$t('d3.radius')}}：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
         &nbsp;&nbsp;&nbsp;
-        点透明度：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>&nbsp;
+        {{$t('d3.opacity')}}：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>&nbsp;
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button> -->
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">生成 SVG</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '样本聚类')">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div class="margin-top-10" id="d3container"></div>

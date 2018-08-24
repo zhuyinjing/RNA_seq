@@ -25,7 +25,7 @@
           </div>
           <div class="">
             <div class="labelStyle">
-              <label for="minfc" class="label-font">log2FoldChange(绝对值) &ge;</label>
+              <label for="minfc" class="label-font">log2FoldChange({{$t('deg.abs')}}) &ge;</label>
             </div>
             <input type="text" id="minfc" :placeholder="originFilterArgs.log2FoldChange" class="input-style" v-model="minfc" />
           </div>
@@ -35,31 +35,31 @@
             <div class="">
               <label class="radio-inline control-label">type：</label>
             </div> <br>
-            <el-radio v-model="typeRadio" label="protein_coding">只显示编码基因</el-radio>
+            <el-radio v-model="typeRadio" label="protein_coding">{{$t('deg.show_coding')}}</el-radio>
           </div>
           <div class="">
             <div class="labelStyle">
               <label class="radio-inline control-label"></label>
             </div> <br>
-            <el-radio v-model="typeRadio" label="all">显示所有类型基因</el-radio>
+            <el-radio v-model="typeRadio" label="all">{{$t('deg.show_all_type')}}</el-radio>
           </div>
         </div>
         <div class="" style="display:inline-block;width:29%;vertical-align:top;">
           <div class="">
             <div class="">
-              <label class="radio-inline control-label">显示：</label>
+              <label class="radio-inline control-label">{{$t('deg.show')}}：</label>
             </div>
-            <el-checkbox class="input-style" v-model="checkedUp">在 {{$store.state._case}} 中表达量上调</el-checkbox>
+            <el-checkbox class="input-style" v-model="checkedUp">{{$store.state._case}} {{$t('deg.up')}}</el-checkbox>
           </div>
           <div class="">
             <div class="labelStyle"></div>
-            <el-checkbox class="input-style" v-model="checkedDown">在 {{$store.state._case}} 中表达量下调</el-checkbox>
+            <el-checkbox class="input-style" v-model="checkedDown">{{$store.state._case}} {{$t('deg.down')}}</el-checkbox>
           </div>
         </div>
         <div class="filterbtnDiv">
-          <el-button type="primary" @click="filterTable()">筛选</el-button>
-          <el-button type="danger" :disabled="savedisabled" @click="saveData()">保存筛选</el-button>
-          <el-button type="info" @click="resetData()">恢复默认列表</el-button>
+          <el-button type="primary" @click="filterTable()">{{$t('button.filter')}}</el-button>
+          <el-button type="danger" :disabled="savedisabled" @click="saveData()">{{$t('button.save_filter')}}</el-button>
+          <el-button type="info" @click="resetData()">{{$t('button.reset')}}</el-button>
         </div>
       </el-card>
       <br>
