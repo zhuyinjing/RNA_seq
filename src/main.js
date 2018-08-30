@@ -20,6 +20,7 @@ import 'datatables.net-buttons/js/dataTables.buttons.min';
 import 'datatables.net-buttons/js/buttons.flash.min';
 import 'datatables.net-buttons/js/buttons.html5.min';
 window.JSZip = jsZip;
+
 // 国际化
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)

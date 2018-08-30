@@ -114,7 +114,7 @@
           <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
               <thead>
               <tr>
-                  <th></th>
+                  <th> <input type="checkbox" name="" value="" class='checkall'> </th>
                   <th>gene</th>
                   <th>transcriptId</th>
                   <th>referenceTranscriptId</th>
@@ -168,6 +168,8 @@ export default {
       codingProbabilityEnd: null,
       coding: false,
       noncoding: false,
+      selected: [],
+      currentData: [],
     }
   },
   components: {
@@ -232,7 +234,18 @@ export default {
       }
       let self = this
       $(document).ready(function() {
-          var table = $('#patients').DataTable({
+          var table = $('#patients').on('xhr.dt', function ( e, settings, json, xhr ) {
+              var flag = true
+              let data = json.aData.map((d) => {return d.id})
+              self.currentData = data
+              for (let i = 0;i < data.length;i++) {
+                if (self.selected.indexOf(data[i]) === -1) {
+                  flag = false
+                  break
+                }
+              }
+              $(".checkall").prop("checked", flag)
+          } ).DataTable({
               "pageLength": 25,
               "bPaginate" : true,//分页工具条显示
               //"sPaginationType" : "full_numbers",//分页工具条样式
@@ -251,11 +264,22 @@ export default {
               //通过ajax实现分页的url路径
               // "sAjaxSource" : "/server/new_transcripts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username,
               "sAjaxSource" : "/server/new_transcripts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username + "&gene=" + self.genetextarea + "&referenceTranscriptId=" + self.referenceTranscriptIdtextarea + "&classCode=" + self.classCodetextarea + "&exonNumStart=" + exonNumStart + "&exonNumEnd=" + exonNumEnd + "&transcriptLengthStart=" + transcriptLengthStart + "&transcriptLengthEnd=" + transcriptLengthEnd + "&peptideLengthStart=" + peptideLengthStart + "&peptideLengthEnd=" + peptideLengthEnd + "&codingProbabilityStart=" + codingProbabilityStart + "&codingProbabilityEnd=" + codingProbabilityEnd + "&label=" + codingtemp,
+              "rowCallback": function( row, data ) {
+                if ( $.inArray(data.id, self.selected) !== -1 ) {
+                    $(row).find('input[type=checkbox]').prop('checked', true)
+                }
+              },
               "aoColumns" : [ {
-                  "class": "details-control",
-                  "orderable": false,
-                  "mDataProp": 1,
-                  "defaultContent": ""
+                "sClass": "text-center",
+                 "data": "id",
+                 "render": function (data, type, full, meta) {
+                     return '<input type="checkbox" class="checkchild" value="' + data + '" />';
+                 },
+                 "bSortable": false
+                  // "class": "details-control",
+                  // "orderable": false,
+                  // "mDataProp": 1,
+                  // "defaultContent": ""
               }, {
                   "mDataProp" : "gene"
               }, {
@@ -293,7 +317,6 @@ export default {
               //        return "<a href=#>1441</a>"}
               // }],
           });
-
           function format ( d ) {
             return  "<div class='detailDiv'>classCode: " + d.classCode + "</div>" +
                     "<div class='detailDiv'>exonNum: " + d.exonNum + "</div>" +
@@ -308,6 +331,45 @@ export default {
                     "<div class='detailDiv'>transcriptLength: " + d.cpc2Entry.transcriptLength + "</div>" +
                     "<div class='detailDiv font-overflow'>sequence: " + d.sequence + "</div>"
           }
+          $(".checkall").click(function () {
+              var checked = $(this).prop("checked")
+              $(".checkchild").prop("checked", checked)
+              // 把当前页选中的从 selected 去掉 再全部 concat 进去
+              if (checked === true) {
+                self.currentData.map((data) => {
+                  self.selected.map((d) => {
+                    let index = self.selected.indexOf(data)
+                    if (index !== -1) {
+                      self.selected.splice(index, 1)
+                    }
+                  })
+                })
+                self.selected = self.selected.concat(self.currentData)
+              } else {
+                self.currentData.map((data) => {
+                  let index = self.selected.indexOf(data)
+                  self.selected.splice(index, 1)
+                })
+              }
+              console.log(self.selected);
+          });
+          $("#patients").on("click", 'td input[type=checkbox]', function () {
+            let checked = $(this).prop("checked")
+            if (checked === true) {
+              self.selected.push(this.value)
+              //  如果页面上的 checkbox 全选上了 将 checkall 赋值为 true
+              if ($(".checkchild:checked").length === self.currentData.length) {
+                $(".checkall").prop("checked", true)
+              }
+            } else {
+              //  一旦取消选中 则将全选按钮赋值为 false
+              $(".checkall").prop("checked", false)
+              let index = self.selected.indexOf(this.value)
+              self.selected.splice(index, 1)
+            }
+            console.log(self.selected);
+          });
+
           var detailRows = [];
           // 防止报 _detailsShow undefined 错误
           $('#patients tbody').off('click', 'tr td.details-control');
