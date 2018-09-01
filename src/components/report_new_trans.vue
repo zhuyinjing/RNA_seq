@@ -124,6 +124,7 @@
                   <th>peptideLength</th>
                   <th>codingProbability</th>
                   <th>coding</th>
+                  <th>操作</th>
               </tr>
               </thead>
           </table>
@@ -233,6 +234,7 @@ export default {
         codingtemp.join(',')
       }
       let self = this
+
       $(document).ready(function() {
           var table = $('#patients').on('xhr.dt', function ( e, settings, json, xhr ) {
               var flag = true
@@ -310,13 +312,26 @@ export default {
                   "mRender" : function(data, type, full) {
                       return data['label']
                   }
-              }, ],
+              }, {
+                  "data" : "id",
+                  "mRender" : function(data, type, full) {
+                      return '<button class="editbutton el-button el-button--primary el-button--mini">修改</button> <button class="deletebutton el-button el-button--danger el-button--mini">删除</button>'
+                  }
+              },],
               // 如果不知是简单的数据显示，需要复杂的要求时，通过以下方法来实现动态js插入。
               //不知道有没有更好的方法。
               // "aoColumnDefs":[{"aTargets":[1],"mRender":function(){
               //        return "<a href=#>1441</a>"}
               // }],
           });
+          $("#patients").on("click", '.deletebutton', function () {
+            var Row = $(this).parents('tr')[0]
+            var Data = $("#patients").dataTable().fnGetData(Row)
+            console.log(Data);
+          })
+          $("#patients").on("click", '.editbutton', function () {
+            table.draw(false)
+          })
           function format ( d ) {
             return  "<div class='detailDiv'>classCode: " + d.classCode + "</div>" +
                     "<div class='detailDiv'>exonNum: " + d.exonNum + "</div>" +
@@ -333,25 +348,18 @@ export default {
           }
           $(".checkall").click(function () {
               var checked = $(this).prop("checked")
-              $(".checkchild").prop("checked", checked)
               // 把当前页选中的从 selected 去掉 再全部 concat 进去
               if (checked === true) {
-                self.currentData.map((data) => {
-                  self.selected.map((d) => {
-                    let index = self.selected.indexOf(data)
-                    if (index !== -1) {
-                      self.selected.splice(index, 1)
-                    }
-                  })
+                $(".checkchild").not("input:checked").each(function () {
+                  self.selected.push($(this)[0].value)
                 })
-                self.selected = self.selected.concat(self.currentData)
               } else {
                 self.currentData.map((data) => {
                   let index = self.selected.indexOf(data)
                   self.selected.splice(index, 1)
                 })
               }
-              console.log(self.selected);
+              $(".checkchild").prop("checked", checked)
           });
           $("#patients").on("click", 'td input[type=checkbox]', function () {
             let checked = $(this).prop("checked")
@@ -367,7 +375,6 @@ export default {
               let index = self.selected.indexOf(this.value)
               self.selected.splice(index, 1)
             }
-            console.log(self.selected);
           });
 
           var detailRows = [];
