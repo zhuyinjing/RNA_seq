@@ -330,7 +330,7 @@ export default {
             console.log(Data);
           })
           $("#patients").on("click", '.editbutton', function () {
-            table.draw(false)
+            $("#patients").DataTable().draw(false)
           })
           function format ( d ) {
             return  "<div class='detailDiv'>classCode: " + d.classCode + "</div>" +
