@@ -33,7 +33,7 @@
       </table>
     </div>
 
-    <el-dialog  :title="$t('create_experiment.step1')" :visible.sync="step1Dialog" width="30%">
+    <el-dialog  :title="$t('create_experiment.step1')" :visible.sync="step1Dialog" width="50%">
       <el-button type="danger" @click="addCondition()">
         <i class="el-icon-circle-plus"></i>
         {{$t('create_experiment.add_condition')}}

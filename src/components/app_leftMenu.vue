@@ -40,7 +40,7 @@ export default {
 
 <style scoped="true">
 .container {
-  padding: 10px;
+  padding: 5px;
 }
 .cursor-pointer {
   cursor: pointer;

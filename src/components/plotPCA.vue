@@ -269,7 +269,7 @@ export default {
           })
           .attr("r", self.radius)
           .attr("fill", function(d) {
-            return colorRandom(colorRandom(self.nameSampleMap[d['name']]['condition']))
+            return colorRandom(self.nameSampleMap[d['name']]['condition'])
           })
           .style("opacity",self.opacity)
           .on('mouseover', (d, i) => {
