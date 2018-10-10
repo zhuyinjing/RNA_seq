@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="min-width:900px;">
+  <div class="" style="min-width:1100px;">
     <h2 class="text-align-center"> {{$store.state._case}} vs {{$store.state._control}} </h2>
     <el-card class="text-align-center">
       {{$t('deg.filter_condition')}}：P-Value <= {{$store.state.degFilterArgs.pvalue}}, FDR <= {{$store.state.degFilterArgs.FDR}},  | Log2(FoldChange) | >= {{$store.state.degFilterArgs.log2FoldChange}} &nbsp;

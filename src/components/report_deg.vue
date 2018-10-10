@@ -30,7 +30,7 @@
             <input type="text" id="minfc" :placeholder="originFilterArgs.log2FoldChange" class="input-style" v-model="minfc" />
           </div>
         </div>
-        <div class="" style="display:inline-block;width:20%;vertical-align:top;">
+        <div class="" style="display:inline-block;width:22%;vertical-align:top;">
           <div class="">
             <div class="">
               <label class="radio-inline control-label">type：</label>
