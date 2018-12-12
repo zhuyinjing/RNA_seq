@@ -115,15 +115,17 @@ export default {
           let obj = res.data.aData[0].tpms
           for (let k in obj) {
             this.tpmsArray.push(k)
-            this.arr.push({
-                "mDataProp" : "tpms",
-                "mRender" : function(data, type, full) {
-                    return Math.ceil(data[k])
-                }
-            })
           }
           // table head 按照 a～z 排序
           this.tpmsArray.sort()
+          this.tpmsArray.map((item) => {
+            this.arr.push({
+                "mDataProp" : "tpms",
+                "mRender" : function(data, type, full) {
+                    return Math.ceil(data[item])
+                }
+            })
+          })
           this.tpmsArray.unshift('geneName')
           this.tpmsArray.unshift('geneId')
         }

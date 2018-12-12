@@ -8,7 +8,7 @@
     </div>
     <div class="textStyle">
       <!-- <el-button type="danger" @click="login()">登录/注册</el-button> -->
-      <el-button type="danger" @click="project_list()">{{$t('home.project_button')}}</el-button>
+      <el-button type="primary" @click="project_list()">{{$t('home.project_button')}}</el-button>
       <img src="http://colorseq.com/server/username" alt="" class='display-none'>
       <p class="suggestStyle">{{$t('home.suggest_browser')}}:
         <a href="https://chrome.en.softonic.com/" target="_blank">Chrome</a> &nbsp;

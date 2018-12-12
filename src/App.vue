@@ -3,7 +3,7 @@
     <navbar class="navbar"></navbar>
     <router-view/>
     <el-dialog
-      title=""
+      title="提示"
       :visible.sync="$store.state.svgDescribeShow"
       width="30%"
       >
