@@ -76,6 +76,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
+  DatePicker
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
@@ -120,6 +121,7 @@ Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Loading.directive);
+Vue.use(DatePicker);
 
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;
@@ -223,6 +225,23 @@ axios.get('/getUser').then((res) => {
 Vue.use(vueAxios, axios)
 
 Vue.config.productionTip = false
+
+// 路由权限判断
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    next()
+  }
+  if (to.meta.role) { // 需要权限的页面
+    if (to.meta.role === store.state.role) {
+      next()
+    } else {  // 权限不够的页面
+      Message.error('抱歉，您将要访问的页面权限不够！')
+      next({name: from.name})
+    }
+  } else {  // 不需要权限的页面
+    next()
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

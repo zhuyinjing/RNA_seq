@@ -2,10 +2,9 @@
 <div>
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
     <el-menu-item index="home">{{$t('navbar.home')}}</el-menu-item>
-    <el-menu-item index="project">{{$t('navbar.project_list')}}</el-menu-item>
+    <el-menu-item index="project" v-if="$store.state.role !== 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
+    <el-menu-item index="admin_project_list" v-if="$store.state.role === 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
-    <!-- <el-menu-item index="abrowse">基因组浏览器</el-menu-item>
-      <el-menu-item index="about">关于</el-menu-item> -->
   </el-menu>
   <div class="userDiv" v-show="$store.state.username">
     <el-dropdown trigger="click" @command="changeLocale">
@@ -83,16 +82,11 @@ export default {
             'name': 'app_heatmap_input'
           })
           break
-        case 'abrowse':
-          sessionStorage.setItem('navbarItem', 'about')
+        case 'admin_project_list':
+          this.activeIndex = 'admin_project_list'
+          sessionStorage.setItem('navbarItem', 'admin_project_list')
           this.$router.push({
-            'name': 'about'
-          })
-          break
-        case 'about':
-          sessionStorage.setItem('navbarItem', 'about')
-          this.$router.push({
-            'name': 'about'
+            'path': 'admin'
           })
           break
       }

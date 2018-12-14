@@ -48,7 +48,11 @@ export default {
     //   this.$refs.loginDiv.loginDialog = true
     // },
     project_list () {
-      bus.$emit("handleSelect","project")
+      if (this.$store.state.role === 'admin') {
+        bus.$emit("handleSelect","admin_project_list")
+      } else {
+        bus.$emit("handleSelect","project")
+      }
     }
   }
 }
