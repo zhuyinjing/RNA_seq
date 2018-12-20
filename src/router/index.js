@@ -181,22 +181,33 @@ export default new Router({
       component: resolve => require(['@/components/app_force'], resolve)
     },
     {
+      path: '/sc',
+      component: resolve => require(['@/views/sc/index'], resolve),
+      children: [
+        {
+          path: '',
+          name: 'sc_report',
+          component: resolve => require(['@/views/sc/report'], resolve)
+        },
+        {
+          path: 'report_umi_count',
+          name: 'report_umi_count',
+          component: resolve => require(['@/views/sc/report_umi_count'], resolve)
+        },
+        {
+          path: 'report_heterogeneous_gene', // 表达异质化基因筛选
+          name: 'report_heterogeneous_gene',
+          component: resolve => require(['@/views/sc/report_heterogeneous_gene'], resolve)
+        }
+      ]
+    },
+    {
       path: '/admin',
-      name: 'project_list',
+      name: 'admin',
       component: resolve => require(['@/views/admin/project_list'], resolve),
       meta: {
         role: 'admin'
       },
-      children: [
-        {
-          path: '/admin/project_list',
-          name: 'project_list',
-          component: resolve => require(['@/views/admin/project_list'], resolve),
-          meta: {
-            role: 'admin'
-          }
-        }
-      ]
     },
   ]
 })

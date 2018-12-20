@@ -93,7 +93,6 @@
 </template>
 
 <script>
-import sidebar from '@/components/admin/sidebar'
 import imgMenuShowComp from '@/components/imgMenuShowComp.vue'
 
 export default {
@@ -112,7 +111,6 @@ export default {
     }
   },
   components: {
-    sidebar,
     imgMenuShowComp
   },
   mounted () {

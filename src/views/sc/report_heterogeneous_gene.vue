@@ -1,0 +1,199 @@
+<template>
+  <div id="container">
+    <div id="d3container"></div>
+
+    <div class="clear"></div>
+  </div>
+</template>
+
+<script>
+import * as d3 from 'd3'
+
+export default {
+  data() {
+    return {
+      data: [],
+    }
+  },
+  components: {
+  },
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    initData () {
+      this.axios.get('/singel_cell/server/get_var_gene_feature?p='+ 11 +'&username=' + this.$store.state.username).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.data = res.data
+          this.initScatterPlot()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    initScatterPlot () {
+      let self = this
+      let hassvg = d3.selectAll('#scattersvg')
+      if (hassvg) {
+        d3.selectAll('#scattersvg').remove()
+      }
+      var width = 700, height = 500;
+      var scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
+      var data = this.data.point
+      var padding = {top:30,right:30,bottom:60,left:60}
+      var xScale = d3.scaleLinear().domain([d3.min(data.map(item => item[0])) / 1.2, d3.max(data.map(item => item[0])) * 1.2]).range([0,width - padding.left - padding.right]).nice()
+      var yScale = d3.scaleLinear().domain([d3.min(data.map(item => item[1])) * 1.2, d3.max(data.map(item => item[1])) * 1.2]).range([height - padding.top - padding.bottom,0]).nice()
+      var xAxis = d3.axisBottom().scale(xScale)
+      var yAxis = d3.axisLeft().scale(yScale)
+      let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      let tooltipX = d3.select('#container')
+      	.append('div')
+        .attr("id","tooltipX")
+      	.style('position', 'absolute')
+        .style("background","black")
+        .style('z-index', '10')
+      	.style('color', '#fff')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+      	.style('font-weight', 'bold')
+        .style("padding", "2px")
+      	.text('')
+      let tooltipY = d3.select('#container')
+      	.append('div')
+        .attr("id","tooltipY")
+      	.style('position', 'absolute')
+        .style("background","black")
+        .style('z-index', '10')
+      	.style('color', '#fff')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+      	.style('font-weight', 'bold')
+        .style("padding", "2px")
+      	.text('')
+      let tooltipCircle = d3.select('#container')
+        .append('div')
+        .style('position', 'absolute')
+        .style('z-index', '10')
+        .style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+        .style('font-weight', 'bold')
+        .text('')
+      let xLine = scattersvg
+      	.append('line')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .attr("stroke","#999")
+        .style("stroke-dasharray", "5")
+      let yLine = scattersvg
+      	.append('line')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .attr("stroke","#999")
+        .style("stroke-dasharray", "5")
+
+      var x = scattersvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
+
+      var y = scattersvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
+
+      // svg 被 rect 围住
+      var rect = scattersvg.append("rect")
+                    .attr("x",padding.left)
+                    .attr("y",padding.top)
+                    .attr("width", width - padding.left - padding.right)
+                    .attr("height", height - padding.top - padding.bottom)
+                    .attr("stroke", "black")
+                    .attr("fill", 'none')
+
+      var circle = scattersvg.selectAll("circle")
+                      .data(data)
+                      .enter()
+                      .append("circle")
+                      .attr("cx", (d) => padding.left + xScale(d[0]))
+                      .attr("cy", (d) => padding.top + yScale(d[1]))
+                      .attr("r", 1.8)
+                      .on('mouseover', function (d, i) {
+                        return tooltipCircle.style('visibility', 'visible').text(d[2] +' ('+ d[0].toFixed(1) + ', ' + d[1].toFixed(1) + ')').attr("transform", "translate("+ (padding.left + xScale(d[0]) + 10) +", " + (padding.top + yScale(d[1]) - 5) + ")")
+                       })
+                       .on('mousemove', function (d, i) {
+                         //  兼容火狐
+                        xLine.style("visibility", "visible")
+                        yLine.style("visibility", "visible")
+                        tooltipX.style("visibility", "visible")
+                        tooltipY.style("visibility", "visible")
+
+                         return tooltipCircle.style('top', (d3.event.pageY-20)+'px').style('left',(d3.event.pageX+10)+'px')
+                       })
+                       .on('mouseout', function (d, i) {
+                         return tooltipCircle.style('visibility', 'hidden')
+                       })
+      // 鼠标移动 x y 坐标轴对照线
+      scattersvg.on('mousemove', function (d, i) {
+                 // 鼠标仅在在图形区域移动触发事件 不含 padding
+                 if (d3.event.offsetX > padding.left && d3.event.offsetX < width - padding.right && d3.event.offsetY > padding.top && d3.event.offsetY < height - padding.bottom) {
+                   tooltipX.style('visibility', 'visible').text((xScale.invert(d3.event.offsetX - padding.left).toFixed(2)))
+                   tooltipX.style('top', ((height - padding.bottom - d3.event.offsetY) + d3.event.pageY)+'px').style('left',(d3.event.pageX - (document.getElementById("tooltipX").clientWidth) / 2)+'px')
+
+                   tooltipY.style('visibility', 'visible').text((yScale.invert(d3.event.offsetY - padding.top).toFixed(2)))
+                   tooltipY.style('top', (d3.event.pageY - (document.getElementById("tooltipY").clientHeight) / 2)  +'px').style('left', (d3.event.pageX - d3.event.offsetX + padding.left - (document.getElementById("tooltipY").clientWidth))+'px')
+
+                   xLine.style("visibility", "visible")
+                   .attr('x1',padding.left)
+                   .attr('y1',d3.event.offsetY)
+                   .attr('x2',width - padding.right)
+                   .attr('y2',d3.event.offsetY)
+
+                   yLine.style("visibility", "visible")
+                   .attr('x1',d3.event.offsetX)
+                   .attr('y1',padding.top)
+                   .attr('x2',d3.event.offsetX)
+                   .attr('y2',height - padding.bottom)
+                 } else {
+                   // 当鼠标落在 padding 区域，则 x y 指示线隐藏
+                   tooltipX.style('visibility', 'hidden')
+                   tooltipY.style('visibility', 'hidden')
+
+                   xLine.style('visibility', 'hidden')
+                   yLine.style('visibility', 'hidden')
+                 }
+               })
+               .on('mouseout', function (d, i) {
+                 // 鼠标仅在在图形区域之外移出触发事件 含 paddding
+                 tooltipX.style('visibility', 'hidden')
+                 tooltipY.style('visibility', 'hidden')
+
+                 xLine.style('visibility', 'hidden')
+                 yLine.style('visibility', 'hidden')
+               })
+      // x 轴文字
+      scattersvg.append("text")
+        .attr("transform", "translate("+ (width / 2 - 25) +", " + 20 + ")")
+        .text(this.data.x)
+        .attr("font-size", "16px")
+
+      // y 轴文字
+      scattersvg.append("text")
+        .text(this.data.y)
+        .attr("transform", "translate("+ 15 +", " + (height / 2) + ") rotate(-90)")
+
+      //  x y 坐标轴导致线条加粗
+      scattersvg.selectAll(".domain")
+          .style("display", "none");
+    },
+  }
+}
+</script>
+
+<style scoped="true">
+.cursor-pointer {
+  cursor: pointer;
+}
+.clear {
+  clear: both;
+}
+#d3container {
+  white-space: nowrap;
+}
+</style>

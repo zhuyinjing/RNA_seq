@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     username: 'test',
-    role: 'admin',
+    role: 'user',
     projectId: '',
     projectName: '',
     geneList: [],
