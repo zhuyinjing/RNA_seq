@@ -309,25 +309,27 @@ export default {
                        })
       // 鼠标移动 x y 坐标轴对照线
       scattersvg.on('mousemove', function (d, i) {
-                 // 鼠标仅在在图形区域移动触发事件 不含 padding
-                 if (d3.event.offsetX > padding.left && d3.event.offsetX < width - padding.right && d3.event.offsetY > padding.top && d3.event.offsetY < height - padding.bottom) {
-                   tooltipX.style('visibility', 'visible').text((xScale.invert(d3.event.offsetX - padding.left).toFixed(0)))
-                   tooltipX.style('top', ((height - padding.bottom - d3.event.offsetY) + d3.event.pageY)+'px').style('left',(d3.event.pageX - (document.getElementById("tooltipX").clientWidth) / 2)+'px')
+                  let x = d3.mouse(this)[0]
+                  let y = d3.mouse(this)[1]
+                  // 鼠标仅在在图形区域移动触发事件 不含 padding
+                  if (x > padding.left && x < width - padding.right && y > padding.top && y < height - padding.bottom) {
+                     tooltipX.style('visibility', 'visible').text((xScale.invert(x - padding.left).toFixed(1)))
+                     tooltipX.style('top', ((height - padding.bottom - y) + d3.event.pageY)+'px').style('left',(d3.event.pageX - (document.getElementById("tooltipX").clientWidth) / 2)+'px')
 
-                   tooltipY.style('visibility', 'visible').text((yScale.invert(d3.event.offsetY - padding.top).toFixed(0)))
-                   tooltipY.style('top', (d3.event.pageY - (document.getElementById("tooltipY").clientHeight) / 2)  +'px').style('left', (d3.event.pageX - d3.event.offsetX + padding.left - (document.getElementById("tooltipY").clientWidth))+'px')
+                     tooltipY.style('visibility', 'visible').text((yScale.invert(y - padding.top).toFixed(1)))
+                     tooltipY.style('top', (d3.event.pageY - (document.getElementById("tooltipX").clientHeight) / 2)  +'px').style('left', (d3.event.pageX - x + padding.left - (document.getElementById("tooltipY").clientWidth))+'px')
 
-                   xLine.style("visibility", "visible")
-                   .attr('x1',padding.left)
-                   .attr('y1',d3.event.offsetY)
-                   .attr('x2',width - padding.right)
-                   .attr('y2',d3.event.offsetY)
+                     xLine.style("visibility", "visible")
+                     .attr('x1',padding.left)
+                     .attr('y1',y)
+                     .attr('x2',width - padding.right)
+                     .attr('y2',y)
 
-                   yLine.style("visibility", "visible")
-                   .attr('x1',d3.event.offsetX)
-                   .attr('y1',padding.top)
-                   .attr('x2',d3.event.offsetX)
-                   .attr('y2',height - padding.bottom)
+                     yLine.style("visibility", "visible")
+                     .attr('x1',x)
+                     .attr('y1',padding.top)
+                     .attr('x2',x)
+                     .attr('y2',height - padding.bottom)
                  } else {
                    // 当鼠标落在 padding 区域，则 x y 指示线隐藏
                    tooltipX.style('visibility', 'hidden')
