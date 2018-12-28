@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/server': {
-        target: 'http://10.10.10.6:7003',
+        target: 'https://colorseq.com',
         changeOrigin: true,
         pathRewrite: {
           '/server': '/server/'

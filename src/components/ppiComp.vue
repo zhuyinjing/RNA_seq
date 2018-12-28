@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '蛋白互作图')">生成 PDF</el-button> -->
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', '蛋白互作图')">{{$t('button.svg')}}</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['蛋白互作图'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <div id="d3container">

@@ -10,8 +10,8 @@
       <p>{{$t('svg.what_svg')}}</p>
       <p>&nbsp;&nbsp;&nbsp;&nbsp;{{$t('svg.introduction')}}</p>
       <p>{{$t('svg.tool')}}：</p>
-      <p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="www.inkscape.org" target="_blank">Inkscape</a> 、
-      <a href="www.adobe.com/products/illustrator/" target="_blank">Adobe Illustrator</a>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;<a class="a-style" @click="linkDownload('https://inkscape.org/')">Inkscape</a> 、
+      <a class="a-style" @click="linkDownload('https://www.adobe.com/products/illustrator.html')">Adobe Illustrator</a>
       {{$t('svg.browse')}}</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="$store.state.svgDescribeShow = false">{{$t('button.ok')}}</el-button>
@@ -29,10 +29,22 @@ export default {
     navbar
   },
   mounted () {
+  },
+  methods: {
+    linkDownload (url) {
+      window.open(url,'_blank')
+    }
   }
 }
 </script>
 
+<style scoped="true">
+.a-style {
+  color: #0500ee;
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>
 <style>
 .main {
   width: 100%;

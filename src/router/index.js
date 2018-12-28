@@ -198,16 +198,21 @@ export default new Router({
           path: 'report_heterogeneous_gene', // 表达异质化基因筛选
           name: 'report_heterogeneous_gene',
           component: resolve => require(['@/views/sc/report_heterogeneous_gene'], resolve)
+        },
+        {
+          path: 'report_pc_3d', // pc 3D
+          name: 'report_pc_3d',
+          component: resolve => require(['@/views/sc/report_pc_3d'], resolve)
         }
       ]
     },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: resolve => require(['@/views/admin/project_list'], resolve),
-      meta: {
-        role: 'admin'
-      },
-    },
+    // {
+    //   path: '/admin',
+    //   name: 'admin',
+    //   component: resolve => require(['@/views/admin/project_list'], resolve),
+    //   meta: {
+    //     role: 'admin'
+    //   },
+    // },
   ]
 })

@@ -1,5 +1,8 @@
 <template>
   <div id="container">
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['表达异质化基因筛选', 'd3container'])">{{$t('button.svg')}}</el-button>
+    <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+
     <div id="d3container"></div>
 
     <div class="clear"></div>
@@ -97,6 +100,7 @@ export default {
       var x = scattersvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
 
       var y = scattersvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
+
 
       // svg 被 rect 围住
       var rect = scattersvg.append("rect")
