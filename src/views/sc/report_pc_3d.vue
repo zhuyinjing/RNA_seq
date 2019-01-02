@@ -1,10 +1,30 @@
 <template>
   <div id="container">
+
+    <el-checkbox-group
+      v-model="pcArr">
+      <el-checkbox v-for="item in pcList" :label="item" :key="item" style="width:20%;">{{item}}</el-checkbox>
+    </el-checkbox-group>
+
+    <br>
+
+    <el-button type="primary" size="small" @click="getData()">{{$t('button.confirm')}}</el-button>
+    <el-button type="info" size="small" @click="pcArr = []">{{$t('button.clear')}}</el-button>
+
+    &nbsp;&nbsp;&nbsp;
+    {{$t('d3.radius')}}：<el-input-number size="mini" v-model="radius" :step="0.5" :min="0" @change="changeRadius()"></el-input-number>
+
+    &nbsp;&nbsp;&nbsp;
+    比例尺：<el-input-number size="mini" v-model="scale" :step="0.5" :min="0" @change="initD3()"></el-input-number>
+
+
+
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['pc-3d', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
+    <br><br>
+
     <div id="scatterContainer"></div>
-    <el-button type="primary" @click="initD3()">init</el-button>
 
   </div>
 </template>
@@ -15,68 +35,94 @@ import { _3d } from 'd3-3d'
 export default {
   data() {
     return {
-      db: null,
+      pcList: [],
+      pcArr: [],
       data: null,
+      radius: 2,
+      scale: 4,
     }
   },
   components: {
   },
   mounted() {
-    this.axios.get('/server/pca4gene?username=' + this.$store.state.username + '&p=' + 1).then((res) => {
-      this.data = Object.values(res.data.pca4GeneExprMatrix.sampleCoordMap)
-      this.initD3()
+    //  获取 pc 列表
+    this.axios.get('singel_cell/server/get_pca_score?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&pcNum='+ this.pcArr.join(',')).then((res) => {
+      if (res.data.message_type === 'success') {
+        this.pcList = res.data.pcNumList.pcNum
+        this.pcArr = [this.pcList[0], this.pcList[1], this.pcList[2]]
+        this.getData()
+      } else {
+        this.$message.error(res.data.message)
+      }
     })
   },
   methods: {
+    getData () {
+      if (this.pcArr.length !== 3) {
+        this.$message.error('请选择 3 个PC！')
+        return
+      }
+      this.axios.get('singel_cell/server/get_pca_score?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&pcNum='+ this.pcArr.join(',')).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.data = res.data
+          // 为了拼接 [[x,y,z],...] 数组
+          this.data.points = []
+          this.data[this.pcArr[0]].map((item, i) => {
+            this.data.points.push([item, this.data[this.pcArr[1]][i], this.data[this.pcArr[2]][i], this.data["cellId"][i]])
+          })
+          this.initD3()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     initD3 () {
+      let self = this
       let hassvg = d3.selectAll('#scatterSvg')
       if (hassvg) {
         d3.selectAll('#scatterSvg').remove()
+        d3.selectAll('#tooltipId').remove()
       }
-      let width = 960, height = 600
-      d3.select("#scatterContainer").append("svg").attr("width",width).attr("height",height).attr("id","scatterSvg")
+      let tooltip = d3.select('#container')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+      	.style('font-weight', 'bold')
+        .attr('id','tooltipId')
+      	.text('')
+      let width = 240 * this.scale, height = 200 * this.scale
+      d3.select("#scatterContainer").append("svg").attr("width",width).attr("height",height).attr("id","scatterSvg").style("border","1px solid #d2d2d2")
       d3._3d = _3d
 
-      var origin = [480, 250], j = 10, scale = 10, scatter = [], xLine = [], yLine = [],zLine = [], xGrid = [], beta = 0, alpha = 0, key = function(d){ return d.id; }, startAngle = Math.PI/4;
+      var origin = [width/2, height/2], j = 10, scale = this.scale, scatter = [], xLine = [], yLine = [],zLine = [], xGrid = [], beta = 0, alpha = 0, key = function(d){ return d.id; }, startAngle = Math.PI/4;
       var svg    = d3.select('#scatterSvg').call(d3.drag().on('drag', dragged).on('start', dragStart).on('end', dragEnd)).append('g');
       var color  = d3.scaleOrdinal(d3.schemeCategory20);
       var mx, my, mouseX, mouseY;
-      var xAxisText = d3.select("#scatterSvg").append("text").text("pc1")
-      var yAxisText = d3.select("#scatterSvg").append("text").text("pc2")
-      var zxisText = d3.select("#scatterSvg").append("text").text("pc3")
+      var xAxisText = d3.select("#scatterSvg").append("text").text(this.pcArr[0])
+      var yAxisText = d3.select("#scatterSvg").append("text").text(this.pcArr[1])
+      var zxisText = d3.select("#scatterSvg").append("text").text(this.pcArr[2])
       var textX,textY
 
       var grid3d = d3._3d()
-          .shape('GRID', 20)
+          .shape('GRID', 2) // 每行 x 点的
           .origin(origin)
           .rotateY( startAngle)
           .rotateX(-startAngle)
           .scale(scale);
 
       var point3d = d3._3d()
-          .x(function(d,i){ return d[0]; })
-          .y(function(d,i){ return d[1]; })
-          .z(function(d,i){ return d[2]; })
+          .x(function(d,i){ return d[0] })
+          .y(function(d){ return d[1] })
+          .z(function(d){ return d[2] })
           .origin(origin)
           .rotateY( startAngle)
           .rotateX(-startAngle)
           .scale(scale);
 
-      var yScale3d = d3._3d()
-          .shape('LINE_STRIP')
-          .origin(origin)
-          .rotateY( startAngle)
-          .rotateX(-startAngle)
-          .scale(scale);
-
-      var xScale3d = d3._3d()
-          .shape('LINE_STRIP')
-          .origin(origin)
-          .rotateY( startAngle)
-          .rotateX(-startAngle)
-          .scale(scale);
-
-      var zScale3d = d3._3d()
+      var axisScale3d = d3._3d()
           .shape('LINE_STRIP')
           .origin(origin)
           .rotateY( startAngle)
@@ -103,20 +149,28 @@ export default {
           xGrid.exit().remove();
 
           /* ----------- POINTS ----------- */
-          var points = svg.selectAll('circle').data(data[1], key);
+          var points = svg.selectAll('circle').data(data[1]);
 
           points
               .enter()
               .append('circle')
               .attr('class', '_3d')
               .attr('opacity', 0)
-              .attr('cx', (d) => d.projected.x)
+              .attr('cx', (d,i) => d.projected.x)
               .attr('cy', (d) => d.projected.y)
+              .on('mouseover', function (d, i) {
+                return tooltip.style('visibility', 'visible').text(d[3]).style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+              })
+              .on('mousemove', function (d, i) {
+                return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+              })
+              .on('mouseout', function (d, i) {
+                return tooltip.style('visibility', 'hidden')
+              })
               .merge(points)
               .transition().duration(tt)
-              .attr('r', 3)
-              .attr('stroke', function(d){ return d3.color(color(d[3])).darker(3); })
-              .attr('fill', function(d){ return color(d[3]); })
+              .attr('r', self.radius)
+              .attr('fill', '#f98078')
               .attr('opacity', 1)
               .attr('cx', (d) => d.projected.x)
               .attr('cy', (d) => d.projected.y)
@@ -134,7 +188,7 @@ export default {
               .merge(yScale)
               .attr('stroke', 'black')
               .attr('stroke-width', .5)
-              .attr('d', yScale3d.draw);
+              .attr('d', axisScale3d.draw);
 
           yScale.exit().remove();
 
@@ -147,7 +201,7 @@ export default {
               .merge(xScale)
               .attr('stroke', 'black')
               .attr('stroke-width', .5)
-              .attr('d', xScale3d.draw);
+              .attr('d', axisScale3d.draw);
 
           xScale.exit().remove();
 
@@ -160,7 +214,7 @@ export default {
               .merge(zScale)
               .attr('stroke', 'black')
               .attr('stroke-width', .5)
-              .attr('d', zScale3d.draw);
+              .attr('d', axisScale3d.draw);
 
           zScale.exit().remove();
 
@@ -259,29 +313,22 @@ export default {
 
           d3.selectAll('._3d').sort(d3._3d().sort);
     }
-    let self = this
     	function init(){
         xGrid = [], scatter = [], xLine = [],yLine = [],zLine = []
-        for(var z = -j; z < j; z++){ // j:10
-            for(var x = -j; x < j; x++){
-                // xGrid.push([x, 5, z]);
-            }
-        }
 
-        scatter = [[0,5,0,0],[-10,1,-10,1],[9,1,9,3],[-2,-2,-2,4]]
+        let xmin = Math.floor(d3.min(self.data[self.pcArr[0]]))
+        let xmax = Math.ceil(d3.max(self.data[self.pcArr[0]]))
+        let ymin = Math.floor(d3.min(self.data[self.pcArr[1]]))
+        let ymax = Math.ceil(d3.max(self.data[self.pcArr[1]]))
+        let zmin = Math.floor(d3.min(self.data[self.pcArr[2]]))
+        let zmax = Math.ceil(d3.max(self.data[self.pcArr[2]]))
 
-        d3.range(-1, 11, 1).forEach(function(d){ yLine.push([-j, -d, -j]); }); // d3.range(start,stop,step)
-
-        d3.range(-10, 10, 1).forEach(function(d){ xLine.push([d, 1, -j]); }); // d3.range(start,stop,step)
-
-        d3.range(-10, 10, 1).forEach(function(d){ zLine.push([-j, 1, d]); }); // d3.range(start,stop,step)
-
-        let xmin = Math.floor(d3.min(self.data.map(item => item[0])))
-        let xmax = Math.ceil(d3.max(self.data.map(item => item[0])))
-        let ymin = Math.floor(d3.min(self.data.map(item => item[1])))
-        let ymax = Math.ceil(d3.max(self.data.map(item => item[1])))
-        let zmin = Math.floor(d3.min(self.data.map(item => item[2])))
-        let zmax = Math.ceil(d3.max(self.data.map(item => item[2])))
+        // for(var z = zmin; z < zmax; z++){ // j:10
+        //     for(var x = xmin; x < xmax; x++){
+        //         xGrid.push([xmin, ymax, z]);
+        //         xGrid.push([xmax, ymax, z]);
+        //   }
+        // }
 
         xLine = [[xmin,ymax,zmin],[xmax,ymax,zmin]]
         yLine = [[xmin,ymax,zmin],[xmin,ymin,zmin]]
@@ -289,42 +336,45 @@ export default {
 
         var data = [
             grid3d(xGrid),
-            point3d(self.data),
-            yScale3d([yLine]),
-            xScale3d([xLine]),
-            zScale3d([zLine])
+            point3d(self.data.points),
+            axisScale3d([yLine]),
+            axisScale3d([xLine]),
+            axisScale3d([zLine])
         ];
         processData(data, 200);
     }
 
-    function dragStart(){
-        mx = d3.event.x;
-        my = d3.event.y;
-    }
+      function dragStart(){
+          mx = d3.event.x;
+          my = d3.event.y;
+      }
 
-    function dragged(){
-        mouseX = mouseX || 0;
-        mouseY = mouseY || 0;
-        beta   = (d3.event.x - mx + mouseX) * Math.PI / 230 ;
-        alpha  = (d3.event.y - my + mouseY) * Math.PI / 230  * (-1);
-        var data = [
-            grid3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)(xGrid),
-            point3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)(self.data),
-            yScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([yLine]),
-            xScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([xLine]),
-            zScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([zLine]),
-        ];
-        processData(data, 0);
-    }
+      function dragged(){
+          mouseX = mouseX || 0;
+          mouseY = mouseY || 0;
+          beta   = (d3.event.x - mx + mouseX) * Math.PI / 230 ;
+          alpha  = (d3.event.y - my + mouseY) * Math.PI / 230  * (-1);
+          var data = [
+              grid3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)(xGrid),
+              point3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)(self.data.points),
+              axisScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([yLine]),
+              axisScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([xLine]),
+              axisScale3d.rotateY(beta + startAngle).rotateX(alpha - startAngle)([zLine]),
+          ];
+          processData(data, 0);
+      }
 
-    function dragEnd(){
-        mouseX = d3.event.x - mx + mouseX;
-        mouseY = d3.event.y - my + mouseY;
-    }
+      function dragEnd(){
+          mouseX = d3.event.x - mx + mouseX;
+          mouseY = d3.event.y - my + mouseY;
+      }
 
-    init();
+      init();
 
-    }
+    },
+    changeRadius () {
+      d3.selectAll("circle").attr("r", this.radius)
+    },
   }
 }
 </script>
@@ -332,5 +382,8 @@ export default {
 <style scoped="true">
 .cursor-pointer {
   cursor: pointer;
+}
+.el-checkbox+.el-checkbox {
+  margin-left: 0 !important;
 }
 </style>

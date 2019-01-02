@@ -9,7 +9,7 @@ export default new Vuex.Store({
   state: {
     username: 'test',
     role: 'user',
-    projectId: '',
+    projectId: '11',
     projectName: '',
     geneList: [],
     heatmapJson: null,

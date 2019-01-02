@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     initData () {
-      this.axios.get('/singel_cell/server/get_var_gene_feature?p='+ 11 +'&username=' + this.$store.state.username).then((res) => {
+      this.axios.get('/singel_cell/server/get_var_gene_feature?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username).then((res) => {
         if (res.data.message_type === 'success') {
           this.data = res.data
           this.initScatterPlot()

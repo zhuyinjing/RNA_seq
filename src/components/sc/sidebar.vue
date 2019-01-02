@@ -5,6 +5,8 @@
       <router-link to="/sc/report_umi_count"><el-menu-item index="report_umi_count">单细胞转录组表达基因与UMI计数统计</el-menu-item></router-link>
       <router-link to="/sc/report_heterogeneous_gene"><el-menu-item index="report_heterogeneous_gene">表达异质化基因筛选</el-menu-item></router-link>
       <router-link to="/sc/report_pc_3d"><el-menu-item index="report_pc_3d">pc plot 3D</el-menu-item></router-link>
+      <router-link to="/sc/report_pc"><el-menu-item index="report_pc">pc plot</el-menu-item></router-link>
+      <router-link to="/sc/report_pc_elbow"><el-menu-item index="report_pc_elbow">pc elbow plot</el-menu-item></router-link>
         <!-- <el-menu-item-group>
           <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
           <el-menu-item index="1-0">{{$t('leftMenu.fastqc')}}</el-menu-item>

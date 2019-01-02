@@ -22,7 +22,7 @@
 
         <br>
         <el-button type="primary" size="small" @click="initD3()">{{$t('button.confirm')}}</el-button>
-        <el-button type="info" size="small" @click="clearChecked()">{{$t('button.clear')}}</el-button>
+        <el-button type="info" size="small" @click="checkedPCA = []">{{$t('button.clear')}}</el-button>
         &nbsp;&nbsp;&nbsp;
         {{$t('d3.radius')}}：<el-input-number size="mini" v-model="radius" :step="1" :min="0" @change="initD3()"></el-input-number>
         &nbsp;&nbsp;&nbsp;
@@ -103,15 +103,6 @@ export default {
       let checkedCount = value.length;
       this.checkAll = checkedCount === this.checkboxValue.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkboxValue.length;
-    },
-    clearChecked () {
-      this.$confirm('此操作将清空您的选项, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.checkedPCA = []
-        }).catch(() => {});
     },
     initD3() {
       if (this.checkedPCA.length < 2) {

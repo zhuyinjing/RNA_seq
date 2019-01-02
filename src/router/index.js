@@ -203,6 +203,16 @@ export default new Router({
           path: 'report_pc_3d', // pc 3D
           name: 'report_pc_3d',
           component: resolve => require(['@/views/sc/report_pc_3d'], resolve)
+        },
+        {
+          path: 'report_pc', // pc
+          name: 'report_pc',
+          component: resolve => require(['@/views/sc/report_pc'], resolve)
+        },
+        {
+          path: 'report_pc_elbow', // pc
+          name: 'report_pc_elbow',
+          component: resolve => require(['@/views/sc/report_pc_elbow'], resolve)
         }
       ]
     },
