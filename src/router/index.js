@@ -210,9 +210,14 @@ export default new Router({
           component: resolve => require(['@/views/sc/report_pc'], resolve)
         },
         {
-          path: 'report_pc_elbow', // pc
+          path: 'report_pc_elbow', // 肘图
           name: 'report_pc_elbow',
           component: resolve => require(['@/views/sc/report_pc_elbow'], resolve)
+        },
+        {
+          path: 'report_tSNE', // tSNE
+          name: 'report_tSNE',
+          component: resolve => require(['@/views/sc/report_tSNE'], resolve)
         }
       ]
     },
