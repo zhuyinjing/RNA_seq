@@ -19,7 +19,7 @@
 
 
 
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['pc-3d', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['PCA-3d', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <br><br>
@@ -38,7 +38,7 @@ export default {
       pcList: [],
       pcArr: [],
       data: null,
-      radius: 2,
+      radius: 3,
       scale: 4,
     }
   },
@@ -97,7 +97,7 @@ export default {
       d3.select("#scatterContainer").append("svg").attr("width",width).attr("height",height).attr("id","scatterSvg").style("border","1px solid #d2d2d2")
       d3._3d = _3d
 
-      var origin = [width/2, height/2], j = 10, scale = this.scale, scatter = [], xLine = [], yLine = [],zLine = [], xGrid = [], beta = 0, alpha = 0, key = function(d){ return d.id; }, startAngle = Math.PI/4;
+      var origin = [width/2, height/2-100], j = 10, scale = this.scale, scatter = [], xLine = [], yLine = [],zLine = [], xGrid = [], beta = 0, alpha = 0, key = function(d){ return d.id; }, startAngle = Math.PI/4;
       var svg    = d3.select('#scatterSvg').call(d3.drag().on('drag', dragged).on('start', dragStart).on('end', dragEnd)).append('g');
       var color  = d3.scaleOrdinal(d3.schemeCategory20);
       var mx, my, mouseX, mouseY;
@@ -330,9 +330,14 @@ export default {
         //   }
         // }
 
-        xLine = [[xmin,ymax,zmin],[xmax,ymax,zmin]]
-        yLine = [[xmin,ymax,zmin],[xmin,ymin,zmin]]
-        zLine = [[xmin,ymax,zmin],[xmin,ymax,zmax]]
+        // xLine = [[xmin,ymax,zmin],[xmax,ymax,zmin]]
+        // yLine = [[xmin,ymax,zmin],[xmin,ymin,zmin]]
+        // zLine = [[xmin,ymax,zmin],[xmin,ymax,zmax]]
+
+        xLine = [[-50,50,-50],[50,50,-50]]
+        yLine = [[-50,50,-50],[-50,-50,-50]]
+        zLine = [[-50,50,-50],[-50,50,50]]
+
 
         var data = [
             grid3d(xGrid),

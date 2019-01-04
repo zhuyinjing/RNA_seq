@@ -50,6 +50,15 @@ export default {
       var xAxis = d3.axisBottom().scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      let tooltip = d3.select('#container')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+      	.style('font-weight', 'bold')
+      	.text('')
 
       var x = scattersvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
 
@@ -63,6 +72,15 @@ export default {
                       .attr("cx", (d) => padding.left + xScale(d["pcNum"]))
                       .attr("cy", (d) => padding.top + yScale(d["standardDeviation"]))
                       .attr("r", 1.8)
+                      .on('mouseover', function (d, i) {
+                        return tooltip.style('visibility', 'visible').text(d["standardDeviation"].toFixed(2))
+                      })
+                      .on('mousemove', function (d, i) {
+                        return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+                      })
+                      .on('mouseout', function (d, i) {
+                        return tooltip.style('visibility', 'hidden')
+                      })
 
       // x 轴文字
       scattersvg.append("text")

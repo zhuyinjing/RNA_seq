@@ -186,6 +186,7 @@ export default {
           .style("font-size", "16px")
           .attr('fill', '#000')
           .attr('transform', 'translate(' + 0 + ', 25)')
+
       }
 
     },

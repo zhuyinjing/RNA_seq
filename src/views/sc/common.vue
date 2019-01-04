@@ -5,8 +5,6 @@
 
     <div id="d3container"></div>
 
-    <div class="clear"></div>
-
   </div>
 </template>
 
@@ -46,6 +44,15 @@ export default {
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
+      let tooltip = d3.select('#container')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+      	.style('font-weight', 'bold')
+      	.text('')
 
       let xScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_1)).range([0,width - padding.left - padding.right]).nice()
       svg.append("g").attr("transform","translate(0,"+ (height - padding.bottom - padding.top) +")").call(d3.axisBottom(xScale))
@@ -67,6 +74,15 @@ export default {
          .attr("fill", (d,i) => {
            return colorScale(self.data.groupId[i])
          })
+         .on('mouseover', function (d, i) {
+           return tooltip.style('visibility', 'visible').text(5)
+         })
+         .on('mousemove', function (d, i) {
+           return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+         })
+         .on('mouseout', function (d, i) {
+           return tooltip.style('visibility', 'hidden')
+         })
 
       //  上边 和 右边 两侧的 line
       svg.append("line").attr("x1", 0).attr("y1", 0).attr("x2",width-padding.right-padding.left).attr("y2",0).attr("stroke","black").attr("stroke-width","1px")
@@ -83,64 +99,6 @@ export default {
         .text("tSNE_2")
         .attr("transform", "translate("+ 15 +", " + (height / 2) + ") rotate(-90)")
 
-      //  图例
-      let legendR = 8
-      let groups = Array.from(new Set(this.data.groupId)) // 分组去重
-      let legend = scattersvg.append("g").attr("transform","translate("+(width-padding.right + 30)+","+(height/3)+")")
-      legend.selectAll(".circle")
-            .data(groups)
-            .enter()
-            .append("circle")
-            .attr("cx",0)
-            .attr("cy",(d,i) => i * 30)
-            .attr("r",legendR)
-            .attr("fill", d => colorScale(d))
-
-      legend.selectAll(".text")
-            .data(groups)
-            .enter()
-            .append("text")
-            .attr("transform",(d,i) => {
-              return "translate(" + (legendR * 2) +","+ (legendR/2 + i * 30) +")"
-            })
-            .text(d => d)
-
-      let brush = d3.brush().on("brush", brushing).on("end", brushend)
-      svg.append("g")
-          .attr("class", "brush")
-          .call(brush);
-
-      function brushing () {
-        if (d3.event.selection != null) {
-         var brush_coords = d3.brushSelection(this);
-         var s = d3.event.selection;
-         // style brushed circles
-         circles.filter(function (d, i){
-              var cx = d3.select(this).attr("cx"),
-                  cy = d3.select(this).attr("cy");
-
-              var x0 = brush_coords[0][0],
-                  x1 = brush_coords[1][0],
-                  y0 = brush_coords[0][1],
-                  y1 = brush_coords[1][1];
-
-              return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
-          }).attr("fill", "pink").attr("class","brushed")
-         }
-      }
-
-      function brushend() {
-        if (!d3.event.selection) return; // 仅仅只是 click 画布而已
-        d3.select(this).call(brush.move, null);
-        let s = d3.event.selection;
-
-        let idArr = d3.selectAll(".brushed").data()
-        // d3.selectAll(".brushed").classed("brushed",false) // 移除类名
-        if (idArr.length !== 0) {
-
-        }
-      }
-
     },
   }
 }
@@ -149,11 +107,5 @@ export default {
 <style scoped="true">
 .cursor-pointer {
   cursor: pointer;
-}
-.clear {
-  clear: both;
-}
-#d3container {
-  white-space: nowrap;
 }
 </style>

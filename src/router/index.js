@@ -218,6 +218,11 @@ export default new Router({
           path: 'report_tSNE', // tSNE
           name: 'report_tSNE',
           component: resolve => require(['@/views/sc/report_tSNE'], resolve)
+        },
+        {
+          path: 'report_viz_PCA', // viz pca
+          name: 'report_viz_PCA',
+          component: resolve => require(['@/views/sc/report_viz_PCA'], resolve)
         }
       ]
     },

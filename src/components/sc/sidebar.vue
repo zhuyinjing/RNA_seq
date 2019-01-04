@@ -8,6 +8,7 @@
       <router-link to="/sc/report_pc"><el-menu-item index="report_pc">PCA plot</el-menu-item></router-link>
       <router-link to="/sc/report_pc_elbow"><el-menu-item index="report_pc_elbow">PCA elbow plot</el-menu-item></router-link>
       <router-link to="/sc/report_tSNE"><el-menu-item index="report_tSNE">tSNE plot</el-menu-item></router-link>
+      <router-link to="/sc/report_viz_PCA"><el-menu-item index="report_viz_PCA">viz PCA</el-menu-item></router-link>
         <!-- <el-menu-item-group>
           <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
           <el-menu-item index="1-0">{{$t('leftMenu.fastqc')}}</el-menu-item>
