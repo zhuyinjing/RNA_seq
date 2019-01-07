@@ -112,82 +112,83 @@ export default {
       	.style('font-weight', 'bold')
       	.text('')
 
-      for (let i = 0;i < this.events.length;i++) {
-        let svg = d3.select('#d3container')
-          .append('svg')
-          .attr('id', 'svg')
-          .attr('width', width)
-          .attr('height', height)
+      let svgBox = d3.select('#d3container')
+        .append('svg')
+        .attr('id', 'svg')
+        .attr('width', width)
+        .attr('height', height * this.events.length)
 
-        let arr = this.data[this.events[i]].filter((value, key) => {
-            if (this.samples.includes(key)) {
-                return value
-            }
-        })
-
-        let xData = this.samplesArr.filter((value, key) => {
-            if (this.samples.includes(key)) {
-                return value
-            }
-        })
-        var x = d3.scaleBand()
-          .domain(xData)
-          .rangeRound([margin.left, width - margin.right])
-          .padding(0.5)
-
-        var y = d3.scaleLinear()
-          .domain([0, d3.max(arr)])
-          .rangeRound([height - margin.bottom, margin.top]);
-
-        var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-        svg.append("g")
-          .selectAll("g")
-          .data(arr)
-          .enter().append("g")
-          .attr("fill", (d, j) => {
-            return color(i)
-          })
-          .selectAll("rect")
-          .data(arr)
-          .enter().append("rect")
-          .attr("width", x.bandwidth)
-          .attr("x", (d, i) => {
-            return x(xData[i])
-          })
-          .attr("y", (d) => {
-            return y(d)
-          })
-          .attr("height", (d) => {
-            return y(0) - y(d)
-          })
-          .on('mouseover', (d, i) => {
-            return tooltip.style('visibility', 'visible').text(d)
-          })
-          .on('mousemove', function (d, i) {
-            return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
-          })
-          .on('mouseout', function (d, i) {
-            return tooltip.style('visibility', 'hidden')
+        for (let i = 0;i < this.events.length;i++) {
+          let svg = svgBox.append("g").attr("transform","translate("+ 0 +"," + (height * i) + ")")
+          let arr = this.data[this.events[i]].filter((value, key) => {
+              if (this.samples.includes(key)) {
+                  return value
+              }
           })
 
-        svg.append("g")
-          .attr("transform", "translate(0," + y(0) + ")")
-          .call(d3.axisBottom(x))
-          .selectAll("text")
-          .style("text-anchor", "start")
-          .attr("transform", "rotate(45 -10 10)");
+          let xData = this.samplesArr.filter((value, key) => {
+              if (this.samples.includes(key)) {
+                  return value
+              }
+          })
+          var x = d3.scaleBand()
+            .domain(xData)
+            .range([margin.left, width - margin.right])
+            .padding(0.5)
 
-        svg.append("g")
-          .attr("transform", "translate(" + margin.left + ",0)")
-          .call(d3.axisLeft(y))
-          .append('text')
-          .text(this.events[i])
-          .style("font-size", "16px")
-          .attr('fill', '#000')
-          .attr('transform', 'translate(' + 0 + ', 25)')
+          var y = d3.scaleLinear()
+            .domain([0, d3.max(arr)])
+            .range([height - margin.bottom, margin.top]).nice()
 
-      }
+          var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+          svg.append("g")
+            .selectAll("g")
+            .data(arr)
+            .enter().append("g")
+            .attr("fill", (d, j) => {
+              return color(i)
+            })
+            .selectAll("rect")
+            .data(arr)
+            .enter().append("rect")
+            .attr("width", x.bandwidth)
+            .attr("x", (d, i) => {
+              return x(xData[i])
+            })
+            .attr("y", (d) => {
+              return y(d)
+            })
+            .attr("height", (d) => {
+              return y(0) - y(d)
+            })
+            .on('mouseover', (d, i) => {
+              return tooltip.style('visibility', 'visible').text(d)
+            })
+            .on('mousemove', function (d, i) {
+              return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+            })
+            .on('mouseout', function (d, i) {
+              return tooltip.style('visibility', 'hidden')
+            })
+
+          svg.append("g")
+            .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .style("text-anchor", "start")
+            .attr("transform", "rotate(45 -10 10)");
+
+          svg.append("g")
+            .attr("transform", "translate(" + margin.left + ",0)")
+            .call(d3.axisLeft(y))
+            .append('text')
+            .text(this.events[i])
+            .style("font-size", "16px")
+            .attr('fill', '#000')
+            .attr('transform', 'translate(' + 0 + ', 25)')
+
+        }
 
     },
   }

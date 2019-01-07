@@ -200,19 +200,19 @@ export default new Router({
           component: resolve => require(['@/views/sc/report_heterogeneous_gene'], resolve)
         },
         {
-          path: 'report_pc_3d', // pc 3D
-          name: 'report_pc_3d',
-          component: resolve => require(['@/views/sc/report_pc_3d'], resolve)
+          path: 'report_pca_3d', // pca 3D
+          name: 'report_pca_3d',
+          component: resolve => require(['@/views/sc/report_pca_3d'], resolve)
         },
         {
-          path: 'report_pc', // pc
-          name: 'report_pc',
-          component: resolve => require(['@/views/sc/report_pc'], resolve)
+          path: 'report_pca', // pca
+          name: 'report_pca',
+          component: resolve => require(['@/views/sc/report_pca'], resolve)
         },
         {
-          path: 'report_pc_elbow', // 肘图
-          name: 'report_pc_elbow',
-          component: resolve => require(['@/views/sc/report_pc_elbow'], resolve)
+          path: 'report_pca_elbow', // 肘图
+          name: 'report_pca_elbow',
+          component: resolve => require(['@/views/sc/report_pca_elbow'], resolve)
         },
         {
           path: 'report_tSNE', // tSNE
@@ -223,6 +223,11 @@ export default new Router({
           path: 'report_viz_PCA', // viz pca
           name: 'report_viz_PCA',
           component: resolve => require(['@/views/sc/report_viz_PCA'], resolve)
+        },
+        {
+          path: 'report_pca_heatmap', // pca heatmap
+          name: 'report_pca_heatmap',
+          component: resolve => require(['@/views/sc/report_pca_heatmap'], resolve)
         }
       ]
     },

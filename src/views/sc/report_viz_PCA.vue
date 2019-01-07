@@ -27,6 +27,7 @@ export default {
       pcList: [],
       pcArr: [],
       data: [],
+      radius: 3,
     }
   },
   components: {
@@ -47,7 +48,7 @@ export default {
       this.axios.get('singel_cell/server/get_viz_pca?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&pcNum='+ this.pcArr.join(',')).then((res) => {
         if (res.data.message_type === 'success') {
           this.data = res.data
-          // this.initScatterPlot()
+          this.initScatterPlot()
         } else {
           this.$message.error(res.data.message)
         }
@@ -59,10 +60,9 @@ export default {
       if (hassvg) {
         d3.selectAll('svg').remove()
       }
-      let width = 800, height = 600
+      let width = 500, height = 500 // 每个 g 标签的宽度/高度
       let padding = {top:30,right:80,bottom:60,left:60}
-      let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
-      let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")
+      let scattersvg = d3.select("#d3container").append("svg").attr("width", width * 2).attr("height", (height * Math.ceil(this.pcArr.length / 2))).attr("id", "scattersvg")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
       let tooltip = d3.select('#container')
       	.append('div')
@@ -74,45 +74,60 @@ export default {
       	.style('font-weight', 'bold')
       	.text('')
 
-      let xScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_1)).range([0,width - padding.left - padding.right]).nice()
-      svg.append("g").attr("transform","translate(0,"+ (height - padding.bottom - padding.top) +")").call(d3.axisBottom(xScale))
+      for (let i = 0;i < this.pcArr.length;i++) {
+        let svg = scattersvg.append("g").attr("transform", "translate("+ ((i % 2) * width) + "," + (parseInt(i / 2) * height) +")")
 
-      let yScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_2)).range([height - padding.top - padding.bottom,0]).nice()
-      svg.append("g").call(d3.axisLeft(yScale))
+        let xData = this.data[this.pcArr[i]].value
+        let yData = this.data[this.pcArr[i]].geneName
 
-      let circles = svg.selectAll("circle")
-         .data(this.data.cellId)
-         .enter()
-         .append("circle")
-         .attr("cx", (d,i) => {
-           return xScale(self.data.tSNE_1[i])
-         })
-         .attr("cy", (d,i) => {
-           return yScale(self.data.tSNE_2[i])
-         })
-         .attr("r",2.5)
-         .attr("fill", (d,i) => {
-           return colorScale(self.data.groupId[i])
-         })
-         .on('mouseover', function (d, i) {
-           return tooltip.style('visibility', 'visible').text(5)
-         })
-         .on('mousemove', function (d, i) {
-           return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
-         })
-         .on('mouseout', function (d, i) {
-           return tooltip.style('visibility', 'hidden')
-         })
+        let xScale = d3.scaleLinear().domain(d3.extent(xData)).range([padding.left,width - padding.right]).nice()
+        svg.append("g")
+          .attr("transform", "translate(0," + (height - padding.bottom) + ")")
+          .call(d3.axisBottom(xScale))
+          .selectAll("text")
+          .style("text-anchor", "start")
+          .attr("transform", "rotate(45 -10 10)");
 
-      //  上边 和 右边 两侧的 line
-      svg.append("line").attr("x1", 0).attr("y1", 0).attr("x2",width-padding.right-padding.left).attr("y2",0).attr("stroke","black").attr("stroke-width","1px")
-      svg.append("line").attr("x1", width-padding.right-padding.left).attr("y1", 0).attr("x2",width-padding.right-padding.left).attr("y2",height-padding.top-padding.bottom).attr("stroke","black").attr("stroke-width","1px")
+        let yScale = d3.scaleBand().domain(yData).range([height - padding.bottom, padding.top]).padding(1)
+        svg.append("g")
+          .attr("transform", "translate(" + (padding.left) + ",0)")
+          .call(d3.axisLeft(yScale))
 
-      // x 轴文字
-      scattersvg.append("text")
-        .attr("transform", "translate("+ (width / 2 - 25) +", " + height + ")")
-        .text("tSNE_1")
-        .attr("font-size", "16px")
+        svg.selectAll("circle")
+           .data(this.data[this.pcArr[i]].geneId)
+           .enter()
+           .append("circle")
+           .attr("cx", (d,i) => xScale(xData[i]))
+           .attr("cy", (d,i) => yScale(yData[i]))
+           .attr("r", self.radius)
+           .attr("fill", "#0600ff")
+           .on('mouseover', function (d, i) {
+               return tooltip.style('visibility', 'visible').text(d)
+             })
+             .on('mousemove', function (d, i) {
+               return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+             })
+             .on('mouseout', function (d, i) {
+               return tooltip.style('visibility', 'hidden')
+             })
+
+         // x 轴文字
+         svg.append("text")
+           .attr("transform", "translate("+ (width / 2 - 25) +", " + height + ")")
+           .text(this.pcArr[i])
+           .attr("font-size", "16px")
+
+         //  上边 和 右边 两侧的 line
+         // svg.append("rect").attr("x",padding.left).attr("y",padding.top).attr("width",width-padding.left-padding.right).attr("height",height-padding.top-padding.bottom).attr("stroke","black").attr("fill","none").attr("stroke-width","1px")
+         svg.append("line").attr("x1", padding.left).attr("y1", padding.top).attr("x2",width-padding.right).attr("y2",padding.top).attr("stroke","black").attr("stroke-width","1px")
+         svg.append("line").attr("x1", width-padding.right).attr("y1", padding.top).attr("x2",width-padding.right).attr("y2",height - padding.bottom).attr("stroke","black").attr("stroke-width","1px")
+
+         //  x y 坐标轴导致线条加粗
+         // svg.selectAll(".domain")
+         //     .style("display", "none");
+
+
+      }
 
     },
   }
