@@ -62,7 +62,8 @@ export default {
       }
       let width = 500, height = 500 // 每个 g 标签的宽度/高度
       let padding = {top:30,right:80,bottom:60,left:60}
-      let scattersvg = d3.select("#d3container").append("svg").attr("width", width * 2).attr("height", (height * Math.ceil(this.pcArr.length / 2))).attr("id", "scattersvg")
+      let number = 2 // 一行显示几个图
+      let scattersvg = d3.select("#d3container").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.pcArr.length / number))).attr("id", "scattersvg")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
       let tooltip = d3.select('#container')
       	.append('div')
@@ -75,7 +76,7 @@ export default {
       	.text('')
 
       for (let i = 0;i < this.pcArr.length;i++) {
-        let svg = scattersvg.append("g").attr("transform", "translate("+ ((i % 2) * width) + "," + (parseInt(i / 2) * height) +")")
+        let svg = scattersvg.append("g").attr("transform", "translate("+ ((i % number) * width) + "," + (parseInt(i / number) * height) +")")
 
         let xData = this.data[this.pcArr[i]].value
         let yData = this.data[this.pcArr[i]].geneName
@@ -113,8 +114,9 @@ export default {
 
          // x 轴文字
          svg.append("text")
-           .attr("transform", "translate("+ (width / 2 - 25) +", " + height + ")")
+           .attr("transform", "translate("+ (width / 2) +", " + height + ")")
            .text(this.pcArr[i])
+           .attr("text-anchor", "middle")
            .attr("font-size", "16px")
 
          //  上边 和 右边 两侧的 line

@@ -41,7 +41,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
       }
-      let width = 800, height = 600
+      let width = 1000, height = 600
       let padding = {top:30,right:80,bottom:60,left:60}
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")
@@ -74,8 +74,9 @@ export default {
 
       // x 轴文字
       scattersvg.append("text")
-        .attr("transform", "translate("+ (width / 2 - 25) +", " + height + ")")
+        .attr("transform", "translate("+ (width / 2) +", " + height + ")")
         .text("tSNE_1")
+        .attr("text-anchor", "middle")
         .attr("font-size", "16px")
 
       // y 轴文字

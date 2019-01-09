@@ -322,16 +322,18 @@ export default {
           }
           //  x轴文字
           svgG.append("text")
-      					.attr("x", (width / 2.5) + (i * width) + padding.left)
+      					.attr("x", (width / 2) + (i * width) + padding.left)
       					.attr("y", -15 + padding.top)
       					.attr("dy", "-0.3em")
+                .attr("text-anchor", "middle")
       					.text(function(){
       						return self.pcArr[i]
       					});
           svgG.append("text")
-      					.attr("x", (width / 2.5) + (i * width) + padding.left)
+      					.attr("x", (width / 2) + (i * width) + padding.left)
       					.attr("y", -2 + padding.top)
       					.attr("dy", "-0.3em")
+                .attr("text-anchor", "middle")
       					.text(function(){
       						return "(" + 10 + "%" + ")";
       					});

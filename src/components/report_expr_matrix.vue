@@ -135,7 +135,7 @@ export default {
     initTable () {
       let self = this
       $(document).ready(function() {
-          var table = $('#patients').DataTable({
+          self.table = $('#patients').DataTable({
               "pageLength": 25,
               "bPaginate" : true,//分页工具条显示
               //"sPaginationType" : "full_numbers",//分页工具条样式

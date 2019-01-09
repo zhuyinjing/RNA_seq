@@ -10,7 +10,7 @@
     <el-button type="primary" size="small" @click="getData()">{{$t('button.confirm')}}</el-button>
     <el-button type="info" size="small" @click="pcArr = []">{{$t('button.clear')}}</el-button>
 
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['vizPCA', 'd3container'])">{{$t('button.svg')}}</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <div id="d3container"></div>
@@ -36,7 +36,7 @@ export default {
     this.axios.get('singel_cell/server/get_pca_heatmap?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username).then((res) => {
       if (res.data.message_type === 'success') {
         this.pcList = res.data.pcNumList.pcNum
-        this.pcArr = this.pcList.slice(0,2)
+        this.pcArr = this.pcList.slice(0,9)
         this.getData()
       } else {
         this.$message.error(res.data.message)
@@ -56,13 +56,15 @@ export default {
     },
     initHeatmap () {
       let self = this
-      let hassvg = d3.selectAll('svg')
+      let hassvg = d3.selectAll('#heatmapsvg')
       if (hassvg) {
-        d3.selectAll('svg').remove()
+        d3.selectAll('#heatmapsvg').remove()
       }
-      let padding = {top:30,right:80,bottom:60,left:0}
+      let padding = {top:50,right:150,bottom:30,left:0}
       let width = 5, height = 15  // 每个 rect 的宽度/高度
-      let heatmapsvg = d3.select("#d3container").append("svg").attr("width", (width * this.data.cellId.length + padding.left + padding.right) * 3).attr("height", ((height * this.data[this.pcArr[0]].geneIdList.length + padding.top + padding.bottom) * Math.ceil(this.pcArr.length / 3))).attr("id", "heatmapsvg")
+      let number = this.pcArr.length > 2 ? 3 : this.pcArr.length // 一行显示几个图，默认为 3，小于 3 则按 个数显示
+      let xData = this.data[this.pcArr[0]].cellIdList
+      let heatmapsvg = d3.select("#d3container").append("svg").attr("width", (width * xData.length + padding.left + padding.right) * number).attr("height", ((height * this.data[this.pcArr[0]].geneIdList.length + padding.top + padding.bottom) * Math.ceil(this.pcArr.length / number))).attr("id", "heatmapsvg")
       let tooltip = d3.select('#container')
       	.append('div')
       	.style('position', 'absolute')
@@ -72,17 +74,14 @@ export default {
         .style('font-size', '12px')
       	.style('font-weight', 'bold')
       	.text('')
-
-
       for (let i = 0;i < this.pcArr.length;i++) {
-        let xData = this.data.cellId
         let rectData = this.data[this.pcArr[i]].umiMatrixList
-        let yText = this.data[this.pcArr[i]].geneIdList
+        let yText = this.data[this.pcArr[i]].geneNameList
 
-        let colorScale = d3.scaleSequential().domain(d3.extent(rectData)).interpolator(d3.interpolatePlasma)
+        let colorScale = d3.scaleSequential().domain(d3.extent(rectData.map(d => d.umiValue))).interpolator(d3.interpolatePlasma)
 
-        let w = (width * xData.length + padding.right) * (i % 3) + (padding.left * (parseInt(i / 3) + 1)) // 每个 g 的位移
-        let h = (height * yText.length + padding.bottom) * parseInt(i / 3) + (padding.top * (parseInt(i / 3) + 1))
+        let w = (width * xData.length + padding.right) * (i % number) + (padding.left * (parseInt(i / number) + 1)) // 每个 g 的位移
+        let h = (height * yText.length + padding.bottom) * parseInt(i / number) + (padding.top * (parseInt(i / number) + 1))
         let svg = heatmapsvg.append("g").attr("transform", "translate("+ w + "," + h +")")
 
         svg.selectAll("rect")
@@ -93,9 +92,9 @@ export default {
            .attr("y", (d,i) => height * parseInt(i / xData.length))
            .attr("width", width)
            .attr("height", height)
-           .attr("fill", (d,i) => colorScale(d))
+           .attr("fill", (d,i) => colorScale(d.umiValue))
           // .on('mouseover', function (d, i) {
-          //     return tooltip.style('visibility', 'visible').text(d)
+          //     return tooltip.style('visibility', 'visible').text(d.umiValue)
           //   })
           //   .on('mousemove', function (d, i) {
           //     return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
@@ -106,19 +105,51 @@ export default {
 
          // x 轴文字
          svg.append("text")
-           .attr("transform", "translate("+ (width * this.data.cellId.length / 2) +", " + (height * yText.length + 15) + ")")
+           .attr("transform", "translate("+ (width * xData.length / 2) +", " + (height * yText.length + 20) + ")")
            .text(this.pcArr[i])
+           .attr("text-anchor", "middle")
            .attr("font-size", "16px")
 
-         // x 轴文字
-         svg.append("text")
-           .attr("transform", "translate("+ (width * this.data.cellId.length / 2) +", " + (height * yText.length + 15) + ")")
-           .text(this.pcArr[i])
-           .attr("font-size", "16px")
-
-
+         // y 轴文字
+         svg.selectAll(".text")
+            .data(yText)
+            .enter()
+            .append("text")
+            .attr("transform", (d,i) => {return "translate("+ (width * xData.length + 5) +", " + (height * (i+1) - 3) + ")"})
+            .text(d => d)
+            .attr("font-size", height +"px")
 
       }
+
+      let defs = heatmapsvg.append("defs");
+
+      let linearGradient = defs.append("linearGradient")
+  								.attr("id","linearColor")
+  								.attr("x1","0%")
+  								.attr("y1","0%")
+  								.attr("x2","100%")
+  								.attr("y2","0%");
+      linearGradient.append("stop")
+  						      .attr("offset","0%")
+  						      .style("stop-color",d3.interpolatePlasma(0));
+
+      linearGradient.append("stop")
+  						      .attr("offset","50%")
+  						      .style("stop-color",d3.interpolatePlasma(0.5));
+
+  		linearGradient.append("stop")
+        						.attr("offset","100%")
+        						.style("stop-color",d3.interpolatePlasma(1));
+
+      heatmapsvg.append("g")
+                .attr("transform","translate("+ 0 +","+ 5 +")")
+                .attr("id", "legend")
+                .append("rect")
+      					.attr("x", 0)
+      					.attr("y", 0)
+      					.attr("width", 100)
+      					.attr("height", 30)
+      					.style("fill","url(#" + linearGradient.attr("id") + ")")
 
     },
   }

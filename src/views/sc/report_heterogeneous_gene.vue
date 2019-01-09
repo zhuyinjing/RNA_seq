@@ -175,8 +175,9 @@ export default {
                })
       // x 轴文字
       scattersvg.append("text")
-        .attr("transform", "translate("+ (width / 2 - 25) +", " + 20 + ")")
+        .attr("transform", "translate("+ (width / 2) +", " + 20 + ")")
         .text(this.data.x)
+        .attr("text-anchor", "middle")
         .attr("font-size", "16px")
 
       // y 轴文字

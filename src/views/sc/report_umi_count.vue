@@ -174,8 +174,9 @@ export default {
             })
 
             svg.append("text")
-              .attr("transform", "translate("+ (width / 2 - 20) +", 0)")
+              .attr("transform", "translate("+ (width / 2) +", 0)")
               .text("nGene")
+              .attr("text-anchor", "middle")
               .attr("font-size", "16px")
 
     },
@@ -301,8 +302,9 @@ export default {
             })
 
             svg.append("text")
-              .attr("transform", "translate("+ (width / 2 - 20) +", 0)")
+              .attr("transform", "translate("+ (width / 2) +", 0)")
               .text("nUMI")
+              .attr("text-anchor", "middle")
               .attr("font-size", "16px")
 
 
