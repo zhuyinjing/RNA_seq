@@ -233,6 +233,11 @@ export default new Router({
           path: 'report_group_violin', // 分组小提琴图
           name: 'report_group_violin',
           component: resolve => require(['@/views/sc/report_group_violin'], resolve)
+        },
+        {
+          path: 'report_tSNE_heatmap', // tSNE heatmap
+          name: 'report_tSNE_heatmap',
+          component: resolve => require(['@/views/sc/report_tSNE_heatmap'], resolve)
         }
       ]
     },

@@ -74,10 +74,9 @@ export default {
 
       // x 轴文字
       scattersvg.append("text")
-        .attr("transform", "translate("+ (width / 2) +", " + height + ")")
+        .attr("transform", "translate("+ (width / 2) +", " + (height - 5) + ")")
         .text("tSNE_1")
         .attr("text-anchor", "middle")
-        .attr("font-size", "16px")
 
       // y 轴文字
       scattersvg.append("text")
