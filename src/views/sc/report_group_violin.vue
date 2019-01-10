@@ -2,28 +2,83 @@
   <div id="container">
     <div class="svgContainer">
       <div class="svgbox">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+        <div v-show="svgShow">
+          <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
+          <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+        </div>
 
         <div id="violinContainer"></div>
 
       </div>
-      <div class="">
-        <table id="table" cellspacing="0" width="100%" class="display table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th> <input type="checkbox" name="" value="" class='checkall'> </th>
-                <th>geneId</th>
-                <th>geneName</th>
-                <th>avgLogFC</th>
-                <th>pValAdj</th>
-                <th>pValue</th>
-                <th>pct1</th>
-                <th>pct2</th>
-              </tr>
-            </thead>
-        </table>
+    </div>
+
+    <el-card class="" shadow="hover" style="min-width:1200px">
+      <div class="" style="display:inline-block;vertical-align:top;">
+        <div class="">
+          <div class="labelStyle">
+            <label for="maxpval" class="label-font">geneId</label>
+          </div>
+          <el-input
+            style="width:300px;"
+            type="textarea"
+            :rows="5"
+            :placeholder="$t('input.split')"
+            v-model="geneId">
+          </el-input>
+        </div>
       </div>
+      <div class="" style="display:inline-block;vertical-align:top;">
+        <div class="">
+          <div class="labelStyle">
+            <label class="radio-inline control-label">pValAdj from</label>
+          </div>
+         <el-input style="width: 100px;" size='mini' v-model="pValueAdjStart"></el-input>
+        to  <el-input style="width: 100px;" size='mini' v-model="pValueAdjEnd"></el-input>
+        </div>
+        <br>
+        <div class="">
+          <div class="labelStyle">
+            <label class="radio-inline control-label">pct1 from</label>
+          </div>
+          <el-input style="width: 100px;" size='mini' v-model="pct1Start"></el-input>
+       to <el-input style="width: 100px;" size='mini' v-model="pct1End"></el-input>
+        </div>
+        <br>
+        <div class="">
+          <div class="labelStyle">
+            <label class="radio-inline control-label">pct2 from</label>
+          </div>
+          <el-input style="width: 100px;" size='mini' v-model="pct2Start"></el-input>
+       to <el-input style="width: 100px;" size='mini' v-model="pct2End"></el-input>
+        </div>
+        <br>
+        <div class="">
+          <div class="labelStyle">
+          </div>
+          <el-button type="primary" @click="filter()" size='mini'>{{$t('button.select')}}</el-button>
+          <el-button type="info" @click="clear()" size='mini'>{{$t('button.clear')}}</el-button>
+        </div>
+      </div>
+    </el-card>
+    <br>
+
+    <el-button type="danger" size="middle" @click="initData()">生成小提琴图</el-button> <br><br>
+
+    <div class="">
+      <table id="table" cellspacing="0" width="100%" class="display table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th> <input type="checkbox" name="" value="" class='checkall'> </th>
+              <th>geneId</th>
+              <th>geneName</th>
+              <th>avgLogFC</th>
+              <th>pValAdj</th>
+              <th>pValue</th>
+              <th>pct1</th>
+              <th>pct2</th>
+            </tr>
+          </thead>
+      </table>
     </div>
 
   </div>
@@ -35,7 +90,14 @@ import * as d3 from 'd3'
 export default {
   data() {
     return {
-      geneIdArr: ['ENSG00000251562','ENSG00000177427'],
+      geneId: null,
+      pValueAdjStart: null,
+      pValueAdjEnd: null,
+      pct1Start: null,
+      pct1End: null,
+      pct2Start: null,
+      pct2End: null,
+      svgShow: false,
       data: [],
       table: null,
       selected: [],
@@ -46,30 +108,48 @@ export default {
   },
   mounted() {
     this.initTable()
-    this.initData()
   },
   methods: {
+    // 科学计数法
+    num2e (num) {
+      var p = Math.floor(Math.log(num) / Math.LN10)
+      var n = num * Math.pow(10, -p)
+      return n.toFixed(1) + 'e' + p
+    },
     filter () {
       $("#table").DataTable().draw(true)
+    },
+    clear () {
+      this.geneId = null
+      this.pValueAdjStart = null
+      this.pValueAdjEnd = null
+      this.pct1Start = null
+      this.pct1End = null
+      this.pct2Start = null
+      this.pct2End = null
     },
     initTable () {
       let self = this
       $(document).ready(function() {
         var table = $('#table').on('xhr.dt', function ( e, settings, json, xhr ) {
             var flag = true
-            let data = json.aData.map((d) => {return d.sampleId})
-            self.currentData = data
-            for (let i = 0;i < data.length;i++) {
-              if (self.selected.indexOf(data[i]) === -1) {
-                flag = false
-                break
+            if (json.aData.length === 0) { // 如果查询无结果 全选框为 为选中 状态
+              flag = false
+            } else {
+              let data = json.aData.map((d) => {return d.geneId	})
+              self.currentData = data
+              for (let i = 0;i < data.length;i++) {
+                if (self.selected.indexOf(data[i]) === -1) {
+                  flag = false
+                  break
+                }
               }
             }
             $(".checkall").prop("checked", flag)
-        } ).DataTable({
+        }).DataTable({
               "lengthMenu": [
-                [25, 50, 100, -1],
-                [25, 50, 100, "All"]
+                [10,25, 50, 100],
+                [10,25, 50, 100]
               ],
               "pageLength": 25,
               "bPaginate" : true,//分页工具条显示
@@ -93,19 +173,20 @@ export default {
               //通过ajax实现分页的url路径
               "sAjaxSource" : "/singel_cell/server/search_wilcoxon_result_list",
               "rowCallback": function( row, data ) {
-                if ( $.inArray(data.sampleId, self.selected) !== -1 ) {
+                if ( $.inArray(data.geneId, self.selected) !== -1 ) {
                     $(row).find('input[type=checkbox]').prop('checked', true)
                 }
               },
               "fnServerData": function ( sSource, aoData, fnCallback ) {
                 aoData.push({name: 'username', value: self.$store.state.username})
                 aoData.push({name: 'p', value: self.$store.state.projectId})
-                aoData.push({name: 'pValueAdjStart', value: ''})
-                aoData.push({name: 'pValueAdjEnd', value: ''})
-                aoData.push({name: 'pct1Start', value: ''})
-                aoData.push({name: 'pct1End', value: ''})
-                aoData.push({name: 'pct2Start', value: ''})
-                aoData.push({name: 'pct2End', value: ''})
+                aoData.push({name: 'geneId', value: self.geneId})
+                aoData.push({name: 'pValueAdjStart', value: self.pValueAdjStart})
+                aoData.push({name: 'pValueAdjEnd', value: self.pValueAdjEnd})
+                aoData.push({name: 'pct1Start', value: self.pct1Start})
+                aoData.push({name: 'pct1End', value: self.pct1End})
+                aoData.push({name: 'pct2Start', value: self.pct2Start})
+                aoData.push({name: 'pct2End', value: self.pct2End})
                 $.ajax( {
                       "dataType": 'json',
                       "type": "POST",
@@ -116,7 +197,7 @@ export default {
               },
               "aoColumns" : [ {
                 "sClass": "text-center",
-                 "data": "sampleId",
+                 "data": "geneId",
                  "render": function (data, type, full, meta) {
                      return '<input type="checkbox" class="checkchild" value="' + data + '" />';
                  },
@@ -126,15 +207,30 @@ export default {
               }, {
                   "mDataProp" : "geneName"
               }, {
-                  "mDataProp" : "avgLogFC"
+                  "mDataProp" : "avgLogFC",
+                  "render": function (data) {
+                    return data.toFixed(3)
+                  }
               }, {
-                  "mDataProp" : "pValAdj"
+                  "mDataProp" : "pValAdj",
+                  "render": function (data) {
+                    return self.num2e(data)
+                  }
               }, {
-                  "mDataProp" : "pValue"
+                  "mDataProp" : "pValue",
+                  "render": function (data) {
+                    return data.toFixed(3)
+                  }
               }, {
-                  "mDataProp" : "pct1"
+                  "mDataProp" : "pct1",
+                  "render": function (data) {
+                    return data.toFixed(3)
+                  }
               }, {
-                  "mDataProp" : "pct2"
+                  "mDataProp" : "pct2",
+                  "render": function (data) {
+                    return data.toFixed(3)
+                  }
               }],
           })
           self.table = table
@@ -171,7 +267,18 @@ export default {
         })
     },
     initData () {
-      this.axios.get('/singel_cell/server/get_gene_violin_plot?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username + '&geneId=' + this.geneIdArr.join(',')).then((res) => {
+      if (this.selected.length === 0) {
+        let hassvg = d3.selectAll('svg')._groups[0].length
+        // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
+        if (hassvg) {
+          d3.selectAll('svg').remove()
+          this.svgShow = false
+        } else {
+          this.$message.error("请选择您要生成小提琴图的基因！")
+        }
+        return
+      }
+      this.axios.get('/singel_cell/server/get_gene_violin_plot?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username + '&geneId=' + this.selected.join(',')).then((res) => {
         if (res.data.message_type === 'success') {
           this.data = res.data
           this.initViolin()
@@ -181,6 +288,8 @@ export default {
       })
     },
     initViolin () {
+      // 生成 svg 的按钮
+      this.svgShow = true
       let self = this
       let hassvg = d3.selectAll('svg')
       if (hassvg) {
@@ -188,8 +297,8 @@ export default {
       }
       let width = 500, height = 500 // 每个 g 标签的宽度/高度
       let padding = {top:30,right:80,bottom:60,left:60}
-      let number = this.geneIdArr.length < 2 ? 1 : 2 // 一行显示几个图，默认为 2
-      let violinsvg = d3.select("#violinContainer").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.geneIdArr.length / number))).attr("id", "violinsvg")
+      let number = this.selected.length < 2 ? 1 : 2 // 一行显示几个图，默认为 2
+      let violinsvg = d3.select("#violinContainer").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.selected.length / number))).attr("id", "violinsvg")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
       let tooltip = d3.select('#container')
         .append('div')
@@ -202,10 +311,10 @@ export default {
         .text('')
       let xData = this.data.groupNumberList // 分组
 
-      for (let i = 0;i < this.geneIdArr.length;i++) {
+      for (let i = 0;i < this.selected.length;i++) {
         let svg = violinsvg.append("g").attr("transform", "translate("+ ((i % number) * width) + "," + (parseInt(i / number) * height) +")")
 
-        var yValueArr = this.data[this.geneIdArr[i]].map(item => item.umiValue)
+        var yValueArr = this.data[this.selected[i]].map(item => item.umiValue)
 
         // Build and Show the X scale. It is a band scale like for a boxplot: each group has an dedicated RANGE on the axis. This range has a length of x.bandwidth
         var x = d3.scaleBand()
@@ -231,7 +340,7 @@ export default {
 
         // 每个图 按分组去画 violin plot
         for (let j = 0;j < xData.length;j++) {
-          var data = this.data[this.geneIdArr[i]].filter(item => item.cellGroup === xData[j])
+          var data = this.data[this.selected[i]].filter(item => item.cellGroup === xData[j])
 
           var yData = data.map(item => item.umiValue)
 
@@ -308,7 +417,7 @@ export default {
 
         svg.append("text")
           .attr("transform", "translate("+ (width / 2) +", "+ padding.top/2 +")")
-          .text(this.data[this.geneIdArr[i]][0].geneName)
+          .text(this.data[this.selected[i]][0].geneName)
           .attr("text-anchor", "middle")
           .attr("font-size", "16px")
 
@@ -334,5 +443,26 @@ export default {
 }
 .svgbox {
   display: inline-block;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.label-font {
+  font-size: 14px;
+}
+.overflow-auto {
+  overflow: auto;
+}
+.labelStyle {
+  display:inline-block;
+  width:170px;
+  text-align:end;
+}
+.filterbtnDiv {
+  float: right;
+  margin-bottom: 10px;
+}
+.text-align-center {
+  text-align: center;
 }
 </style>
