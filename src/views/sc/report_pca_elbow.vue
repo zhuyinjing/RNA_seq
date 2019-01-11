@@ -73,7 +73,8 @@ export default {
                       .attr("cy", (d) => padding.top + yScale(d["standardDeviation"]))
                       .attr("r", 1.8)
                       .on('mouseover', function (d, i) {
-                        return tooltip.style('visibility', 'visible').text(d["standardDeviation"].toFixed(2))
+                        let minus = i === 0? '': ' , ' + (d["standardDeviation"] - data[i-1]['standardDeviation']).toFixed(2)
+                        return tooltip.style('visibility', 'visible').text(d["standardDeviation"].toFixed(2) + minus)
                       })
                       .on('mousemove', function (d, i) {
                         return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')

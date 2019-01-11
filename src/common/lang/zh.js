@@ -9,7 +9,7 @@ module.exports = {
     next_step: '下一步',
     previous_step: '上一步',
     back: '返回',
-    svg: '生成 SVG',
+    svg: '下载 SVG',
     select: '查询',
     describe: '说明',
     deg: '差异基因',
