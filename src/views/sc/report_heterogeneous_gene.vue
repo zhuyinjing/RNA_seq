@@ -5,6 +5,17 @@
 
     <div id="d3container"></div>
 
+    <!--table for data of brushed elements-->
+    <div id="table">
+        <table>
+            <tr>
+                <th>{{head0}}</th>
+                <th>{{head1}}</th>
+                <th>Name</th>
+            </tr>
+        </table>
+    </div>
+
     <div class="clear"></div>
   </div>
 </template>
@@ -16,6 +27,8 @@ export default {
   data() {
     return {
       data: [],
+      head0: '',
+      head1: '',
     }
   },
   components: {
@@ -28,6 +41,8 @@ export default {
       this.axios.get('/singel_cell/server/get_var_gene_feature?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username).then((res) => {
         if (res.data.message_type === 'success') {
           this.data = res.data
+          this.head0 = res.data.x
+          this.head1 = res.data.y
           this.initScatterPlot()
         } else {
           this.$message.error(res.data.message)
@@ -111,7 +126,7 @@ export default {
                     .attr("stroke", "black")
                     .attr("fill", 'none')
 
-      var circle = scattersvg.selectAll("circle")
+      var circles = scattersvg.selectAll("circle")
                       .data(data)
                       .enter()
                       .append("circle")
@@ -188,6 +203,107 @@ export default {
       //  x y 坐标轴导致线条加粗
       scattersvg.selectAll(".domain")
           .style("display", "none");
+
+      let brush = d3.brush().on("brush", brushing).on("end", brushend)
+      scattersvg.append("g")
+          .attr("class", "brush")
+          .call(brush);
+
+      function brushing () {
+        let x = d3.mouse(this)[0]
+        let y = d3.mouse(this)[1]
+        // 鼠标仅在在图形区域移动触发事件 不含 padding
+        if (x > padding.left && x < width - padding.right && y > padding.top && y < height - padding.bottom) {
+          tooltipX.style('visibility', 'visible').text((xScale.invert(x - padding.left).toFixed(1)))
+          tooltipX.style('top', ((height - padding.bottom - y) + d3.event.sourceEvent.pageY)+'px').style('left',(d3.event.sourceEvent.pageX - (document.getElementById("tooltipX").clientWidth) / 2)+'px')
+
+          tooltipY.style('visibility', 'visible').text((yScale.invert(y - padding.top).toFixed(1)))
+          tooltipY.style('top', (d3.event.sourceEvent.pageY - (document.getElementById("tooltipX").clientHeight) / 2)  +'px').style('left', (d3.event.sourceEvent.pageX - x + padding.left - (document.getElementById("tooltipY").clientWidth))+'px')
+
+          xLine.style("visibility", "visible")
+          .attr('x1',padding.left)
+          .attr('y1',y)
+          .attr('x2',width - padding.right)
+          .attr('y2',y)
+
+          yLine.style("visibility", "visible")
+          .attr('x1',x)
+          .attr('y1',padding.top)
+          .attr('x2',x)
+          .attr('y2',height - padding.bottom)
+       } else {
+         // 当鼠标落在 padding 区域，则 x y 指示线隐藏
+         tooltipX.style('visibility', 'hidden')
+         tooltipY.style('visibility', 'hidden')
+
+         xLine.style('visibility', 'hidden')
+         yLine.style('visibility', 'hidden')
+       }
+
+        if (d3.event.selection != null) {
+         var brush_coords = d3.brushSelection(this);
+         var s = d3.event.selection;
+         // 把上一次选中的点 移除类名
+         d3.selectAll(".brushed").classed("brushed",false)
+         // style brushed circles
+         circles.filter(function (d, i){
+              var cx = d3.select(this).attr("cx"),
+                  cy = d3.select(this).attr("cy");
+
+              var x0 = brush_coords[0][0],
+                  x1 = brush_coords[1][0],
+                  y0 = brush_coords[0][1],
+                  y1 = brush_coords[1][1];
+
+              return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
+          }).attr("class","brushed")
+         }
+      }
+
+      // 清除表格数据
+      function clearTable() {
+          d3.select("table").style("visibility", "hidden");
+          d3.selectAll(".row_data").remove();
+      }
+
+      function populateTableRow(d_row) {
+
+          d3.select("table").style("visibility", "visible");
+
+          var d_row_filter = [d_row[0],
+                              d_row[1],
+                              d_row[2]];
+
+          d3.select("table")
+            .append("tr")
+            .attr("class", "row_data")
+            .selectAll("td")
+            .data(d_row_filter)
+            .enter()
+            .append("td")
+            .attr("align", (d, i) => i == 0 ? "left" : "right")
+            .text(d => d);
+      }
+
+      function brushend() {
+        // 坐标轴文字 tooltip 隐藏
+        tooltipX.style('visibility', 'hidden')
+        tooltipY.style('visibility', 'hidden')
+
+        xLine.style('visibility', 'hidden')
+        yLine.style('visibility', 'hidden')
+
+        if (!d3.event.selection) return; // 仅仅只是 click 画布而已
+        d3.select(this).call(brush.move, null);
+
+        let tableData = d3.selectAll(".brushed").data()
+        if (tableData.length > 0) {
+          clearTable();
+          tableData.forEach(d_row => populateTableRow(d_row))
+        } else {
+          clearTable();
+        }
+      }
     },
   }
 }
@@ -202,5 +318,13 @@ export default {
 }
 #d3container {
   white-space: nowrap;
+}
+table {
+  visibility: hidden;
+}
+</style>
+<style media="screen">
+.brushed {
+    fill: #ff3399;
 }
 </style>

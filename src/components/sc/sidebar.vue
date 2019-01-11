@@ -11,7 +11,7 @@
       <router-link to="/sc/report_viz_PCA"><el-menu-item index="report_viz_PCA">viz PCA</el-menu-item></router-link>
       <router-link to="/sc/report_pca_heatmap"><el-menu-item index="report_pca_heatmap">PCA heatmap</el-menu-item></router-link>
       <router-link to="/sc/report_group_violin"><el-menu-item index="report_group_violin">group violin</el-menu-item></router-link>
-      <router-link to="/sc/report_tSNE_heatmap"><el-menu-item index="report_tSNE_heatmap">tSNE heatmap</el-menu-item></router-link>
+      <router-link to="/sc/report_JackStrawPlot"><el-menu-item index="report_JackStrawPlot">JackStrawPlot</el-menu-item></router-link>
         <!-- <el-menu-item-group>
           <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
           <el-menu-item index="1-0">{{$t('leftMenu.fastqc')}}</el-menu-item>

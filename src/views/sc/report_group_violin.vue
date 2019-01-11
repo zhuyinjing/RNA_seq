@@ -475,7 +475,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#heatmapsvg').remove()
       }
-      let padding = {top:50,right:10,bottom:30,left:0}
+      let padding = {top:50,right:5,bottom:30,left:0}
       let width = 5, height = 15  // 每个 rect 的宽度/高度
       let xData = this.heatmapData.groupNum // 一共有几个分组，画几个 g 标签
       let cellNumber = 0

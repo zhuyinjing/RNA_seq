@@ -235,9 +235,9 @@ export default new Router({
           component: resolve => require(['@/views/sc/report_group_violin'], resolve)
         },
         {
-          path: 'report_tSNE_heatmap', // tSNE heatmap
-          name: 'report_tSNE_heatmap',
-          component: resolve => require(['@/views/sc/report_tSNE_heatmap'], resolve)
+          path: 'report_JackStrawPlot', // JackStrawPlot 斜率为 1
+          name: 'report_JackStrawPlot',
+          component: resolve => require(['@/views/sc/report_JackStrawPlot'], resolve)
         }
       ]
     },
