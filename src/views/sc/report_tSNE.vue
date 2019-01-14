@@ -5,7 +5,7 @@
 
     <div id="d3container"></div>
 
-    <div class="clear"></div>
+    <button type="button" name="button" @click="changeGroupName()">1345</button>
 
   </div>
 </template>
@@ -25,6 +25,13 @@ export default {
     this.initData()
   },
   methods: {
+    changeGroupName () {
+      d3.selectAll("text.groupText")
+      .filter(function(){
+        return d3.select(this).text() == 0
+      })
+      .attr("fill", "red");
+    },
     initData () {
       this.axios.get('/singel_cell/server/get_tsne_score?username='+ this.$store.state.username +'&p=' + this.$store.state.projectId).then((res) => {
         if (res.data.message_type === 'success') {
@@ -93,8 +100,9 @@ export default {
                 .append("text")
                 .attr("transform",d => "translate("+ xScale(this.data.avgMap[d][xText]) +","+ yScale(this.data.avgMap[d][yText]) +")")
                 .text(d => d)
-                .attr("stroke","black")
+                .attr("fill","black")
                 .attr("text-anchor", "middle")
+                .attr("class","groupText")
 
       //  图例
       let legendR = 8
@@ -116,6 +124,7 @@ export default {
               return "translate(" + (legendR * 2) +","+ (legendR/2 + i * 30) +")"
             })
             .text(d => d)
+            .attr("class","groupText")
 
       let brush = d3.brush().extent([[0,0],[width - padding.left - padding.right,height - padding.top - padding.bottom]]).on("brush", brushing).on("end", brushend)
       svg.append("g")
