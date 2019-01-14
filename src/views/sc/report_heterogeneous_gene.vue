@@ -5,15 +5,24 @@
 
     <div id="d3container"></div>
 
-    <!--table for data of brushed elements-->
-    <div id="table">
-        <table>
-            <tr>
-                <th>{{head0}}</th>
-                <th>{{head1}}</th>
-                <th>Name</th>
-            </tr>
-        </table>
+    <div class="" v-show="tableShow">
+      <table id="table" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>{{head0}}</th>
+            <th>{{head1}}</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in tableData">
+            <td>{{item[0]}}</td>
+            <td>{{item[1]}}</td>
+            <td>{{item[2]}}</td>
+          </tr>
+        </tbody>
+      </table>
+
     </div>
 
     <div class="clear"></div>
@@ -29,6 +38,8 @@ export default {
       data: [],
       head0: '',
       head1: '',
+      tableData: [],
+      tableShow: false,
     }
   },
   components: {
@@ -37,6 +48,32 @@ export default {
     this.initData()
   },
   methods: {
+    changeTableData () {
+      this.tableShow = false
+      if ($.fn.dataTable.isDataTable('#table')) {
+        $('#table').dataTable().fnDestroy()
+      }
+      setTimeout(() => {
+        this.initTable()
+      },0)
+    },
+    initTable () {
+      this.tableShow = true
+      $("#table").DataTable({
+        dom: 'Bfrtip',
+        buttons: [{
+            extend: 'csv',
+            text: '导出 csv',
+            filename: '表达异质化基因筛选'
+          },
+          {
+            extend: 'excel',
+            text: '导出 excel',
+            filename: '表达异质化基因筛选'
+          },
+        ]
+      })
+    },
     initData () {
       this.axios.get('/singel_cell/server/get_var_gene_feature?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username).then((res) => {
         if (res.data.message_type === 'success') {
@@ -204,7 +241,7 @@ export default {
       scattersvg.selectAll(".domain")
           .style("display", "none");
 
-      let brush = d3.brush().on("brush", brushing).on("end", brushend)
+      let brush = d3.brush().extent([[padding.left,padding.top],[width - padding.right,height - padding.bottom]]).on("brush", brushing).on("end", brushend)
       scattersvg.append("g")
           .attr("class", "brush")
           .call(brush);
@@ -260,31 +297,6 @@ export default {
          }
       }
 
-      // 清除表格数据
-      function clearTable() {
-          d3.select("table").style("visibility", "hidden");
-          d3.selectAll(".row_data").remove();
-      }
-
-      function populateTableRow(d_row) {
-
-          d3.select("table").style("visibility", "visible");
-
-          var d_row_filter = [d_row[0],
-                              d_row[1],
-                              d_row[2]];
-
-          d3.select("table")
-            .append("tr")
-            .attr("class", "row_data")
-            .selectAll("td")
-            .data(d_row_filter)
-            .enter()
-            .append("td")
-            .attr("align", (d, i) => i == 0 ? "left" : "right")
-            .text(d => d);
-      }
-
       function brushend() {
         // 坐标轴文字 tooltip 隐藏
         tooltipX.style('visibility', 'hidden')
@@ -296,12 +308,13 @@ export default {
         if (!d3.event.selection) return; // 仅仅只是 click 画布而已
         d3.select(this).call(brush.move, null);
 
+
         let tableData = d3.selectAll(".brushed").data()
         if (tableData.length > 0) {
-          clearTable();
-          tableData.forEach(d_row => populateTableRow(d_row))
+          self.tableData = tableData
+          self.changeTableData()
         } else {
-          clearTable();
+          self.tableShow = false
         }
       }
     },
@@ -318,9 +331,6 @@ export default {
 }
 #d3container {
   white-space: nowrap;
-}
-table {
-  visibility: hidden;
 }
 </style>
 <style media="screen">

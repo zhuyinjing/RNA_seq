@@ -45,7 +45,9 @@ export default {
       let padding = {top:30,right:80,bottom:60,left:60}
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")
-      let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
+      let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      let xText = this.data.tsneNumList.tsneNum[0]
+      let yText = this.data.tsneNumList.tsneNum[1]
 
       let xScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_1)).range([0,width - padding.left - padding.right]).nice()
       svg.append("g").attr("transform","translate(0,"+ (height - padding.bottom - padding.top) +")").call(d3.axisBottom(xScale))
@@ -75,20 +77,30 @@ export default {
       // x 轴文字
       scattersvg.append("text")
         .attr("transform", "translate("+ (width / 2) +", " + (height - 5) + ")")
-        .text("tSNE_1")
+        .text(xText)
         .attr("text-anchor", "middle")
 
       // y 轴文字
       scattersvg.append("text")
-        .text("tSNE_2")
+        .text(yText)
         .attr("transform", "translate("+ 15 +", " + (height / 2) + ") rotate(-90)")
+
+      // 分组名称显示（在每组的中心位置）
+      let groupArr = Object.keys(this.data.avgMap)
+      svg.selectAll(".text")
+                .data(groupArr)
+                .enter()
+                .append("text")
+                .attr("transform",d => "translate("+ xScale(this.data.avgMap[d][xText]) +","+ yScale(this.data.avgMap[d][yText]) +")")
+                .text(d => d)
+                .attr("stroke","black")
+                .attr("text-anchor", "middle")
 
       //  图例
       let legendR = 8
-      let groups = Array.from(new Set(this.data.groupId)) // 分组去重
       let legend = scattersvg.append("g").attr("transform","translate("+(width-padding.right + 30)+","+(height/3)+")")
       legend.selectAll(".circle")
-            .data(groups)
+            .data(groupArr)
             .enter()
             .append("circle")
             .attr("cx",0)
@@ -97,7 +109,7 @@ export default {
             .attr("fill", d => colorScale(d))
 
       legend.selectAll(".text")
-            .data(groups)
+            .data(groupArr)
             .enter()
             .append("text")
             .attr("transform",(d,i) => {
@@ -105,7 +117,7 @@ export default {
             })
             .text(d => d)
 
-      let brush = d3.brush().on("brush", brushing).on("end", brushend)
+      let brush = d3.brush().extent([[0,0],[width - padding.left - padding.right,height - padding.top - padding.bottom]]).on("brush", brushing).on("end", brushend)
       svg.append("g")
           .attr("class", "brush")
           .call(brush);
