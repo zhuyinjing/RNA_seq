@@ -55,7 +55,7 @@ module.exports = {
     gene_id_list: '输入基因 ID 列表',
     gene_id: '按 geneId 输入',
     gene_name: '按 geneName 输入',
-    split_method: '请输入列表, 可以用逗号、空格或者换行符分隔',
+    split_method: '请输入列表, 可以用英文逗号、空格或者换行符分隔',
 
   },
   //  导航

@@ -1,6 +1,42 @@
 <template>
   <div id="container">
-    <div class="violin">
+
+    <el-tabs type="border-card" v-model="activeTab" v-show="violinSvgShow || heatmapSvgShow || scatterSvgShow">
+      <el-tab-pane label="VliPlot" style="max-height:500px;overflow:auto" name="violinSvgShow">
+        <div class="violin">
+          <div v-show="violinSvgShow">
+            <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
+            <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+          </div>
+
+          <div id="violinContainer"></div>
+        </div>
+
+      </el-tab-pane>
+      <el-tab-pane label="Heatmap" style="max-height:500px;overflow:auto" name="heatmapSvgShow">
+        <div class="heatmap">
+          <div v-show="heatmapSvgShow">
+            <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
+            <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+          </div>
+
+          <div id="heatmapContainer"></div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="FeaturePlot" style="max-height:500px;overflow:auto" name="scatterSvgShow">
+        <div class="scatter">
+          <div v-show="scatterSvgShow">
+            <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['scatter', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
+            <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+          </div>
+
+          <div id="scatterContainer"></div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <br>
+
+    <!-- <div class="violin">
       <div v-show="violinSvgShow">
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -25,62 +61,61 @@
       </div>
 
       <div id="scatterContainer"></div>
-    </div>
+    </div> -->
 
-    <el-card class="" shadow="hover" style="min-width:1200px">
-      <div class="" style="display:inline-block;vertical-align:top;">
-        <div class="">
-          <div class="labelStyle">
-            <label for="maxpval" class="label-font">geneId</label>
-          </div>
-          <el-input
-            style="width:300px;"
-            type="textarea"
-            :rows="5"
-            :placeholder="$t('input.split')"
-            v-model="geneId">
-          </el-input>
-        </div>
+    <el-card class="" shadow="hover">
+      <el-button type="primary" size="middle" @click="initViolinData()">VlnPlot</el-button>
+      <el-button type="danger" size="middle" @click="initHeatmapData()">Heatmap</el-button>
+      <el-button type="danger" size="middle" @click="initScatterData()">FeaturePlot</el-button>
+    </el-card>
+
+    <br>
+
+      <el-switch
+        v-model="filterMethod"
+        active-color="#13ce66"
+        inactive-color="#13ce66"
+        active-text="按范围筛选"
+        inactive-text="按geneId筛选">
+      </el-switch>
+      <div v-show="!filterMethod">
+        <p>请输入要筛选的geneId列表：</p>
+        <el-input
+          style="width:300px;"
+          type="textarea"
+          :rows="5"
+          :placeholder="$t('input.split_method')"
+          v-model="geneId">
+        </el-input>
+        <el-button type="primary" @click="filter()" size='mini'>{{$t('button.filter')}}</el-button>
+        <el-button type="info" @click="clear()" size='mini'>{{$t('button.clear')}}</el-button>
       </div>
-      <div class="" style="display:inline-block;vertical-align:top;">
-        <div class="">
+      <div v-show="filterMethod" style="margin-top:10px">
           <div class="labelStyle">
             <label class="radio-inline control-label">pValAdj from</label>
           </div>
-         <el-input style="width: 100px;" size='mini' v-model="pValueAdjStart"></el-input>
-        to  <el-input style="width: 100px;" size='mini' v-model="pValueAdjEnd"></el-input>
-        </div>
-        <br>
-        <div class="">
+         <el-input style="width: 80px;" size='mini' v-model="pValueAdjStart"></el-input>
+        to  <el-input style="width: 80px;" size='mini' v-model="pValueAdjEnd"></el-input>
+
           <div class="labelStyle">
             <label class="radio-inline control-label">pct1 from</label>
           </div>
-          <el-input style="width: 100px;" size='mini' v-model="pct1Start"></el-input>
-       to <el-input style="width: 100px;" size='mini' v-model="pct1End"></el-input>
-        </div>
-        <br>
-        <div class="">
+          <el-input style="width: 80px;" size='mini' v-model="pct1Start"></el-input>
+        to <el-input style="width: 80px;" size='mini' v-model="pct1End"></el-input>
+
           <div class="labelStyle">
             <label class="radio-inline control-label">pct2 from</label>
           </div>
-          <el-input style="width: 100px;" size='mini' v-model="pct2Start"></el-input>
-       to <el-input style="width: 100px;" size='mini' v-model="pct2End"></el-input>
-        </div>
-        <br>
-        <div class="">
-          <div class="labelStyle">
-          </div>
-          <el-button type="primary" @click="filter()" size='mini'>{{$t('button.select')}}</el-button>
-          <el-button type="info" @click="clear()" size='mini'>{{$t('button.clear')}}</el-button>
-        </div>
+          <el-input style="width: 80px;" size='mini' v-model="pct2Start"></el-input>
+        to <el-input style="width: 80px;" size='mini' v-model="pct2End"></el-input>
+        <el-button type="primary" @click="filter()" size='mini'>{{$t('button.filter')}}</el-button>
+        <el-button type="info" @click="clear()" size='mini'>{{$t('button.clear')}}</el-button>
+
       </div>
-    </el-card>
     <br>
 
-    <el-button type="primary" size="middle" @click="initViolinData()">VlnPlot</el-button>
-    <el-button type="danger" size="middle" @click="initHeatmapData()">Heatmap</el-button>
-    <el-button type="danger" size="middle" @click="initScatterData()">FeaturePlot</el-button>
-    <br><br>
+
+
 
     <div class="">
       <table id="table" cellspacing="0" width="100%" class="display table table-striped table-bordered">
@@ -125,6 +160,8 @@ export default {
       heatmapData: [],
       scatterSvgShow: false,
       scatterData: [],
+      filterMethod: false,
+      activeTab: 'violinSvgShow',
     }
   },
   components: {
@@ -140,7 +177,19 @@ export default {
       return n.toFixed(1) + 'e' + p
     },
     filter () {
-      $("#table").DataTable().draw(true)
+      // 将 geneId 去除多余的空格 和 逗号 替换成一个逗号
+      if (this.filterMethod === false) {
+        this.geneId = this.geneId.replace(/\s+/g,',').replace(new RegExp(',+',"gm"), ',')
+        if (this.geneId !== "") { // 如果 geneId 列表为空，则不替换 selected
+          this.selected = this.geneId.split(',')
+        }
+      } else {
+        this.selected = []
+      }
+      this.initTable()
+      setTimeout(() => {
+        this.table.ajax.reload()  // 重新 load table
+      }, 0)
     },
     clear () {
       this.geneId = ''
@@ -194,29 +243,21 @@ export default {
                 "sProcessing": "loading data..."
                },
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/singel_cell/server/search_wilcoxon_result_list",
+              "sAjaxSource" : "/singel_cell/server/search_wilcoxon_result_list"
+                              +"?username=" + self.$store.state.username
+                              +"&p=" + self.$store.state.projectId
+                              +"&geneId=" + (self.filterMethod === false ? self.geneId: '')
+                              +"&pValueAdjStart=" + (self.filterMethod === false ? '' :self.pValueAdjStart)
+                              +'&pValueAdjEnd=' + (self.filterMethod === false ? '' :self.pValueAdjEnd)
+                              +"&pct1Start=" + (self.filterMethod === false ? '' :self.pct1Start)
+                              +"&pct1End=" + (self.filterMethod === false ? '' :self.pct1End)
+                              +"&pct2Start=" + (self.filterMethod === false ? '' :self.pct2Start)
+                              +"&pct2End=" + (self.filterMethod === false ? '' :self.pct2End) ,
               "rowCallback": function( row, data ) {
+                //  在当前页 选中 切换页面回来后 还是选中状态
                 if ( $.inArray(data.geneId, self.selected) !== -1 ) {
                     $(row).find('input[type=checkbox]').prop('checked', true)
                 }
-              },
-              "fnServerData": function ( sSource, aoData, fnCallback ) {
-                aoData.push({name: 'username', value: self.$store.state.username})
-                aoData.push({name: 'p', value: self.$store.state.projectId})
-                aoData.push({name: 'geneId', value: self.geneId.replace(/\s/g,'')})
-                aoData.push({name: 'pValueAdjStart', value: self.pValueAdjStart})
-                aoData.push({name: 'pValueAdjEnd', value: self.pValueAdjEnd})
-                aoData.push({name: 'pct1Start', value: self.pct1Start})
-                aoData.push({name: 'pct1End', value: self.pct1End})
-                aoData.push({name: 'pct2Start', value: self.pct2Start})
-                aoData.push({name: 'pct2End', value: self.pct2End})
-                $.ajax( {
-                      "dataType": 'json',
-                      "type": "POST",
-                      "url": sSource,
-                      "data": aoData,
-                      "success": fnCallback
-                  } );
               },
               "aoColumns" : [ {
                 "sClass": "text-center",
@@ -291,14 +332,14 @@ export default {
     },
     initViolinData () {
       if (this.selected.length === 0) {
-        let hassvg = d3.selectAll('#violinsvg')._groups[0].length
-        // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
-        if (hassvg) {
-          d3.selectAll('#violinsvg').remove()
-          this.violinSvgShow = false
-        } else {
+        // let hassvg = d3.selectAll('#violinsvg')._groups[0].length
+        // // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
+        // if (hassvg) {
+        //   d3.selectAll('#violinsvg').remove()
+        //   this.violinSvgShow = false
+        // } else {
           this.$message.error("请选择您要生成小提琴图的基因！")
-        }
+        // }
         return
       }
       this.axios.get('/singel_cell/server/get_gene_violin_plot?p='+ this.$store.state.projectId +'&username=' + this.$store.state.username + '&geneId=' + this.selected.join(',')).then((res) => {
@@ -313,6 +354,7 @@ export default {
     initViolin () {
       // 生成 svg 的按钮
       this.violinSvgShow = true
+      this.activeTab = 'violinSvgShow' // tab 被激活
       let self = this
       let hassvg = d3.selectAll('#violinsvg')._groups[0].length
       if (hassvg) {
@@ -447,14 +489,14 @@ export default {
     },
     initHeatmapData () {
       if (this.selected.length === 0) {
-        let hassvg = d3.selectAll('#heatmapsvg')._groups[0].length
-        // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
-        if (hassvg) {
-          d3.selectAll('#heatmapsvg').remove()
-          this.violinSvgShow = false
-        } else {
+        // let hassvg = d3.selectAll('#heatmapsvg')._groups[0].length
+        // // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
+        // if (hassvg) {
+        //   d3.selectAll('#heatmapsvg').remove()
+        //   this.heatmapSvgShow = false
+        // } else {
           this.$message.error("请选择您要生成热图的基因！")
-        }
+        // }
         return
       }
       this.axios.get('singel_cell/server/get_gene_tsne_heatmap?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&geneId='+ this.selected.join(',')).then((res) => {
@@ -469,6 +511,7 @@ export default {
     initHeatmap () {
       // 生成 svg 的按钮
       this.heatmapSvgShow = true
+      this.activeTab = 'heatmapSvgShow' // tab 被激活
 
       let self = this
       let hassvg = d3.selectAll('#heatmapsvg')._groups[0].length
@@ -586,12 +629,12 @@ export default {
       if (this.selected.length === 0) {
         let hassvg = d3.selectAll('#scattersvg')._groups[0].length
         // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
-        if (hassvg) {
-          d3.selectAll('#scattersvg').remove()
-          this.scatterSvgShow = false
-        } else {
+        // if (hassvg) {
+        //   d3.selectAll('#scattersvg').remove()
+        //   this.scatterSvgShow = false
+        // } else {
           this.$message.error("请选择您要生成SVG的基因！")
-        }
+        // }
         return
       }
       this.axios.get('singel_cell/server/get_gene_tsne_score?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&geneId='+ this.selected.join(',')).then((res) => {
@@ -606,6 +649,7 @@ export default {
     initScatter () {
       // 生成 svg 的按钮
       this.scatterSvgShow = true
+      this.activeTab = 'scatterSvgShow' // tab 被激活
 
       let self = this
       let hassvg = d3.selectAll('#scattersvg')._groups[0].length
@@ -708,7 +752,7 @@ export default {
 }
 .labelStyle {
   display:inline-block;
-  width:170px;
+  width:80px;
   text-align:end;
 }
 .filterbtnDiv {

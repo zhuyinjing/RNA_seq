@@ -5,8 +5,6 @@
 
     <div id="d3container"></div>
 
-    <button type="button" name="button" @click="changeGroupName()">1345</button>
-
   </div>
 </template>
 
@@ -156,6 +154,7 @@ export default {
         let s = d3.event.selection;
 
         let idArr = d3.selectAll(".brushed").data()
+        console.log(idArr);
         // d3.selectAll(".brushed").classed("brushed",false) // 移除类名
         if (idArr.length !== 0) {
 
