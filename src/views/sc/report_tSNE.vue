@@ -5,6 +5,10 @@
 
     <div id="d3container"></div>
 
+    <el-button size="small" type="warning" id="brushBtn">brush</el-button>
+    <el-button size="small" type="warning" id="removeBrushBtn">remove brush</el-button>
+    <el-button size="small" type="warning" id="cancelBrushBtn">取消选中</el-button>
+
   </div>
 </template>
 
@@ -47,12 +51,17 @@ export default {
         d3.selectAll('#scattersvg').remove()
       }
       let width = 1000, height = 600
-      let padding = {top:30,right:80,bottom:60,left:60}
+      let padding = {top:30,right:180,bottom:60,left:60}
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       let xText = this.data.tsneNumList.tsneNum[0]
       let yText = this.data.tsneNumList.tsneNum[1]
+      let sampleArr = Array.from(new Set(this.data.sampleId)).sort()
+
+      let symbolScale = d3.scaleOrdinal().domain(sampleArr).range([d3.symbolCircle,d3.symbolCross,d3.symbolDiamond,d3.symbolSquare,d3.symbolStar,d3.symbolTriangle,d3.symbolWye]);
+
+      let symbol = d3.symbol().size([50])
 
       let xScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_1)).range([0,width - padding.left - padding.right]).nice()
       svg.append("g").attr("transform","translate(0,"+ (height - padding.bottom - padding.top) +")").call(d3.axisBottom(xScale))
@@ -60,17 +69,12 @@ export default {
       let yScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_2)).range([height - padding.top - padding.bottom,0]).nice()
       svg.append("g").call(d3.axisLeft(yScale))
 
-      let circles = svg.selectAll("circle")
+      let circles = svg.selectAll("path")
          .data(this.data.cellId)
          .enter()
-         .append("circle")
-         .attr("cx", (d,i) => {
-           return xScale(self.data.tSNE_1[i])
-         })
-         .attr("cy", (d,i) => {
-           return yScale(self.data.tSNE_2[i])
-         })
-         .attr("r",2.5)
+         .append("path")
+         .attr("d", symbol.type( (d,i) => symbolScale(self.data.sampleId[i]) ) )
+         .attr("transform",(d,i) => "translate("+ xScale(self.data.tSNE_1[i]) +","+ yScale(self.data.tSNE_2[i]) +")")
          .attr("fill", (d,i) => {
            return colorScale(self.data.groupId[i])
          })
@@ -102,9 +106,9 @@ export default {
                 .attr("text-anchor", "middle")
                 .attr("class","groupText")
 
-      //  图例
+      //  分组图例
       let legendR = 8
-      let legend = scattersvg.append("g").attr("transform","translate("+(width-padding.right + 30)+","+(height/3)+")")
+      let legend = scattersvg.append("g").attr("transform","translate("+(width-padding.right + 30)+","+(height/4)+")")
       legend.selectAll(".circle")
             .data(groupArr)
             .enter()
@@ -124,10 +128,29 @@ export default {
             .text(d => d)
             .attr("class","groupText")
 
+        //  图形图例
+        legend.selectAll(".path")
+              .data(sampleArr)
+              .enter()
+              .append("path")
+              .attr("d", d3.symbol().size([150]).type( d => symbolScale(d) ))
+              .attr("transform",(d,i) => "translate("+ 0 +","+ (i + groupArr.length) * 30 +")")
+
+        legend.selectAll(".text")
+              .data(sampleArr)
+              .enter()
+              .append("text")
+              .attr("transform",(d,i) => {
+                return "translate(" + (legendR * 2) +","+ (legendR/2 + (i + groupArr.length) * 30) +")"
+              })
+              .text(d => d)
+              .attr("class","groupText")
+
+
+
+
+
       let brush = d3.brush().extent([[0,0],[width - padding.left - padding.right,height - padding.top - padding.bottom]]).on("brush", brushing).on("end", brushend)
-      svg.append("g")
-          .attr("class", "brush")
-          .call(brush);
 
       function brushing () {
         if (d3.event.selection != null) {
@@ -144,7 +167,7 @@ export default {
                   y1 = brush_coords[1][1];
 
               return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
-          }).attr("fill", "pink").attr("class","brushed")
+          }).attr("class","brushed")
          }
       }
 
@@ -154,12 +177,25 @@ export default {
         let s = d3.event.selection;
 
         let idArr = d3.selectAll(".brushed").data()
-        console.log(idArr);
-        // d3.selectAll(".brushed").classed("brushed",false) // 移除类名
         if (idArr.length !== 0) {
 
         }
       }
+
+      // 添加刷子
+      d3.selectAll("#brushBtn").on("click",() => {
+           svg.append("g")
+              .attr("class", "brush")
+              .call(brush);
+        })
+      // 移除刷子
+      d3.selectAll("#removeBrushBtn").on("click",() => {
+          svg.selectAll("g.brush").remove()
+        })
+      // 取消选中
+      d3.selectAll("#cancelBrushBtn").on("click",() => {
+        d3.selectAll(".brushed").classed("brushed",false) // 移除类名
+      })
 
     },
   }
@@ -175,5 +211,10 @@ export default {
 }
 #d3container {
   white-space: nowrap;
+}
+</style>
+<style media="screen">
+.brushed {
+  fill: pink;
 }
 </style>
