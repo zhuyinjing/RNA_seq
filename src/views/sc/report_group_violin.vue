@@ -2,7 +2,7 @@
   <div id="container">
 
     <el-tabs type="border-card" v-model="activeTab" v-show="violinSvgShow || heatmapSvgShow || scatterSvgShow">
-      <el-tab-pane label="VliPlot" style="max-height:500px;overflow:auto" name="violinSvgShow">
+      <el-tab-pane label="VliPlot" style="max-height:550px;overflow:auto" name="violinSvgShow">
         <div class="violin">
           <div v-show="violinSvgShow">
             <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
@@ -13,7 +13,7 @@
         </div>
 
       </el-tab-pane>
-      <el-tab-pane label="Heatmap" style="max-height:500px;overflow:auto" name="heatmapSvgShow">
+      <el-tab-pane label="Heatmap" style="max-height:550px;overflow:auto" name="heatmapSvgShow">
         <div class="heatmap">
           <div v-show="heatmapSvgShow">
             <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
@@ -23,7 +23,7 @@
           <div id="heatmapContainer"></div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="FeaturePlot" style="max-height:500px;overflow:auto" name="scatterSvgShow">
+      <el-tab-pane label="FeaturePlot" style="max-height:550px;overflow:auto" name="scatterSvgShow">
         <div class="scatter">
           <div v-show="scatterSvgShow">
             <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['scatter', 'scatterContainer'])">{{$t('button.svg')}}</el-button>

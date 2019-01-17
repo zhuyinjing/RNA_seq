@@ -335,6 +335,6 @@ export default {
 </style>
 <style media="screen">
 .brushed {
-    fill: #ff3399;
+  fill: #ff3399;
 }
 </style>

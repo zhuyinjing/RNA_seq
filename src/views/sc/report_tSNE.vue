@@ -1,13 +1,46 @@
 <template>
   <div id="container">
+    <el-button type="danger" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
+    <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
+
+    <el-dialog
+      title="合并组"
+      :visible.sync="mergeDialogShow"
+      width="30%">
+      <p>请选择要合并的组:</p>
+      <el-checkbox-group v-model="mergeGroup">
+          <el-checkbox v-for="item in groupArr" :label="item"></el-checkbox>
+        </el-checkbox-group>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="mergeDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="merge()" :loading="mergeLoading">合并</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="拆分组"
+      :visible.sync="splitDialogShow"
+      width="30%">
+      <p>请选择要拆分的组:</p>
+      <el-select v-model="splitGroup" placeholder="请选择">
+        <el-option
+          v-for="item in groupArr"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="splitDialogShow = false">取 消</el-button>
+        <el-button type="primary" id="splitBtn">开始拆分</el-button>
+      </span>
+    </el-dialog>
+
+
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <div id="d3container"></div>
-
-    <el-button size="small" type="warning" id="brushBtn">brush</el-button>
-    <el-button size="small" type="warning" id="removeBrushBtn">remove brush</el-button>
-    <el-button size="small" type="warning" id="cancelBrushBtn">取消选中</el-button>
 
   </div>
 </template>
@@ -19,6 +52,12 @@ export default {
   data() {
     return {
       data: [],
+      groupArr: [],
+      mergeGroup: [],
+      mergeDialogShow: false, // 合并
+      mergeLoading: false,
+      splitDialogShow: false, // 拆分
+      splitGroup: '',
     }
   },
   components: {
@@ -27,6 +66,14 @@ export default {
     this.initData()
   },
   methods: {
+    merge () {
+      this.mergeLoading = true
+      setTimeout(() => {
+        this.mergeGroup = []
+        this.mergeLoading = false
+        this.mergeDialogShow = false
+      },200)
+    },
     changeGroupName () {
       d3.selectAll("text.groupText")
       .filter(function(){
@@ -69,7 +116,7 @@ export default {
       let yScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_2)).range([height - padding.top - padding.bottom,0]).nice()
       svg.append("g").call(d3.axisLeft(yScale))
 
-      let circles = svg.selectAll("path")
+      let paths = svg.selectAll("path")
          .data(this.data.cellId)
          .enter()
          .append("path")
@@ -78,6 +125,8 @@ export default {
          .attr("fill", (d,i) => {
            return colorScale(self.data.groupId[i])
          })
+         .attr("cx", (d,i) => xScale(self.data.tSNE_1[i]))
+         .attr("cy", (d,i) => yScale(self.data.tSNE_2[i]))
 
       //  上边 和 右边 两侧的 line
       svg.append("line").attr("x1", 0).attr("y1", 0).attr("x2",width-padding.right-padding.left).attr("y2",0).attr("stroke","black").attr("stroke-width","1px")
@@ -96,7 +145,9 @@ export default {
 
       // 分组名称显示（在每组的中心位置）
       let groupArr = Object.keys(this.data.avgMap)
-      svg.selectAll(".text")
+      this.groupArr = groupArr
+
+      let groupPointText = svg.selectAll(".text")
                 .data(groupArr)
                 .enter()
                 .append("text")
@@ -104,9 +155,9 @@ export default {
                 .text(d => d)
                 .attr("fill","black")
                 .attr("text-anchor", "middle")
-                .attr("class","groupText")
+                .classed("groupText",true)
 
-      //  分组图例
+      //  分组颜色图例
       let legendR = 8
       let legend = scattersvg.append("g").attr("transform","translate("+(width-padding.right + 30)+","+(height/4)+")")
       legend.selectAll(".circle")
@@ -128,7 +179,7 @@ export default {
             .text(d => d)
             .attr("class","groupText")
 
-        //  图形图例
+        //  图形来源图例
         legend.selectAll(".path")
               .data(sampleArr)
               .enter()
@@ -147,54 +198,96 @@ export default {
               .attr("class","groupText")
 
 
-
-
-
       let brush = d3.brush().extent([[0,0],[width - padding.left - padding.right,height - padding.top - padding.bottom]]).on("brush", brushing).on("end", brushend)
 
       function brushing () {
+
         if (d3.event.selection != null) {
-         var brush_coords = d3.brushSelection(this);
-         var s = d3.event.selection;
-         // style brushed circles
-         circles.filter(function (d, i){
+           let groupColor = colorScale(self.splitGroup)
+
+           var brush_coords = d3.brushSelection(this);
+           var s = d3.event.selection;
+           // style brushed circles
+           // paths.filter(function (d, i){
+           //      var cx = d3.select(this).attr("cx"),
+           //          cy = d3.select(this).attr("cy"),
+           //          color = d3.select(this).attr("fill")
+           //
+           //      var x0 = brush_coords[0][0],
+           //          y0 = brush_coords[0][1],
+           //          x1 = brush_coords[1][0],
+           //          y1 = brush_coords[1][1];
+           //
+           //      return color === groupColor && x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
+           //  }).attr("class","brushing")
+
+
+           var x0 = brush_coords[0][0],
+               y0 = brush_coords[0][1],
+               x1 = brush_coords[1][0],
+               y1 = brush_coords[1][1];
+
+            paths.classed("brushing",function () {
               var cx = d3.select(this).attr("cx"),
-                  cy = d3.select(this).attr("cy");
+                  cy = d3.select(this).attr("cy"),
+                  color = d3.select(this).attr("fill")
 
-              var x0 = brush_coords[0][0],
-                  x1 = brush_coords[1][0],
-                  y0 = brush_coords[0][1],
-                  y1 = brush_coords[1][1];
+              if (color === groupColor && x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
+                return true
+              } else {
+                return false
+              }
+            })
 
-              return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
-          }).attr("class","brushed")
-         }
-      }
+           }
+        }
 
       function brushend() {
         if (!d3.event.selection) return; // 仅仅只是 click 画布而已
-        d3.select(this).call(brush.move, null);
+        d3.select(this).call(brush.move, null); // 取消 brush 层
         let s = d3.event.selection;
 
+        d3.selectAll(".brushing").attr("class","brushed") // 把刚才选中的点类名改成 brushed
         let idArr = d3.selectAll(".brushed").data()
         if (idArr.length !== 0) {
 
         }
       }
 
-      // 添加刷子
-      d3.selectAll("#brushBtn").on("click",() => {
-           svg.append("g")
-              .attr("class", "brush")
-              .call(brush);
-        })
       // 移除刷子
-      d3.selectAll("#removeBrushBtn").on("click",() => {
-          svg.selectAll("g.brush").remove()
-        })
+      function removeBrush () {
+        svg.selectAll("g.brush").remove()
+      }
       // 取消选中
       d3.selectAll("#cancelBrushBtn").on("click",() => {
         d3.selectAll(".brushed").classed("brushed",false) // 移除类名
+      })
+
+      //  拆分组
+      d3.selectAll("#splitBtn").on("click", () => {
+        let self = this
+        if (this.splitGroup === '') {
+          this.$message.error('请选择要拆分的组！')
+          return
+        }
+        let groupColor = colorScale(this.splitGroup)
+
+        paths.style("opacity", 1)
+
+        // 属于其他组的 path 隐藏
+        paths.filter(function () {
+          return d3.select(this).attr("fill") !== groupColor
+        }).style("opacity",0)
+
+        // 属于其他组的 中心点文字描述 隐藏
+        groupPointText.filter(function () {
+          return d3.select(this).text() !== self.splitGroup
+        }).style("opacity",0)
+
+        svg.append("g")
+           .attr("class", "brush")
+           .call(brush);
+        this.splitDialogShow = false
       })
 
     },
@@ -212,9 +305,15 @@ export default {
 #d3container {
   white-space: nowrap;
 }
+.el-checkbox+.el-checkbox {
+  margin-left: 0 !important;
+}
 </style>
 <style media="screen">
+.brushing {
+  fill: black;
+}
 .brushed {
-  fill: pink;
+  fill: black !important;
 }
 </style>

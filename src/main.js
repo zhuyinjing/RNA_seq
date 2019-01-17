@@ -76,7 +76,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  DatePicker
+  DatePicker,
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
