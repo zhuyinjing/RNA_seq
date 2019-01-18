@@ -2,8 +2,20 @@
   <div id="container">
     <h2>tSNE 聚类</h2>
     <p>tSNE可以基于筛选后主成分进一步降维，然后对细胞进行聚类。完成聚类后，可根据实际的生物学问题，深入研究各类细胞之间的异同，及其背后的生物学意义。</p>
-    <el-button type="danger" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
+    <el-button type="primary" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
+
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
+    <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+
+    <span v-show="splitShow">
+      <el-button type="info" size="small" id="revokeBtn">撤销</el-button>
+      <el-button type="info" size="small" id="resetBtn">重置</el-button>
+      <el-button type="danger" size="small" id="cancelBtn">取消拆分</el-button>
+      <el-button type="danger" size="small" id="saveBtn">保存</el-button>
+    </span>
+
+    <div id="d3container"></div>
 
     <el-dialog
       title="合并组"
@@ -39,12 +51,6 @@
       </span>
     </el-dialog>
 
-
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
-    <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-
-    <div id="d3container"></div>
-
   </div>
 </template>
 
@@ -61,12 +67,25 @@ export default {
       mergeLoading: false,
       splitDialogShow: false, // 拆分
       splitGroup: '',
+      message: null,
+      splitShow: false,
+      currentKey: 1,
+      0: [],
     }
   },
   components: {
   },
   mounted() {
+    Array.prototype.equals = function(arr)
+    {
+        return this.sort().join() === arr.sort().join()
+    }
     this.initData()
+  },
+  destroyed () {
+    if (this.message) {
+      this.message.close()
+    }
   },
   methods: {
     merge () {
@@ -96,6 +115,7 @@ export default {
     },
     initScatterPlot () {
       let self = this
+      let splitGroup
       let hassvg = d3.selectAll('#scattersvg')
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
@@ -210,20 +230,6 @@ export default {
 
            var brush_coords = d3.brushSelection(this);
            var s = d3.event.selection;
-           // style brushed circles
-           // paths.filter(function (d, i){
-           //      var cx = d3.select(this).attr("cx"),
-           //          cy = d3.select(this).attr("cy"),
-           //          color = d3.select(this).attr("fill")
-           //
-           //      var x0 = brush_coords[0][0],
-           //          y0 = brush_coords[0][1],
-           //          x1 = brush_coords[1][0],
-           //          y1 = brush_coords[1][1];
-           //
-           //      return color === groupColor && x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
-           //  }).attr("class","brushing")
-
 
            var x0 = brush_coords[0][0],
                y0 = brush_coords[0][1],
@@ -252,15 +258,16 @@ export default {
 
         d3.selectAll(".brushing").attr("class","brushed") // 把刚才选中的点类名改成 brushed
         let idArr = d3.selectAll(".brushed").data()
+        // 如果这次划分的点和上次不相同，才去存新的值
+        if (!(self[self.currentKey - 1]).equals(idArr)) {
+          self[self.currentKey] = idArr
+          self.currentKey++
+        }
         if (idArr.length !== 0) {
 
         }
       }
 
-      // 移除刷子
-      function removeBrush () {
-        svg.selectAll("g.brush").remove()
-      }
       // 取消选中
       d3.selectAll("#cancelBrushBtn").on("click",() => {
         d3.selectAll(".brushed").classed("brushed",false) // 移除类名
@@ -268,30 +275,110 @@ export default {
 
       //  拆分组
       d3.selectAll("#splitBtn").on("click", () => {
-        let self = this
-        if (this.splitGroup === '') {
-          this.$message.error('请选择要拆分的组！')
-          return
-        }
-        let groupColor = colorScale(this.splitGroup)
+          let self = this
+          if (this.splitGroup === '') {
+            this.$message.error('请选择要拆分的组！')
+            return
+          }
+          let groupColor = colorScale(this.splitGroup)
+          splitGroup = JSON.stringify(JSON.parse(this.splitGroup))
 
-        paths.style("opacity", 1)
+          paths.style("opacity", 1)
+          paths.classed("brushed", false)
 
-        // 属于其他组的 path 隐藏
-        paths.filter(function () {
-          return d3.select(this).attr("fill") !== groupColor
-        }).style("opacity",0)
+          // 属于其他组的 path 隐藏
+          paths.filter(function () {
+            return d3.select(this).attr("fill") !== groupColor
+          }).style("opacity",0)
 
-        // 属于其他组的 中心点文字描述 隐藏
-        groupPointText.filter(function () {
-          return d3.select(this).text() !== self.splitGroup
-        }).style("opacity",0)
+          // 属于其他组的 中心点文字描述 隐藏
+          groupPointText.filter(function () {
+            return d3.select(this).text() !== self.splitGroup
+          }).style("opacity",0)
 
-        svg.append("g")
-           .attr("class", "brush")
-           .call(brush);
-        this.splitDialogShow = false
+          svg.append("g")
+             .attr("class", "brush")
+             .call(brush);
+          this.splitDialogShow = false
+
+          this.message = this.$message({
+             showClose: true,
+             // duration: 1000 * 60 * 1,
+             message: '用鼠标进行框选出您要拆分到新组的点',
+             type: 'success'
+           });
+
+          this.splitShow = true // 显示 拆分的选项（撤销，重置...）
       })
+
+      //  取消拆分
+      d3.selectAll("#cancelBtn").on("click", () => {
+        this.$confirm('此操作将回到初始状态, 是否继续?', '提示', {
+         confirmButtonText: '确定',
+         cancelButtonText: '取消',
+         type: 'warning'
+       }).then(() => {
+         // 将选项隐藏
+         this.splitShow = false
+         // 将 path 的 brushed 类名去掉
+         d3.selectAll(".brushed").classed("brushed",false)
+         // 将 其他点 和 中心文字 显示
+         paths.style("opacity",1)
+         groupPointText.style("opacity",1)
+         // 刷子移除
+         svg.selectAll("g.brush").remove()
+         // 消息提示关闭
+         this.message.close()
+         // 取消保存的数组
+         this.currentKey = 1
+         this[0] = []
+       }).catch(() => {});
+      })
+
+      //  重置
+      d3.selectAll("#resetBtn").on("click", () => {
+        this.currentKey = 1
+        this[0] = []
+        d3.selectAll(".brushed").classed("brushed",false)
+      })
+      //  撤销
+      d3.selectAll("#revokeBtn").on("click", () => {
+        let lastPathArr = []
+        if (this.currentKey < 2) {
+          this.currentKey = 1
+          this[0] = []
+          lastPathArr = []
+        } else {
+          lastPathArr = this[this.currentKey - 2]
+          this.currentKey = this.currentKey - 1
+        }
+        paths.classed("brushed",(d) => {
+          if (lastPathArr.indexOf(d) !== -1) {
+            return true
+          } else {
+            return false
+          }
+        })
+      })
+      //  保存
+      d3.selectAll("#saveBtn").on("click", () => {
+        this.$confirm('确认保存此操作?', '提示', {
+         confirmButtonText: '确定',
+         cancelButtonText: '取消',
+         type: 'warning'
+       }).then(() => {
+         console.log(splitGroup);
+         console.log(d3.selectAll(".brushed").data());
+         // 将选项隐藏
+         this.splitShow = false
+         // 消息提示关闭
+         this.message.close()
+         // 将 currentKey 重置为 1
+         this.currentKey = 1
+         this.initScatterPlot()
+       }).catch(() => {});
+      })
+
 
     },
   }
@@ -311,6 +398,7 @@ export default {
 .el-checkbox+.el-checkbox {
   margin-left: 0 !important;
 }
+
 </style>
 <style media="screen">
 .brushing {
