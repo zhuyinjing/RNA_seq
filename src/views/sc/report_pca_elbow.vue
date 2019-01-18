@@ -1,5 +1,8 @@
 <template>
   <div id="container">
+    <h2>PCA 肘形图</h2>
+    <p>如果随着主成分的增加，所有主成分的标准差之和不再有显著增长，说明当前的所有主成分即可代表细胞异质性，而不需要采用更多的主成分做下游聚类分析。因此，可以基于PCA肘形图的拐点位置，进行主成分的选择。</p>
+    <p>如下图所示，横坐标表示主成分数量，纵坐标表示所有主成分的标准差之和。</p>
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['pc_elbow_plot', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 

@@ -1,5 +1,8 @@
 <template>
   <div id="container" v-loading="loading"  element-loading-text="请稍等，数据正在加载中..." element-loading-spinner="el-icon-loading" style="height:100%">
+    <h2>PCA 统计显著性检验</h2>
+    <p>衡量基因表达量与其主成分分值之间相关性的p-value称作基因分值，p-value越低说明该基因表达量与其主成分分值的相关性越高。如果主成分中富集具有低p-value的基因，那么该主成分被认为在代表细胞异质性方面具有统计显著性，可以考虑用作下游聚类分析。</p>
+    <p>下图展示了前六个主成分的统计显著性检验结果。其中，每一张小图的横坐标表示基于随机数据生成的主成分中具有低p-value的基因比例，纵坐标表示被检验主成分中具有低p-value的基因比例，组成蓝色曲线的每一个点代表基于每一次随机数据的计算结果。如果蓝色曲线越偏向左侧，说明该主成分越具有统计显著性。另外，每个小图上方也标记了统计显著性检验的p-value结果。</p>
     <el-checkbox-group
       v-model="pcArr">
       <el-checkbox v-for="item in pcList" :label="item" :key="item" style="width:20%;">{{item}}</el-checkbox>
@@ -84,21 +87,18 @@ export default {
       for (let i = 0;i < this.pcArr.length;i++) {
         let svg = scattersvg.append("g").attr("transform", "translate("+ ((i % number) * width) + "," + (parseInt(i / number) * height) +")")
 
-        let xData = this.data[this.pcArr[i]].jackStawPlot.map(item => item.empiricalPValue)
-        let yData = this.data[this.pcArr[i]].jackStawPlot.map(item => item.fakePValue)
+        // let xData = this.data[this.pcArr[i]].jackStawPlot.map(item => item.empiricalPValue)
+        // let yData = this.data[this.pcArr[i]].jackStawPlot.map(item => item.fakePValue)
 
-        let xScale = d3.scaleLinear().domain([0,d3.max(xData)*1.2]).range([padding.left,width - padding.right]).nice()
+        let xScale = d3.scaleLinear().domain([0,0.1]).range([padding.left,width - padding.right])
         svg.append("g")
           .attr("transform", "translate(0," + (height - padding.bottom) + ")")
-          .call(d3.axisBottom(xScale))
-          .selectAll("text")
-          // .style("text-anchor", "start")
-          // .attr("transform", "rotate(45 -10 10)");
+          .call(d3.axisBottom(xScale).tickFormat(d => d.toFixed(3)).tickValues([0.000,0.025,0.050,0.075,0.100]))
 
-        let yScale = d3.scaleLinear().domain([0,d3.max(yData)*1.2]).range([height - padding.bottom, padding.top]).nice()
+        let yScale = d3.scaleLinear().domain([0,0.3]).range([height - padding.bottom, padding.top])
         svg.append("g")
           .attr("transform", "translate(" + (padding.left) + ",0)")
-          .call(d3.axisLeft(yScale))
+          .call(d3.axisLeft(yScale).tickValues([0.0,0.1,0.2,0.3]))
 
         svg.selectAll("circle")
            .data(this.data[this.pcArr[i]].jackStawPlot)

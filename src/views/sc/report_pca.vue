@@ -1,6 +1,7 @@
 <template>
   <div id="container">
-
+    <h2>PCA 散点图</h2>
+    <p>如下图所示，横坐标与纵坐标分别表示所有细胞基因表达量的第一个和第二个主成分，每一个点代表一个细胞。</p>
     <el-checkbox-group
       v-model="pcArr">
       <el-checkbox v-for="item in pcList" :label="item" :key="item" style="width:20%;">{{item}}</el-checkbox>

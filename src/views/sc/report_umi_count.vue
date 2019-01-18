@@ -1,5 +1,10 @@
 <template>
   <div id="container">
+    <h2>基因与UMI数量分布</h2>
+    <p>由于单细胞转录组建库的起始RNA分子量很少，所以测序结果并不能对每个细胞的转录组都有完整覆盖，一般情况下每个细胞会有几千个基因的转录本被检测到。对于一个成功的单细胞转录组/测序而言，不同细胞检测到的基因数目应该大体相当。因此，对不同细胞检测到的基因数目分布进行描绘，可以辅助判断测序质量。</p>
+    <p>UMI是Unique Molecular Identifier的缩写，即唯一分子识别码，用来对单细胞转录本进行绝对定量。在对单细胞RNA分子进行扩增之前，每个转录本都会被加上UMI。对于回贴到同一基因的reads，只需要计算UMI的数量，就可以对该基因转录本进行绝对定量，从而排除扩增对定量的影响。对于一个成功的单细胞转录组测序而言，不同细胞的UMI总和应该分布在一定的范围之内。因此，对不同细胞检测到的UMI数据分布进行描绘，可以辅助判断测序质量。</p>
+    <p>下图分别表示，在相同样本中，所有细胞检测到的基因和UMI数目分布。</p>
+
     <div class="svgContainer">
       <div class="svgbox">
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['nGene', 'nGeneContainer'])">{{$t('button.svg')}}</el-button>
@@ -13,12 +18,17 @@
 
         <div id="nUMIContainer"></div>
       </div>
-      <div class="svgbox">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['nGene&nUMI', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
-        <div id="scatterContainer"></div>
-      </div>
+    </div>
+
+    <div class="svgbox">
+      <h2>表达基因与UMI数目的对应分布</h2>
+      <p>如果一个细胞中发生表达的基因数目较多，那么该细胞的UMI数目也会较大。因此，一般情况下，细胞内发生表达的基因数目与UMI数目呈正相关关系；如果呈负相关关系，提示单细胞转录组测序结果存在问题。另外，基于单细胞表达基因数目与UMI数目的对应分布，也便于对门（Gate）进行设定，过滤掉表达基因数目或UMI数目出现极端值的细胞。</p>
+      <p>下图展示了所有细胞表达基因数目与UMI数目的对应分布</p>
+      <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['nGene&nUMI', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
+      <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+
+      <div id="scatterContainer"></div>
     </div>
 
     <div class="clear"></div>
@@ -315,7 +325,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
       }
-      var width = 400, height = 500;
+      var width = 600, height = 500;
       var scattersvg = d3.select("#scatterContainer").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       var data = this.data
       var padding = {top: 20, right: 30, bottom: 50, left: 55}

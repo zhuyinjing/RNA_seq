@@ -1,5 +1,7 @@
 <template>
   <div id="container">
+    <h2>PCA 热图</h2>
+    <p>PCA热图的每一列代表一个细胞，每一行代表该主成分中的一个基因，每一个色块代表相应细胞中相应基因的UMI数目。每张热图代表一个主成分，可以反映出该主成分在不同细胞之间的差异。在细胞之间的差异越大，该主成分越能代表细胞之间的异质性，可考虑用作下游聚类分析。</p>
     <el-checkbox-group
       v-model="pcArr">
       <el-checkbox v-for="item in pcList" :label="item" :key="item" style="width:20%;">{{item}}</el-checkbox>

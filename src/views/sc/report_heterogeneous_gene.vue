@@ -281,8 +281,8 @@ export default {
          var brush_coords = d3.brushSelection(this);
          var s = d3.event.selection;
          // 把上一次选中的点 移除类名
-         d3.selectAll(".brushed").classed("brushed",false)
-         // style brushed circles
+         d3.selectAll(".selected").classed("selected",false)
+         // style selected circles
          circles.filter(function (d, i){
               var cx = d3.select(this).attr("cx"),
                   cy = d3.select(this).attr("cy");
@@ -293,7 +293,7 @@ export default {
                   y1 = brush_coords[1][1];
 
               return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1
-          }).attr("class","brushed")
+          }).attr("class","selected")
          }
       }
 
@@ -309,7 +309,7 @@ export default {
         d3.select(this).call(brush.move, null);
 
 
-        let tableData = d3.selectAll(".brushed").data()
+        let tableData = d3.selectAll(".selected").data()
         if (tableData.length > 0) {
           self.tableData = tableData
           self.changeTableData()
@@ -334,7 +334,7 @@ export default {
 }
 </style>
 <style media="screen">
-.brushed {
+.selected {
   fill: #ff3399;
 }
 </style>

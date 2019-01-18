@@ -1,9 +1,12 @@
 <template>
   <div id="container">
-
+    <h2>类间特征基因表达分析</h2>
+    <p>决定细胞不同聚类之间的关键因素是基因表达差异，而基因表达差异又可以反映出不同聚类间的生物学差异。因此，基于tSNE聚类，可以进行深入的基因表达差异分析，并与生物学意义做关联。</p>
     <el-tabs type="border-card" v-model="activeTab" v-show="violinSvgShow || heatmapSvgShow || scatterSvgShow">
       <el-tab-pane label="VliPlot" style="max-height:550px;overflow:auto" name="violinSvgShow">
         <div class="violin">
+          <h3>特征基因表达值分布</h3>
+          <p>如下所示，小提琴图展示了特征基因在不同tSNE聚类中的表达量分布。横坐标标识不同tSNE聚类，纵坐标表示基因的UMI数目，每个点代表一个细胞。</p>
           <div v-show="violinSvgShow">
             <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
             <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -13,24 +16,28 @@
         </div>
 
       </el-tab-pane>
-      <el-tab-pane label="Heatmap" style="max-height:550px;overflow:auto" name="heatmapSvgShow">
-        <div class="heatmap">
-          <div v-show="heatmapSvgShow">
-            <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
-            <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-          </div>
-
-          <div id="heatmapContainer"></div>
-        </div>
-      </el-tab-pane>
       <el-tab-pane label="FeaturePlot" style="max-height:550px;overflow:auto" name="scatterSvgShow">
         <div class="scatter">
+          <h3>特征基因表达值聚类图标记</h3>
+          <p>如下所示，在tSNE聚类图中，特征基因表达量的高低用不同颜色进行标记，紫色代表高表达量，灰色代表低表达量。</p>
           <div v-show="scatterSvgShow">
             <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['scatter', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
             <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
           </div>
 
           <div id="scatterContainer"></div>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="Heatmap" style="max-height:550px;overflow:auto" name="heatmapSvgShow">
+        <div class="heatmap">
+          <h3>特征基因群表达值热图</h3>
+          <p>如下热图所示，每一列代表一个细胞，每一行代表一个特征基因，每一个色块代表相应基因在相应细胞中的表达量，紫色代表低表达量，黄色代表高表达量。每个细胞所属的聚类也被标记在热图的下方。基于这个结果，可以对决定不同聚类的特征基因群做功能富集分析。</p>
+          <div v-show="heatmapSvgShow">
+            <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
+            <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
+          </div>
+
+          <div id="heatmapContainer"></div>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -65,8 +72,8 @@
 
     <el-card class="" shadow="hover">
       <el-button type="primary" size="middle" @click="initViolinData()">VlnPlot</el-button>
-      <el-button type="danger" size="middle" @click="initHeatmapData()">Heatmap</el-button>
       <el-button type="danger" size="middle" @click="initScatterData()">FeaturePlot</el-button>
+      <el-button type="danger" size="middle" @click="initHeatmapData()">Heatmap</el-button>
     </el-card>
 
     <br>

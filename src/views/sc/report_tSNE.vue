@@ -1,5 +1,7 @@
 <template>
   <div id="container">
+    <h2>tSNE 聚类</h2>
+    <p>tSNE可以基于筛选后主成分进一步降维，然后对细胞进行聚类。完成聚类后，可根据实际的生物学问题，深入研究各类细胞之间的异同，及其背后的生物学意义。</p>
     <el-button type="danger" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
 
@@ -9,7 +11,7 @@
       width="30%">
       <p>请选择要合并的组:</p>
       <el-checkbox-group v-model="mergeGroup">
-          <el-checkbox v-for="item in groupArr" :label="item"></el-checkbox>
+          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'"></el-checkbox>
         </el-checkbox-group>
 
       <span slot="footer" class="dialog-footer">
@@ -26,6 +28,7 @@
       <el-select v-model="splitGroup" placeholder="请选择">
         <el-option
           v-for="item in groupArr"
+          :key="item + 'split'"
           :label="item"
           :value="item">
         </el-option>
@@ -314,6 +317,6 @@ export default {
   fill: black;
 }
 .brushed {
-  fill: black !important;
+  fill: black;
 }
 </style>
