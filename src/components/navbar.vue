@@ -2,6 +2,7 @@
 <div>
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
     <el-menu-item index="home">{{$t('navbar.home')}}</el-menu-item>
+    <el-menu-item index="sc">单细胞</el-menu-item>
     <el-menu-item index="project" v-if="$store.state.role !== 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="admin_project_list" v-if="$store.state.role === 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
@@ -65,6 +66,14 @@ export default {
           sessionStorage.setItem('navbarItem', 'home')
           this.$router.push({
             'path': '/'
+          })
+          break
+        case 'sc':
+          this.activeIndex = 'sc'
+          sessionStorage.setItem('navbarItem', 'sc')
+          this.$store.commit('setprojectId',11)
+          this.$router.push({
+            'path': '/sc'
           })
           break
         case 'project':
