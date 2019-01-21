@@ -108,12 +108,15 @@ module.exports = {
     file: '文件',
     upload: '上传',
     upload_progress: '上传进度',
+    import_server_side: '导入服务器端文件目录',
+    upload_file: '上传文件'
   },
   //  运行分析
   run_task: {
     report: '生成报告',
     run: '运行分析任务',
     refresh: '刷新任务状态',
+    logLabel: '日志内容'
   },
   //  报告侧边栏
   leftMenu: {

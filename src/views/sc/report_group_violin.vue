@@ -121,9 +121,6 @@
       </div>
     <br>
 
-
-
-
     <div class="">
       <table id="table" cellspacing="0" width="100%" class="display table table-striped table-bordered">
           <thead>
@@ -175,6 +172,39 @@ export default {
   },
   mounted() {
     this.initTable()
+
+    //  给动态生成的 checkbox 绑定 click 事件，只需要绑定一次
+    let self = this
+    $(".checkall").click(function () {
+        var checked = $(this).prop("checked")
+        // 把当前页选中的从 selected 去掉 再全部 concat 进去
+        if (checked === true) {
+          $(".checkchild").not("input:checked").each(function () {
+            self.selected.push($(this)[0].value)
+          })
+        } else {
+          self.currentData.map((data) => {
+            let index = self.selected.indexOf(data)
+            self.selected.splice(index, 1)
+          })
+        }
+        $(".checkchild").prop("checked", checked)
+    });
+    $("#table").on("click", 'td input[type=checkbox]', function () {
+      let checked = $(this).prop("checked")
+      if (checked === true) {
+        self.selected.push(this.value)
+        //  如果页面上的 checkbox 全选上了 将 checkall 赋值为 true
+        if ($(".checkchild:checked").length === self.currentData.length) {
+          $(".checkall").prop("checked", true)
+        }
+      } else {
+        //  一旦取消选中 则将全选按钮赋值为 false
+        $(".checkall").prop("checked", false)
+        let index = self.selected.indexOf(this.value)
+        self.selected.splice(index, 1)
+      }
+    })
   },
   methods: {
     // 科学计数法
@@ -185,10 +215,12 @@ export default {
     },
     filter () {
       // 将 geneId 去除多余的空格 和 逗号 替换成一个逗号
-      if (this.filterMethod === false) {
+      if (this.filterMethod === false) { // 按 geneId
         this.geneId = this.geneId.replace(/\s+/g,',').replace(new RegExp(',+',"gm"), ',')
         if (this.geneId !== "") { // 如果 geneId 列表为空，则不替换 selected
           this.selected = this.geneId.split(',')
+        } else {
+          this.selected = []
         }
       } else {
         this.selected = []
@@ -305,36 +337,7 @@ export default {
               }],
           })
           self.table = table
-          $(".checkall").click(function () {
-              var checked = $(this).prop("checked")
-              // 把当前页选中的从 selected 去掉 再全部 concat 进去
-              if (checked === true) {
-                $(".checkchild").not("input:checked").each(function () {
-                  self.selected.push($(this)[0].value)
-                })
-              } else {
-                self.currentData.map((data) => {
-                  let index = self.selected.indexOf(data)
-                  self.selected.splice(index, 1)
-                })
-              }
-              $(".checkchild").prop("checked", checked)
-          });
-          $("#table").on("click", 'td input[type=checkbox]', function () {
-            let checked = $(this).prop("checked")
-            if (checked === true) {
-              self.selected.push(this.value)
-              //  如果页面上的 checkbox 全选上了 将 checkall 赋值为 true
-              if ($(".checkchild:checked").length === self.currentData.length) {
-                $(".checkall").prop("checked", true)
-              }
-            } else {
-              //  一旦取消选中 则将全选按钮赋值为 false
-              $(".checkall").prop("checked", false)
-              let index = self.selected.indexOf(this.value)
-              self.selected.splice(index, 1)
-            }
-          })
+
         })
     },
     initViolinData () {
@@ -434,8 +437,8 @@ export default {
 
           // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
           var maxNum = 0
-          for (let i in sumstat ){
-            allBins = sumstat[i].value
+          for (let k in sumstat ){
+            allBins = sumstat[k].value
             lengths = allBins.map(function(a){return a.length;})
             longuest = d3.max(lengths)
             if (longuest > maxNum) { maxNum = longuest }

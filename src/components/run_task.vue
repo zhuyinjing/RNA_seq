@@ -11,6 +11,17 @@
         <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">{{$t('run_task.refresh')}}</el-button>
       </transition>
       <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> {{$t('run_task.report')}}</el-button>
+
+      <br><br>
+      <div v-show="!runBtnShow">
+        <p>{{$t('run_task.logLabel')}} :</p>
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 20}"
+          v-model="logContent">
+        </el-input>
+      </div>
+
       <!-- <el-button v-show="reportBtnShow" type="" @click="result()" plain><i class="el-icon-printer"></i> 结果导入ABrowse</el-button> -->
     </div>
   </div>
@@ -29,6 +40,8 @@ export default {
       status: null,
       timer: null,
       loading: null,
+      logContent: '',
+      timerLog: null,
     }
   },
   components: {
@@ -38,8 +51,14 @@ export default {
   },
   destroyed () {
     window.clearInterval(this.timer)
+    window.clearInterval(this.timerLog)
   },
   methods: {
+    getLog () {
+      this.axios.get("/projects/"+ this.$store.state.projectId +"/workflow/colorseq.log").then((res) => {
+        this.logContent = res.data
+      })
+    },
     selectTask () {
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
@@ -49,13 +68,18 @@ export default {
         if (res.data.message.currentStepSn > -1) {
           this.runBtnShow = false
           this.refreshBtnShow = true
-        } else {
+          this.timerLog = setInterval(() => {
+            this.getLog()
+          }, 5000)
+        } else { // 任务未开始
           this.runBtnShow = true
           this.refreshBtnShow = false
         }
         this.currentStepSn = res.data.message.currentStepSn
         this.status = res.data.message.status
         if (this.status === 300) {
+          this.getLog()
+          window.clearInterval(this.timerLog)
           this.runBtnShow = false
           this.refreshBtnShow = false
           this.reportBtnShow = true
@@ -245,6 +269,9 @@ export default {
           this.currentStepSn = res.data.message.currentStepSn
           this.status = res.data.message.status
           this.runTask()
+          this.timerLog = setInterval(() => {
+            this.getLog()
+          },5000)
         } else {
           this.$message.error('请求错误!')
         }

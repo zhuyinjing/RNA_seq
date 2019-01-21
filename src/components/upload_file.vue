@@ -3,23 +3,34 @@
     <el-tooltip class="item cursor-pointer" effect="dark" :content="$t('button.back')" placement="right">
       <i class="el-icon-back" @click="backProjectList"></i>
     </el-tooltip>
-    <div class="margin-top-10">
-      <span class="p-font-style">{{$t('upload_file.sample_data')}}：</span>
-        <el-select v-model="sample_name" placeholder="请选择" @change="change()" :disabled="disabled">
-          <el-option v-for="item in message.nameSampleMap" :key="item.name" :value="item.name"></el-option>
-        </el-select>
-    </div>
-      <div class="fileDivStyle">
-        <span class="p-font-style">{{$t('upload_file.file')}}1:</span>
-        <input type="file" name="" ref="file1">
-      </div>
-      <div class="fileDivStyle">
-        <span class="p-font-style">{{$t('upload_file.file')}}2:</span>
-        <input type="file" name="" ref="file2">
-      </div>
-      <el-button type="primary" @click="upload()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
-      <p class="p-font-style">{{$t('upload_file.upload_progress')}}：</p>
-      <el-progress :percentage="progress"></el-progress>
+    <br><br>
+    <el-tabs type="border-card">
+      <el-tab-pane :label="$t('upload_file.import_server_side')">
+        <el-input v-model="path" clearable></el-input> <br><br>
+        <el-button type="primary" @click="uploadPath()">{{$t('upload_file.upload')}}</el-button>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('upload_file.upload_file')">
+        <div class="margin-top-10">
+          <span class="p-font-style">{{$t('upload_file.sample_data')}}：</span>
+            <el-select v-model="sample_name" placeholder="请选择" @change="change()" :disabled="disabled">
+              <el-option v-for="item in message.nameSampleMap" :key="item.name" :value="item.name"></el-option>
+            </el-select>
+        </div>
+          <div class="fileDivStyle">
+            <span class="p-font-style">{{$t('upload_file.file')}}1:</span>
+            <input type="file" name="" ref="file1">
+          </div>
+          <div class="fileDivStyle">
+            <span class="p-font-style">{{$t('upload_file.file')}}2:</span>
+            <input type="file" name="" ref="file2">
+          </div>
+          <el-button type="primary" @click="upload()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
+          <p class="p-font-style">{{$t('upload_file.upload_progress')}}：</p>
+          <el-progress :percentage="progress"></el-progress>
+      </el-tab-pane>
+    </el-tabs>
+
+
     <div class="">
       <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
       <table class="gridtable">
@@ -44,6 +55,7 @@
 export default {
   data () {
     return {
+      path: '',
       sample_name: '',
       message: {},
       progress: 0,
@@ -96,6 +108,22 @@ export default {
       this.axios.post('/server/upload_rnaseq_paired_fastq', formData, config).then((res) => {
         if (res.data.message_type === 'success') {
           this.disabled = false
+          this.$message.success('上传成功!');
+          this.getFile()
+        }
+      })
+    },
+    uploadPath () {
+      if (!this.path) {
+        this.$message.error('请填写服务端文件目录!');
+        return
+      }
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('path', this.path)
+      this.axios.post('/server/import_rnaseq_fastq_directory', formData).then((res) => {
+        if (res.data.message_type === 'success') {
           this.$message.success('上传成功!');
           this.getFile()
         }

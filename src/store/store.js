@@ -7,9 +7,9 @@ import Vue from 'vue'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    username: 'test',
+    username: '',
     role: 'user',
-    projectId: '11',
+    projectId: '',
     projectName: '',
     geneList: [],
     heatmapJson: null,

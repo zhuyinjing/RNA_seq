@@ -105,15 +105,18 @@ module.exports = {
   //  上传测序文件
   upload_file: {
     sample_data: 'FASTQ DATA',
-    file: '文件',
-    upload: '上传',
+    file: 'FILE',
+    upload: 'UPLOAD',
     upload_progress: 'UPLOADING PROGRESS',
+    import_server_side: 'IMPORT SERVER-SIDE FILE DIRECTORY',
+    upload_file: 'UPLOAD FILES'
   },
   //  运行分析
   run_task: {
     report: 'CREATE REPORT',
     run: 'RUN',
     refresh: 'REFRESH TASK STATUS',
+    logLabel: 'LOG CONTENT'
   },
   //  报告侧边栏
   leftMenu: {
