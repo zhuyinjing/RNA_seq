@@ -396,7 +396,6 @@ export default {
           .range([ padding.left, width - padding.right ])
           .domain(xData)
           .padding(0.05)     // This is important: it is the space between 2 groups. 0 means no padding. 1 is the maximum..
-
         svg.append("g")
           .attr("transform", "translate(0" +"," + (height - padding.bottom) + ")")
           .call(d3.axisBottom(x))

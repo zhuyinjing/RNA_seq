@@ -23,7 +23,7 @@
       width="30%">
       <p>请选择要合并的组:</p>
       <el-checkbox-group v-model="mergeGroup">
-          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'"></el-checkbox>
+          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'" style="width:50%"></el-checkbox>
         </el-checkbox-group>
 
       <span slot="footer" class="dialog-footer">
@@ -89,12 +89,29 @@ export default {
   },
   methods: {
     merge () {
+      if (this.mergeGroup.length === 0) {
+        this.$message.error("请选择您要合并的组！")
+        return
+      }
+      // 合并中...  按钮显示
       this.mergeLoading = true
-      setTimeout(() => {
-        this.mergeGroup = []
-        this.mergeLoading = false
+
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('sourceClusterList', this.mergeGroup.join(','))
+      formData.append('targetCluster', '')
+      this.axios.post('/singel_cell/server/merge_cell_cluster', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.$message.success(res.data.message)
+          this.initData()
+          this.mergeGroup = []
+        } else {
+          this.$message.error(res.data.message)
+        }
         this.mergeDialogShow = false
-      },200)
+        this.mergeLoading = false
+      })
     },
     changeGroupName () {
       d3.selectAll("text.groupText")
@@ -139,7 +156,7 @@ export default {
       let yScale = d3.scaleLinear().domain(d3.extent(this.data.tSNE_2)).range([height - padding.top - padding.bottom,0]).nice()
       svg.append("g").call(d3.axisLeft(yScale))
 
-      let paths = svg.selectAll("path")
+      let paths = svg.selectAll(".path")
          .data(this.data.cellId)
          .enter()
          .append("path")
@@ -281,7 +298,7 @@ export default {
             return
           }
           let groupColor = colorScale(this.splitGroup)
-          splitGroup = JSON.stringify(JSON.parse(this.splitGroup))
+          splitGroup = JSON.parse(JSON.stringify(this.splitGroup))
 
           paths.style("opacity", 1)
           paths.classed("brushed", false)
@@ -367,18 +384,30 @@ export default {
          cancelButtonText: '取消',
          type: 'warning'
        }).then(() => {
-         console.log(splitGroup);
-         console.log(d3.selectAll(".brushed").data());
-         // 将选项隐藏
-         this.splitShow = false
-         // 消息提示关闭
-         this.message.close()
-         // 将 currentKey 重置为 1
-         this.currentKey = 1
-         this.initScatterPlot()
+         let formData = new FormData()
+         formData.append('username', this.$store.state.username)
+         formData.append('p', this.$store.state.projectId)
+         formData.append('cellIdList', d3.selectAll(".brushed").data().join(','))
+         formData.append('sourceCluster', splitGroup)
+         formData.append('targetClusterA', '')
+         formData.append('targetClusterB', '')
+         this.axios.post('/singel_cell/server/split_cell_cluster', formData).then((res) => {
+           if (res.data.message_type === 'success') {
+             this.splitGroup = ''
+             this.$message.success(res.data.message)
+             this.initData()
+           } else {
+             this.$message.error(res.data.message)
+           }
+           // 将选项隐藏
+           this.splitShow = false
+           // 消息提示关闭
+           this.message.close()
+           // 将 currentKey 重置为 1
+           this.currentKey = 1
+         })
        }).catch(() => {});
       })
-
 
     },
   }
