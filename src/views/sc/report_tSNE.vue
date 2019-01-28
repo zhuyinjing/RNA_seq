@@ -5,6 +5,7 @@
     <el-button type="primary" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit" @click="changeNameDialogShow = true">更改组名</el-button>
+    <el-button type="primary" size="small" icon="el-icon-refresh" @click="originGroup()">恢复原始分组</el-button>
 
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -113,6 +114,22 @@ export default {
     }
   },
   methods: {
+    originGroup () { // 恢复原始分组
+      this.$confirm('此操作将恢复原始分组, 是否继续?', '提示', {
+       confirmButtonText: '确定',
+       cancelButtonText: '取消',
+       type: 'warning'
+     }).then(() => {
+       this.axios.get('/singel_cell/server/reset_cell_cluster?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
+         if (res.data.message_type === 'success') {
+           this.$message.success(res.data.message)
+           this.initData()
+         } else {
+           this.$message.error(res.data.message)
+         }
+       })
+     }).catch(() => {});
+    },
     merge () {
       if (this.mergeGroup.length === 0) {
         this.$message.error("请选择您要合并的组！")
