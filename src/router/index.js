@@ -238,6 +238,16 @@ export default new Router({
           path: 'report_JackStrawPlot', // JackStrawPlot 斜率为 1
           name: 'report_JackStrawPlot',
           component: resolve => require(['@/views/sc/report_JackStrawPlot'], resolve)
+        },
+        {
+          path: 'report_box_plot', // 箱线图
+          name: 'report_box_plot',
+          component: resolve => require(['@/views/sc/report_box_plot'], resolve)
+        },
+        {
+          path: 'report_sequence_amount', // 条形图
+          name: 'report_sequence_amount',
+          component: resolve => require(['@/views/sc/report_sequence_amount'], resolve)
         }
       ]
     },

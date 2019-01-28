@@ -43,33 +43,6 @@
     </el-tabs>
     <br>
 
-    <!-- <div class="violin">
-      <div v-show="violinSvgShow">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['violin', 'violinContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-      </div>
-
-      <div id="violinContainer"></div>
-    </div>
-
-    <div class="heatmap">
-      <div v-show="heatmapSvgShow">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-      </div>
-
-      <div id="heatmapContainer"></div>
-    </div>
-
-    <div class="scatter">
-      <div v-show="scatterSvgShow">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['scatter', 'scatterContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-      </div>
-
-      <div id="scatterContainer"></div>
-    </div> -->
-
     <el-card class="" shadow="hover">
       <el-button type="primary" size="middle" @click="initViolinData()">VlnPlot</el-button>
       <el-button type="danger" size="middle" @click="initScatterData()">FeaturePlot</el-button>
@@ -436,8 +409,8 @@ export default {
 
           // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
           var maxNum = 0
-          for (let k in sumstat ){
-            allBins = sumstat[k].value
+          for (let k in sumstat[0] ){
+            allBins = sumstat[0].value
             lengths = allBins.map(function(a){return a.length;})
             longuest = d3.max(lengths)
             if (longuest > maxNum) { maxNum = longuest }

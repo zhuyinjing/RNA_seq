@@ -23,7 +23,7 @@
       width="30%">
       <p>请选择要合并的组:</p>
       <el-checkbox-group v-model="mergeGroup">
-          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'" style="width:50%"></el-checkbox>
+          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'" style="width:100%"></el-checkbox>
         </el-checkbox-group>
 
       <span slot="footer" class="dialog-footer">
