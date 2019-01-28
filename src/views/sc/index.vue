@@ -18,7 +18,6 @@ import imgMenuShowComp from '@/components/imgMenuShowComp.vue'
 export default {
   data() {
     return {
-      db: null,
     }
   },
   components: {

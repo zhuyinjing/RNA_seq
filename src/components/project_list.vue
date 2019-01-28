@@ -97,11 +97,8 @@ export default {
     getProjects () {
       this.axios.get('/server/projects?username=' + this.$store.state.username).then((res) => {
         this.projectList = res.data.projects
-        for (let i in this.projectList) {
+        for (let i = 0;i < this.projectList.length;i++) {
           this.projectList[i]['openTime'] = this.projectList[i]['openTime'].split('T')[0] + ' ' + this.projectList[i]['openTime'].split('T')[1].split('.')[0]
-          // let d = new Date(this.projectList[i]['openTime'].substr(0,10)+"T"+this.projectList[i]['openTime'].substr(11,8))
-          // // let d = new Date(this.projectList[i]['openTime'])
-          // this.projectList[i]['openTime'] = d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         }
       })
     },

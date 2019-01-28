@@ -136,8 +136,8 @@ export default {
 
         // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
         var maxNum = 0
-        for (let i in sumstat[0] ){
-          allBins = sumstat[0].value
+        for (let k = 0;k < sumstat.length;k++){
+          allBins = sumstat[k].value
           lengths = allBins.map(function(a){return a.length;})
           longuest = d3.max(lengths)
           if (longuest > maxNum) { maxNum = longuest }
@@ -264,8 +264,8 @@ export default {
 
         // What is the biggest number of value in a bin? We need it cause this value will have a width of 100% of the bandwidth.
         var maxNum = 0
-        for (let i in sumstat[0] ){
-          allBins = sumstat[0].value
+        for (let k = 0;k < sumstat.length;k++){
+          allBins = sumstat[k].value
           lengths = allBins.map(function(a){return a.length;})
           longuest = d3.max(lengths)
           if (longuest > maxNum) { maxNum = longuest }

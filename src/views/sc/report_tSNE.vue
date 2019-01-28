@@ -4,13 +4,14 @@
     <p>tSNE可以基于筛选后主成分进一步降维，然后对细胞进行聚类。完成聚类后，可根据实际的生物学问题，深入研究各类细胞之间的异同，及其背后的生物学意义。</p>
     <el-button type="primary" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
+    <el-button type="primary" size="small" icon="el-icon-edit" @click="changeNameDialogShow = true">更改组名</el-button>
 
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <span v-show="splitShow">
       <el-button type="info" size="small" id="revokeBtn">撤销</el-button>
-      <el-button type="info" size="small" id="resetBtn">重置</el-button>
+      <el-button type="info" size="small" id="resetBtn">重新选择</el-button>
       <el-button type="danger" size="small" id="cancelBtn">取消拆分</el-button>
       <el-button type="danger" size="small" id="saveBtn">保存</el-button>
     </span>
@@ -23,8 +24,14 @@
       width="30%">
       <p>请选择要合并的组:</p>
       <el-checkbox-group v-model="mergeGroup">
-          <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'" style="width:100%"></el-checkbox>
-        </el-checkbox-group>
+        <el-checkbox v-for="item in groupArr" :label="item" :key="item + 'merge'" style="width:100%"></el-checkbox>
+      </el-checkbox-group>
+      <p>合并后的组名：</p>
+      <el-input
+        placeholder="默认为所选的第一个组名"
+        v-model="mergeGroupName"
+        clearable>
+      </el-input>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="mergeDialogShow = false">取 消</el-button>
@@ -51,6 +58,21 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      title="更改组名"
+      :visible.sync="changeNameDialogShow"
+      width="30%">
+      <el-form label-position="right" label-width="80px" :model="changeNameForm">
+        <el-form-item v-for="(item, key) in changeNameForm" :label="key" :key="key + 'name'">
+          <el-input v-model="changeNameForm[key]"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="changeNameDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="changeGroupName()">确定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -71,6 +93,9 @@ export default {
       splitShow: false,
       currentKey: 1,
       0: [],
+      mergeGroupName: '',
+      changeNameDialogShow: false, // 更改组名
+      changeNameForm: {},
     }
   },
   components: {
@@ -100,12 +125,13 @@ export default {
       formData.append('username', this.$store.state.username)
       formData.append('p', this.$store.state.projectId)
       formData.append('sourceClusterList', this.mergeGroup.join(','))
-      formData.append('targetCluster', '')
+      formData.append('targetCluster', this.mergeGroupName)
       this.axios.post('/singel_cell/server/merge_cell_cluster', formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.$message.success(res.data.message)
           this.initData()
           this.mergeGroup = []
+          this.mergeGroupName = ''
         } else {
           this.$message.error(res.data.message)
         }
@@ -114,11 +140,21 @@ export default {
       })
     },
     changeGroupName () {
-      d3.selectAll("text.groupText")
-      .filter(function(){
-        return d3.select(this).text() == 0
+      console.log(this.changeNameForm);
+      return
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('groupName', JSON.stringify(this.changeNameForm))
+      this.axios.post('', formData).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.$message.success(res.data.message)
+          this.initData()
+        } else {
+          this.$message.error(res.data.message)
+        }
+        this.changeNameDialogShow = false
       })
-      .attr("fill", "red");
     },
     initData () {
       this.axios.get('/singel_cell/server/get_tsne_score?username='+ this.$store.state.username +'&p=' + this.$store.state.projectId).then((res) => {
@@ -186,6 +222,9 @@ export default {
       // 分组名称显示（在每组的中心位置）
       let groupArr = Object.keys(this.data.avgMap)
       this.groupArr = groupArr
+      this.mergeGroup = []
+      //  更改组名的 form 表单内容 eg: { 原组名1: ‘’, 原组名2: ''}
+      this.groupArr.map((item) => this.changeNameForm[item] = '')
 
       let groupPointText = svg.selectAll(".text")
                 .data(groupArr)
@@ -384,6 +423,17 @@ export default {
          cancelButtonText: '取消',
          type: 'warning'
        }).then(() => {
+         // 如果没有选择点 就点击保存，则不发请求给后端
+         if (d3.selectAll(".brushed").data().length === 0) {
+           // 将选项隐藏
+           this.splitShow = false
+           // 消息提示关闭
+           this.message.close()
+           // 将 currentKey 重置为 1
+           this.currentKey = 1
+           this.initData()
+           return
+         }
          let formData = new FormData()
          formData.append('username', this.$store.state.username)
          formData.append('p', this.$store.state.projectId)
