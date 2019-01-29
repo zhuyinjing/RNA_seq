@@ -5,7 +5,7 @@
     <el-button type="primary" size="small" icon="el-icon-circle-plus" @click="mergeDialogShow = true">合并组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit-outline" @click="splitDialogShow = true">拆分组</el-button>
     <el-button type="primary" size="small" icon="el-icon-edit" @click="changeNameDialogShow = true">更改组名</el-button>
-    <el-button type="primary" size="small" icon="el-icon-refresh" @click="originGroup()">恢复原始分组</el-button>
+    <el-button type="primary" size="small" icon="el-icon-refresh" @click="originGroup()">恢复原始数据</el-button>
 
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['tSNE', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -65,7 +65,7 @@
       width="30%">
       <el-form label-position="right" label-width="80px" :model="changeNameForm">
         <el-form-item v-for="(item, key) in changeNameForm" :label="key" :key="key + 'name'">
-          <el-input v-model="changeNameForm[key]"></el-input>
+          <el-input size="small" v-model="changeNameForm[key]"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     originGroup () { // 恢复原始分组
-      this.$confirm('此操作将恢复原始分组, 是否继续?', '提示', {
+      this.$confirm('此操作将恢复原始数据, 是否继续?', '提示', {
        confirmButtonText: '确定',
        cancelButtonText: '取消',
        type: 'warning'
@@ -157,13 +157,18 @@ export default {
       })
     },
     changeGroupName () {
-      console.log(this.changeNameForm);
-      return
+      let oldGroupArr = Object.keys(this.changeNameForm)
+      let newGroupArr = Object.values(this.changeNameForm)
+      let flag = newGroupArr.some((d) => oldGroupArr.indexOf(d) !== -1) // 只要在原组名中存在，就提示
+      if (flag === true) {
+        this.$message.error("原组名中已包含该组名，请重新填写！")
+        return
+      }
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('p', this.$store.state.projectId)
-      formData.append('groupName', JSON.stringify(this.changeNameForm))
-      this.axios.post('', formData).then((res) => {
+      formData.append('clusterNameMap', JSON.stringify(this.changeNameForm))
+      this.axios.post('/singel_cell/server/rename_cluster', formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.$message.success(res.data.message)
           this.initData()
@@ -241,6 +246,7 @@ export default {
       this.groupArr = groupArr
       this.mergeGroup = []
       //  更改组名的 form 表单内容 eg: { 原组名1: ‘’, 原组名2: ''}
+      this.changeNameForm = {}
       this.groupArr.map((item) => this.changeNameForm[item] = '')
 
       let groupPointText = svg.selectAll(".text")
@@ -386,11 +392,6 @@ export default {
 
       //  取消拆分
       d3.selectAll("#cancelBtn").on("click", () => {
-        this.$confirm('此操作将回到初始状态, 是否继续?', '提示', {
-         confirmButtonText: '确定',
-         cancelButtonText: '取消',
-         type: 'warning'
-       }).then(() => {
          // 将选项隐藏
          this.splitShow = false
          // 将 path 的 brushed 类名去掉
@@ -405,7 +406,6 @@ export default {
          // 取消保存的数组
          this.currentKey = 1
          this[0] = []
-       }).catch(() => {});
       })
 
       //  重置
