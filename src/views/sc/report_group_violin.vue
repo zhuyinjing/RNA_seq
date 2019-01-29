@@ -343,7 +343,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#violinsvg').remove()
       }
-      let width = 500, height = 500 // 每个 g 标签的宽度/高度
+      let width = 600, height = 500 // 每个 g 标签的宽度/高度
       let padding = {top:30,right:80,bottom:60,left:60}
       let number = this.selected.length < 2 ? 1 : 2 // 一行显示几个图，默认为 2
       let violinsvg = d3.select("#violinContainer").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.selected.length / number))).attr("id", "violinsvg")
@@ -471,14 +471,7 @@ export default {
     },
     initHeatmapData () {
       if (this.selected.length === 0) {
-        // let hassvg = d3.selectAll('#heatmapsvg')._groups[0].length
-        // // 如果取消 checkbox 选中 再点击生成小提琴图 则清除 svg
-        // if (hassvg) {
-        //   d3.selectAll('#heatmapsvg').remove()
-        //   this.heatmapSvgShow = false
-        // } else {
-          this.$message.error("请选择您要生成热图的基因！")
-        // }
+        this.$message.error("请选择您要生成热图的基因！")
         return
       }
       this.axios.get('singel_cell/server/get_gene_tsne_heatmap?p='+ this.$store.state.projectId +'&username='+ this.$store.state.username +'&geneId='+ this.selected.join(',')).then((res) => {
@@ -638,7 +631,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
       }
-      let width = 500, height = 300 // 每个 g 标签的宽度/高度
+      let width = 600, height = 300 // 每个 g 标签的宽度/高度
       let padding = {top:50,right:80,bottom:40,left:60}
       let number = 2 // 一行显示几个图
       let scattersvg = d3.select("#scatterContainer").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.selected.length / number))).attr("id", "scattersvg")

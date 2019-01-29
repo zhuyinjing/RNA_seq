@@ -195,7 +195,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
       }
-      let width = 1000, height = 600
+      let width = 1200, height = 700
       let padding = {top:30,right:180,bottom:60,left:60}
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       let svg = scattersvg.append("g").attr("transform", "translate("+ padding.left + "," + padding.top +")")

@@ -22,7 +22,7 @@
             <el-button @click="upload(item)">{{$t('project_list.upload_button')}}<i class="el-icon-upload el-icon--right"></i></el-button>
             <el-button @click="runTask(item)">{{$t('project_list.run_button')}}<i class="el-icon-caret-right el-icon--right"></i></el-button>
             <el-button @click="report(item)">{{$t('project_list.report_button')}}<i class="el-icon-document el-icon--right"></i></el-button>
-            <el-button disabled class="float-right" type="danger" @click="deleteProject(item.id)">{{$t('project_list.delete_button')}}<i class="el-icon-delete el-icon--right"></i></el-button>
+            <el-button class="float-right" type="danger" @click="deleteProject(item.id)">{{$t('project_list.delete_button')}}<i class="el-icon-delete el-icon--right"></i></el-button>
           </div>
         </div>
       </div>
