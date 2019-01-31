@@ -60,8 +60,8 @@ export default {
       if (hassvg) {
         d3.selectAll('svg').remove()
       }
-      let width = 500, height = 500 // 每个 g 标签的宽度/高度
-      let padding = {top:30,right:80,bottom:60,left:60}
+      let width = 600, height = 600 // 每个 g 标签的宽度/高度
+      let padding = {top:30,right:80,bottom:60,left:100}
       let number = 2 // 一行显示几个图
       let scattersvg = d3.select("#d3container").append("svg").attr("width", width * number).attr("height", (height * Math.ceil(this.pcArr.length / number))).attr("id", "scattersvg")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory20)
@@ -103,14 +103,14 @@ export default {
            .attr("r", self.radius)
            .attr("fill", "#0600ff")
            .on('mouseover', function (d, i) {
-               return tooltip.style('visibility', 'visible').text(d)
-             })
-             .on('mousemove', function (d, i) {
-               return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
-             })
-             .on('mouseout', function (d, i) {
-               return tooltip.style('visibility', 'hidden')
-             })
+             return tooltip.style('visibility', 'visible').text(d)
+           })
+           .on('mousemove', function (d, i) {
+             return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+           })
+           .on('mouseout', function (d, i) {
+             return tooltip.style('visibility', 'hidden')
+           })
 
          // x 轴文字
          svg.append("text")

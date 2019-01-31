@@ -15,19 +15,36 @@ import * as d3 from 'd3'
 export default {
   data() {
     return {
+      boxData: null,
     }
   },
   components: {
   },
   mounted() {
-    this.initBoxPlot()
+    this.getData()
   },
   methods: {
+    getData () {
+      this.axios.get('/singel_cell/server/get_cell_location_dist?username='+ this.$store.state.username +'&p='+ this.$store.state.projectId).then(res => {
+        if (res.data.message_type === 'success') {
+          this.boxData = res.data.singelCellFeaturesList
+          this.initBoxPlot()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
     initBoxPlot () {
-          // set the dimensions and margins of the graph
+      let hassvg = d3.selectAll('svg')
+      if (hassvg) {
+        d3.selectAll('svg').remove()
+      }
+
       var margin = {top: 10, right: 30, bottom: 30, left: 40},
           width = 460 - margin.left - margin.right,
           height = 400 - margin.top - margin.bottom;
+
+      let xData = ["exon", "intron", "Ambiguity", "Intergenic", "Unmapped", "NA"]
 
       // append the svg object to the body of the page
       var svg = d3.select("#boxContainer")
@@ -40,7 +57,7 @@ export default {
 
        var q1,median,q3,interQuantileRange,min,max
 
-       var data = [{Species:'setosa',Sepal_Length:5.5},{Species:'setosa',Sepal_Length:8},{Species:'setosa',Sepal_Length:5}]
+       var data = [{Species:'setosa',Sepal_Length:5.5},{Species:'setosa',Sepal_Length:8},{Species:'setosa',Sepal_Length:5},{Species:'versicolor',Sepal_Length:4.5},{Species:'versicolor',Sepal_Length:7},{Species:'versicolor',Sepal_Length:7.5}]
         // Compute quartiles, median, inter quantile range min and max --> these info are then used to draw the box.
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
           .key(function(d) { return d.Species;})
@@ -55,12 +72,15 @@ export default {
           })
           .entries(data)
 
+          console.log(sumstat);
+
         // Show the X scale
         var x = d3.scaleBand()
           .range([ 0, width ])
           .domain(["setosa", "versicolor", "virginica"])
           .paddingInner(1)
           .paddingOuter(.5)
+
         svg.append("g")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(x))

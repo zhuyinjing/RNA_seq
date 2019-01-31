@@ -15,74 +15,111 @@ import * as d3 from 'd3'
 export default {
   data() {
     return {
+      barData: null,
     }
   },
   components: {
   },
   mounted() {
-    this.initBoxPlot()
+    this.getData()
   },
   methods: {
-    initBoxPlot () {
-      // set the dimensions and margins of the graph
-      var margin = {top: 20, right: 20, bottom: 50, left: 40},
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+    getData () {
+      this.axios.get('/singel_cell/server/get_cell_sequence_num?username='+ this.$store.state.username +'&p='+ this.$store.state.projectId).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.barData = res.data.readsPerCellList
+          this.initBarChart()
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
+    },
+    initBarChart () {
+      // create a tooltip
+      var Tooltip = d3.select("#barContainer")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
 
-      // set the ranges
-      var x = d3.scaleBand()
-                .range([0, width])
-                .padding(0.1);
-      var y = d3.scaleLinear()
-                .range([height, 0]);
+      let hassvg = d3.selectAll('#barSvg')
+      if (hassvg) {
+        d3.selectAll('#barSvg').remove()
+      }
+      //  获取 svg 容器的实际 width
+      // let containerWidth = document.getElementById("barContainer").clientWidth
 
-      // append the svg object to the body of the page
-      // append a 'group' element to 'svg'
-      // moves the 'group' element to the top left margin
+      var margin = {top: 20, right: 20, bottom: 100, left: 60},
+          width = 1200 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
+
+      let xData = this.barData.map(item => item.cellId)
+      let yData = this.barData.map(item => item.logScaleValue)
+
+      var x = d3.scaleBand().domain(xData).range([0, width]).padding(0.1)
+      var y = d3.scaleLinear().domain(d3.extent(yData)).range([height, 0]).nice()
+
       var svg = d3.select("#barContainer").append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
+          .attr("id","barSvg")
         .append("g")
-          .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      // get the data
-      d3.csv("/static/data.csv", function(error, data) {
-        if (error) throw error;
-
-        // format the data
-        data.forEach(function(d) {
-          d.sales = +d.sales;
-        });
-
-        // Scale the range of the data in the domains
-        x.domain(data.map(function(d) { return d.salesperson; }));
-        y.domain([0, d3.max(data, function(d) { return d.sales; })]);
-
-        // append the rectangles for the bar chart
         svg.selectAll(".bar")
-            .data(data)
+            .data(this.barData)
           .enter().append("rect")
             .attr("class", "bar")
-            .attr("x", function(d) { return x(d.salesperson); })
+            .attr("x", function(d) { return x(d.cellId); })
             .attr("width", x.bandwidth())
-            .attr("y", function(d) { return y(d.sales); })
+            .attr("y", function(d) { return y(d.logScaleValue); })
             .attr("fill","steelblue")
-            .attr("height", function(d) { return height - y(d.sales); });
+            .attr("height", function(d) { return height - y(d.logScaleValue); })
+            .on("mouseover", function(d) {
+              var barWidth = parseFloat(d3.select(this).attr("width"));
+              var xPosition = parseFloat(d3.select(this).attr("x")) + (barWidth / 2);
+              var yPosition = parseFloat(d3.select(this).attr("y")) - 10;
+              // 当前 rect 颜色变浅
+              d3.select(this).attr("fill","#4f8dbcad")
+
+              svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", xPosition)
+                .attr("y", yPosition)
+                .style("font-size","16px")
+                // .style("font-weight","700")
+                .attr("text-anchor", "middle")
+                .text(d.readsTotalPerCell);
+            })
+            .on("mouseout", function(d) {
+              // 颜色恢复成之前的
+              d3.select(this).attr("fill","steelblue")
+
+              d3.select('#tooltip').remove();
+            });
 
         // add the x Axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
-            .style("text-anchor", "start")
-            .attr("transform", "rotate(45 -10 10)");
+            .style("text-anchor", "end")
+            .attr("transform", "translate(-10,10) rotate(-90)");
 
         // add the y Axis
         svg.append("g")
             .call(d3.axisLeft(y));
 
-      });
+        // y 轴文字
+        svg.append("text")
+          .text('log10(Number of reads)')
+          .style("font-size", "16px")
+          .attr("transform", "translate("+ -40 +", " + (height / 2 + 30) + ") rotate(-90)")
+
 
     },
   }
