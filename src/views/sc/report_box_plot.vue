@@ -48,7 +48,7 @@ export default {
         .style('font-size', '12px')
         .style('font-weight', 'bold')
         .text('')
-      var margin = {top: 10, right: 30, bottom: 30, left: 60},
+      var margin = {top: 10, right: 120, bottom: 30, left: 60},
           width = 1000 - margin.left - margin.right,
           height = 500 - margin.top - margin.bottom;
 
@@ -173,6 +173,30 @@ export default {
           .text('Fraction of reads per cell')
           .style("font-size", "16px")
           .attr("transform", "translate("+ -40 +", " + (height / 2 + 50) + ") rotate(-90)")
+
+       // legend
+       let rectWidth = 20, rectHeight = 20, rectMargin = 5
+       let legend = svg.append("g").attr("transform","translate("+ width +"," + (height/4)+")")
+       legend.selectAll(".circle")
+             .data(xData)
+             .enter()
+             .append("rect")
+             .attr("x",0)
+             .attr("y",(d,i) => i * (rectHeight + rectMargin))
+             .attr("width", rectWidth)
+             .attr("height",rectHeight)
+             .attr("fill", d => colorScale(d))
+
+       legend.selectAll(".text")
+             .data(xData)
+             .enter()
+             .append("text")
+             .attr("transform",(d,i) => {
+               return "translate(" + (rectWidth + rectMargin) +","+ (rectHeight / 2 + i * (rectHeight + rectMargin) + rectMargin) +")"
+             })
+             .text(d => d)
+             .attr("class","groupText")
+
 
     },
   }
