@@ -9,6 +9,7 @@
       <router-link to="/sc"><el-menu-item index="sc_report">报告首页</el-menu-item></router-link>
       <router-link to="/sc/report_sequence_amount"><el-menu-item index="report_sequence_amount">不同单细胞测序量</el-menu-item></router-link>
       <router-link to="/sc/report_box_plot"><el-menu-item index="report_box_plot">测序读段回贴位置分布</el-menu-item></router-link>
+      <router-link to="/sc/report_gene_UMIcounts"><el-menu-item index="report_gene_UMIcounts">gene UMIcounts</el-menu-item></router-link>
       <router-link to="/sc/report_umi_count"><el-menu-item index="report_umi_count">单细胞转录组表达基因与UMI计数统计</el-menu-item></router-link>
       <router-link to="/sc/report_heterogeneous_gene"><el-menu-item index="report_heterogeneous_gene">表达异质化基因筛选</el-menu-item></router-link>
       <router-link to="/sc/report_viz_PCA"><el-menu-item index="report_viz_PCA">viz PCA</el-menu-item></router-link>

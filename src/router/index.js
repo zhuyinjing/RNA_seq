@@ -248,6 +248,11 @@ export default new Router({
           path: 'report_sequence_amount', // 条形图
           name: 'report_sequence_amount',
           component: resolve => require(['@/views/sc/report_sequence_amount'], resolve)
+        },
+        {
+          path: 'report_gene_UMIcounts', // number of genes UMIs
+          name: 'report_gene_UMIcounts',
+          component: resolve => require(['@/views/sc/report_gene_UMIcounts'], resolve)
         }
       ]
     },

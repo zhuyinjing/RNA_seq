@@ -1,9 +1,9 @@
 <template>
-  <div class="">
+  <div id="container">
     <h2>测序读段回贴位置分布</h2>
     <p>转录本由基因外显子序列组成，因此单细胞转录组测序产生的reads应该都可以回贴到基因外显子区域。但是，由于单细胞转录组测序涉及大量的细胞，所以测序结果中会包含一定数量的可变剪切事件，从而导致部分reads回贴到基因内含子区域。对reads基因组回贴位置进行统计，可以辅助判断单细胞转录组的测序质量。</p>
     <p>如下图所示，横坐标表示各类reads回贴位置，纵坐标表示每个细胞中回贴到相应位置的reads比例。</p>
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['box_plot', 'boxContainer'])">{{$t('button.svg')}}</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['测序读段回贴位置分布', 'boxContainer'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
     <div id="boxContainer"></div>
@@ -39,12 +39,22 @@ export default {
       if (hassvg) {
         d3.selectAll('svg').remove()
       }
-
-      var margin = {top: 10, right: 30, bottom: 30, left: 40},
-          width = 460 - margin.left - margin.right,
-          height = 400 - margin.top - margin.bottom;
+      let tooltip = d3.select('#container')
+        .append('div')
+        .style('position', 'absolute')
+        .style('z-index', '10')
+        .style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '12px')
+        .style('font-weight', 'bold')
+        .text('')
+      var margin = {top: 10, right: 30, bottom: 30, left: 60},
+          width = 1000 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
 
       let xData = ["exon", "intron", "Ambiguity", "Intergenic", "Unmapped", "NA"]
+
+      let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
       // append the svg object to the body of the page
       var svg = d3.select("#boxContainer")
@@ -57,27 +67,28 @@ export default {
 
        var q1,median,q3,interQuantileRange,min,max
 
-       var data = [{Species:'setosa',Sepal_Length:5.5},{Species:'setosa',Sepal_Length:8},{Species:'setosa',Sepal_Length:5},{Species:'versicolor',Sepal_Length:4.5},{Species:'versicolor',Sepal_Length:7},{Species:'versicolor',Sepal_Length:7.5}]
         // Compute quartiles, median, inter quantile range min and max --> these info are then used to draw the box.
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-          .key(function(d) { return d.Species;})
+          .key(function(d) { return d.assignmentType;})
           .rollup(function(d) {
-            q1 = d3.quantile(d.map(function(g) { return g.Sepal_Length;}).sort(d3.ascending),.25)
-            median = d3.quantile(d.map(function(g) { return g.Sepal_Length;}).sort(d3.ascending),.5)
-            q3 = d3.quantile(d.map(function(g) { return g.Sepal_Length;}).sort(d3.ascending),.75)
+            q1 = d3.quantile(d.map(function(g) { return g.fractionReads;}).sort(d3.ascending),.25)
+            median = d3.quantile(d.map(function(g) { return g.fractionReads;}).sort(d3.ascending),.5)
+            q3 = d3.quantile(d.map(function(g) { return g.fractionReads;}).sort(d3.ascending),.75)
             interQuantileRange = q3 - q1
             min = q1 - 1.5 * interQuantileRange
             max = q3 + 1.5 * interQuantileRange
-            return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
-          })
-          .entries(data)
 
-          console.log(sumstat);
+            let arr = d.filter(item => item.fractionReads >= min && item.fractionReads <= max).sort((a,b) => a.fractionReads - b.fractionReads)
+            let top = arr[arr.length - 1].fractionReads // line 的上限，符合 [min,max] 中最大值
+            let bottom = arr[0].fractionReads
+            return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: bottom, max: top})
+          })
+          .entries(this.boxData)
 
         // Show the X scale
         var x = d3.scaleBand()
           .range([ 0, width ])
-          .domain(["setosa", "versicolor", "virginica"])
+          .domain(xData)
           .paddingInner(1)
           .paddingOuter(.5)
 
@@ -87,8 +98,9 @@ export default {
 
         // Show the Y scale
         var y = d3.scaleLinear()
-          .domain([3,9])
+          .domain(d3.extent(this.boxData.map(d => d.fractionReads)))
           .range([height, 0])
+          .nice()
         svg.append("g").call(d3.axisLeft(y))
 
         // Show the main vertical line
@@ -116,7 +128,7 @@ export default {
               .attr("height", function(d){return(y(d.value.q1)-y(d.value.q3))})
               .attr("width", boxWidth )
               .attr("stroke", "black")
-              .style("fill", "#69b3a2")
+              .style("fill", (d,i) => colorScale(d.key))
 
         // Show the median
         svg
@@ -132,18 +144,35 @@ export default {
             .style("width", 80)
 
       // Add individual points with jitter
+      // 异常值的取值范围 > top, < bottom
+      let circleData = []
+      sumstat.map(item => {
+        circleData = circleData.concat(this.boxData.filter(d => d.assignmentType === item.key).filter(d => d.fractionReads < item.value.min || d.fractionReads > item.value.max))
+      })
       var jitterWidth = 50
       svg
         .selectAll("indPoints")
-        .data(data)
+        .data(circleData)
         .enter()
         .append("circle")
-          .attr("cx", function(d){return(x(d.Species) - jitterWidth/2 + Math.random()*jitterWidth )})
-          .attr("cy", function(d){return(y(d.Sepal_Length))})
-          .attr("r", 4)
-          .style("fill", "white")
-          .attr("stroke", "black")
+          .attr("cx", function(d){return(x(d.assignmentType))})
+          .attr("cy", function(d){return(y(d.fractionReads))})
+          .attr("r", 2.5)
+          .on('mouseover', function (d, i) {
+            return tooltip.style('visibility', 'visible').text(d['cellId'])
+          })
+          .on('mousemove', function (d, i) {
+            return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+          })
+          .on('mouseout', function (d, i) {
+            return tooltip.style('visibility', 'hidden')
+          })
 
+        // y 轴文字
+        svg.append("text")
+          .text('Fraction of reads per cell')
+          .style("font-size", "16px")
+          .attr("transform", "translate("+ -40 +", " + (height / 2 + 50) + ") rotate(-90)")
 
     },
   }
