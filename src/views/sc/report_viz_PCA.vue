@@ -1,5 +1,8 @@
 <template>
   <div id="container">
+    <h2>基因加载量分布图</h2>
+    <p>基因加载量是主成分中每个基因的属性，基因加载量的绝对值越大，说明相应基因表达量可以解释该主成分方差的程度越大，对于该主成分越具有代表性。基因加载量的正负，分别表示相应基因表达量与该主成分成正相关或负相关关系。</p>
+    <p>下图分别展示了前两个主成分中基因加载量绝对值排名前十的基因。</p>
     <el-checkbox-group
       v-model="pcArr">
       <el-checkbox v-for="item in pcList" :label="item" :key="item" style="width:20%;">{{item}}</el-checkbox>

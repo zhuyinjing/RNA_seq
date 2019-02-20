@@ -1,5 +1,7 @@
 <template>
   <div id="container">
+    <h2>PCA 散点图</h2>
+    <p>如下图所示，不同细胞中所有基因表达值降维分析的前三个主成分被展示出来，每一个点代表一个细胞。</p>
 
     <el-checkbox-group
       v-model="pcArr">

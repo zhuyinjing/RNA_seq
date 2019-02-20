@@ -128,13 +128,13 @@ export default {
     					.text(function(){
     						return self.pcArr[0];
     					});
-        svg.append("text")
-    					.attr("x", width / 2)
-    					.attr("y", -5)
-    					.attr("dy", "-0.3em")
-    					.text(function(){
-    						return "(" + 30 + "%)";
-    					});
+        // svg.append("text")
+    		// 			.attr("x", width / 2)
+    		// 			.attr("y", -5)
+    		// 			.attr("dy", "-0.3em")
+    		// 			.text(function(){
+    		// 				return "(" + 30 + "%)";
+    		// 			});
         //  y轴文字
         svg.append("text")
     					.attr("x", -60)
@@ -144,14 +144,14 @@ export default {
     					.text(function(){
                 return self.pcArr[1];
     					});
-          svg.append("text")
-      					.attr("x", -60)
-      					.attr("y", height / 2 + 20)
-                .attr("dy", "-0.3em")
-                .style('text-anchor', 'start')
-      					.text(function(){
-                  return "(" + 20 + "%)";
-      					});
+        // svg.append("text")
+    		// 			.attr("x", -60)
+    		// 			.attr("y", height / 2 + 20)
+        //       .attr("dy", "-0.3em")
+        //       .style('text-anchor', 'start')
+    		// 			.text(function(){
+        //         return "(" + 20 + "%)";
+    		// 			});
         //x轴比例尺
         var xScale = d3.scaleLinear().range([0, width])
           .domain([d3.min(self.data[self.pcArr[0]]) -2, d3.max(self.data[self.pcArr[0]]) +2]).nice()
@@ -330,14 +330,14 @@ export default {
       					.text(function(){
       						return self.pcArr[i]
       					});
-          svgG.append("text")
-      					.attr("x", (width / 2) + (i * width) + padding.left)
-      					.attr("y", -2 + padding.top)
-      					.attr("dy", "-0.3em")
-                .attr("text-anchor", "middle")
-      					.text(function(){
-      						return "(" + 10 + "%" + ")";
-      					});
+          // svgG.append("text")
+      		// 			.attr("x", (width / 2) + (i * width) + padding.left)
+      		// 			.attr("y", -2 + padding.top)
+      		// 			.attr("dy", "-0.3em")
+          //       .attr("text-anchor", "middle")
+      		// 			.text(function(){
+      		// 				return "(" + 10 + "%" + ")";
+      		// 			});
           //  y轴文字
           svgG.append("text")
       					.attr("x", -60 + padding.left)
@@ -347,14 +347,14 @@ export default {
       					.text(function(){
                   return self.pcArr[i]
       					});
-          svgG.append("text")
-      					.attr("x", -60 + padding.left)
-      					.attr("y", height / 2 + 20 + (i * height) + padding.top)
-                .attr("dy", "-0.3em")
-                .style('text-anchor', 'start')
-      					.text(function(){
-                  return "(" + 30 + "%" + ")";
-      					});
+          // svgG.append("text")
+      		// 			.attr("x", -60 + padding.left)
+      		// 			.attr("y", height / 2 + 20 + (i * height) + padding.top)
+          //       .attr("dy", "-0.3em")
+          //       .style('text-anchor', 'start')
+      		// 			.text(function(){
+          //         return "(" + 30 + "%" + ")";
+      		// 			});
         }
       }
 

@@ -1,5 +1,8 @@
 <template>
   <div id="container">
+    <h2>基因表达量分布</h2>
+    <p>在单细胞转录组研究中，基于每个细胞中不同基因的表达量进行降维分析是核心步骤。为了获得合理的降维结果，需要对参与降维过程的基因进行筛选，筛选的原则是保留表达量适中且表达量在不同细胞之间分散程度较大的基因。表达量适中可以保证对于该基因表达量的检测不存在实验偏性，表达量分散程度较大说明该基因的表达可以反映细胞之间的差异，有利于后续的降维分析。</p>
+    <p>下图展示了每个基因在不同细胞中的平均表达值（x轴）以及不同细胞之间的分散程度（y轴），分散程度的计算方法是基因表达值方差除以基因平均表达值，x轴与y轴的数值均取了自然对数。</p>
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['表达异质化基因筛选', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 

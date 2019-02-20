@@ -74,7 +74,7 @@ export default {
                       .append("circle")
                       .attr("cx", (d) => padding.left + xScale(d["pcNum"]))
                       .attr("cy", (d) => padding.top + yScale(d["standardDeviation"]))
-                      .attr("r", 1.8)
+                      .attr("r", 2.5)
                       .on('mouseover', function (d, i) {
                         let minus = i === 0? '': ' , ' + (d["standardDeviation"] - data[i-1]['standardDeviation']).toFixed(2)
                         return tooltip.style('visibility', 'visible').text(d["standardDeviation"].toFixed(2) + minus)

@@ -253,7 +253,13 @@ export default new Router({
           path: 'report_gene_UMIcounts', // number of genes UMIs
           name: 'report_gene_UMIcounts',
           component: resolve => require(['@/views/sc/report_gene_UMIcounts'], resolve)
-        }
+        },
+        {
+          path: 'report_nGene_nUMI', // nGene nUMI scatter
+          name: 'report_nGene_nUMI',
+          component: resolve => require(['@/views/sc/report_nGene_nUMI'], resolve)
+        },
+
       ]
     },
     // {

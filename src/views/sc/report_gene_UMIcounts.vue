@@ -1,5 +1,8 @@
 <template>
   <div id="container">
+    <h2>基因与UMI数量基因结构分布</h2>
+    <p>下图分别对基因数量和UMI数量在基因结构上的分布进行了描绘：对于基因而言，exons表示外显子上存在表达证据的基因数量，intron.exon表示外显子与内含子上同时存在表达证据的基因数量，introns表示内含子上存在表达证据的基因数量；对于UMI而言，exons表示所在read匹配到外显子上的UMI数量，intron.exon表示所在read同时匹配到外显子与内含子上的UMI数量，introns表示所在read匹配到内含子上的UMI数量。</p>
+    <p>正常情况下，大部分的基因与UMI数量应该分布在exons与intron.exon两个类别中。</p>
 
     <div class="svgContainer">
       <div class="svgbox">
