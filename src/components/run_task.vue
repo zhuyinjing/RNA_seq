@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     getLog () {
-      this.axios.get("/projects/"+ this.$store.state.projectId +"/workflow/colorseq.log").then((res) => {
+      this.axios.get("/projects/"+ this.$store.state.projectId +"/colorseq.log").then((res) => {
         this.logContent = res.data
       })
     },

@@ -45,7 +45,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#scattersvg').remove()
       }
-      var width = 600, height = 500;
+      var width = 800, height = 500;
       var scattersvg = d3.select("#scatterContainer").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
       var data = this.data
       var padding = {top: 20, right: 30, bottom: 50, left: 55}

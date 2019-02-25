@@ -149,24 +149,6 @@ request.onerror = (e) => {
   console.log("error!");
 }
 
-//  session 失效时间 5min
-  let timer
-  function startTimer() {
-    clearTimeout(timer)
-    timer = setTimeout(function () {
-      sessionStorage.clear()
-      window.location.href = 'https://colorseq.com/logout'
-    }, 1000*60*30)
-   }
-  startTimer()
-  document.body.onclick  = startTimer
-  document.body.onmouseup = startTimer
-  document.body.onmousemove = startTimer
-  document.body.onkeyup  = startTimer
-  document.body.onclick  = startTimer
-  document.body.ontouchend  = startTimer
-  // document.body.onmousewheel  = startTimer
-
 if (sessionStorage.username) {
   store.state.username = sessionStorage.username
 }

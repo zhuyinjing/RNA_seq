@@ -96,7 +96,7 @@ export default {
         .attr('id','tooltipId')
       	.text('')
       let width = 240 * this.scale, height = 200 * this.scale
-      d3.select("#scatterContainer").append("svg").attr("width",width).attr("height",height).attr("id","scatterSvg").style("border","1px solid #d2d2d2")
+      d3.select("#scatterContainer").append("svg").attr("width",width).attr("height",height).attr("id","scatterSvg")
       d3._3d = _3d
 
       var origin = [width/2, height/2-100], j = 10, scale = this.scale, scatter = [], xLine = [], yLine = [],zLine = [], xGrid = [], beta = 0, alpha = 0, key = function(d){ return d.id; }, startAngle = Math.PI/4;

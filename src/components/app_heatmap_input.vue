@@ -173,7 +173,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3'
 import appLeftMenu from './app_leftMenu.vue'
 import appImgMenuShowComp from './appImgMenuShowComp.vue'
 
@@ -267,13 +266,13 @@ export default {
       })
     },
     exampleMatrixClick () {
-      d3.text('/static/matrix.txt', (data) => {
-        this.textareaMatrix = data
+      this.axios.get('/static/matrix.txt').then((res) => {
+        this.textareaMatrix = res.data
       })
     },
     exampleGroupClick () {
-      d3.text('/static/group.txt', (data) => {
-        this.textareaGroup = data
+      this.axios.get('/static/group.txt').then((res) => {
+        this.textareaGroup = res.data
       })
     },
   }
