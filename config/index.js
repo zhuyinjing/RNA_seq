@@ -11,6 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/server/kobas2_entry': {
+        target: 'http://162.105.250.248:7003',
+        changeOrigin: true,
+        pathRewrite: {
+          '/server/kobas2_entry': '/server/kobas2_entry'
+        }
+      },
       '/server': {
         target: 'https://colorseq.com',
         changeOrigin: true,

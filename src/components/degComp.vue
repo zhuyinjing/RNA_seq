@@ -35,7 +35,7 @@ export default {
       this.$router.push({'name': 'report_deg', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
     },
     report_volcano_plot () {
-      this.$router.push({'name': 'report_volcano_plot', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+      this.$router.push({'name': 'report_volcano_plot'})
     },
     report_ma_plot () {
       this.$router.push({'name': 'report_ma_plot'})
@@ -48,7 +48,7 @@ export default {
       formData.append('controlSample', this.$store.state._control)
       this.axios.post('/server/heatmap.app.for_report', formData).then((res) => {
         this.$store.commit('setheatmapJson', res.data.message)
-        this.$router.push({'name': 'heatmap', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+        this.$router.push({'name': 'heatmap'})
       })
     },
     heatmapsvg () {
@@ -59,7 +59,7 @@ export default {
       formData.append('controlSample', this.$store.state._control)
       this.axios.post('/server/heatmap.app.for_report', formData).then((res) => {
         this.$store.commit('setheatmapJson', res.data.message)
-        this.$router.push({'name': 'heatmapsvg', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+        this.$router.push({'name': 'heatmapsvg'})
       })
     },
     ppi_chord_plot () {
@@ -73,12 +73,12 @@ export default {
           this.$message.error(res.data.message)
         } else {
           this.$store.commit('setppiJson', res.data.message)
-          this.$router.push({'name': 'ppi_chord_plot', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+          this.$router.push({'name': 'ppi_chord_plot'})
         }
       })
     },
     enrichment_analysis () {
-      this.$router.push({'name': 'enrichment_analysis', query: {'_case': this.$store.state._case, '_control': this.$store.state._control}})
+      this.$router.push({'name': 'enrichment_analysis'})
     },
     forceGraph () {
       this.$router.push({'name': 'forceGraph'})
