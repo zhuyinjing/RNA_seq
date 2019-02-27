@@ -482,7 +482,7 @@ path{
   margin-top: -25px;
 }
 .yrange {
-  width:0px;
+  width: 0px !important;
 }
 .display-inline-block {
   float: left;

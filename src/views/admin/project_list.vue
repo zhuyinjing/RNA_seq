@@ -4,7 +4,7 @@
       <div class="grid-content bg-purple">
         <br>
 
-        <el-button type="primary" size="medium">创建项目</el-button> <br><br>
+        <el-button type="primary" size="medium">创建项目</el-button><br><br>
 
         <el-card class="" shadow="hover">
           <el-row :gutter="20">
@@ -45,40 +45,22 @@
                 <th>用户名</th>
                 <th>项目状态</th>
                 <th>操作</th>
+                <th>操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in 2">
-                <td><a href="#">RNA-Seq Demo</a></td>
-                <td>RNA-Seq</td>
-                <td>2018-06-11</td>
-                <td>test</td>
-                <td><el-tag type="success">已完成</el-tag></td>
-                <td><el-button type="primary" size="mini">查看报告</el-button></td>
-              </tr>
-              <tr v-for="item in 1">
-                <td><a href="#">RNA-Seq Demo</a></td>
-                <td>RNA-Seq</td>
-                <td>2018-06-11</td>
-                <td>test</td>
-                <td><el-tag type="info">失败</el-tag></td>
-                <td><el-button type="primary" size="mini">查看报告</el-button></td>
-              </tr>
-              <tr v-for="item in 3">
-                <td><a href="#">RNA-Seq Demo</a></td>
-                <td>RNA-Seq</td>
-                <td>2018-06-11</td>
-                <td>test</td>
-                <td><el-tag type="">已创建</el-tag></td>
-                <td><el-button type="primary" size="mini">查看报告</el-button></td>
-              </tr>
-              <tr v-for="item in 2">
+              <tr v-for="item in 5">
                 <td><a href="#">RNA-Seq Demo</a></td>
                 <td>RNA-Seq</td>
                 <td>2018-06-11</td>
                 <td>test</td>
                 <td><el-tag type="warning">可开始</el-tag></td>
-                <td><el-button type="primary" size="mini">查看报告</el-button></td>
+                <td>
+                  <el-button type="danger" size="mini" @click="createExperiment()">实验设计</el-button>
+                </td>
+                <td>
+                  <el-button type="primary" size="mini">查看报告</el-button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -107,7 +89,8 @@ export default {
           "mDataProp" : "geneName"
       }],
       textareaGeneName: '',
-      textareaGeneId: ''
+      textareaGeneId: '',
+      table: null,
     }
   },
   components: {
@@ -122,7 +105,7 @@ export default {
     initTable () {
       let self = this
       $(document).ready(function() {
-          var table = $('#table').DataTable(
+          this.table = $('#table').DataTable(
           //   {
           //     "pageLength": 25,
           //     "bPaginate" : true,//分页工具条显示
@@ -149,16 +132,19 @@ export default {
         );
         })
       },
-      search () {
-        this.initTable()
-        setTimeout(() => {
-          this.table.ajax.reload()  // 重新 load table
-        }, 0)
-      },
-      clear () {
-        this.textareaGeneName = ''
-        this.textareaGeneId = ''
-      },
+    search () {
+      this.initTable()
+      setTimeout(() => {
+        this.table.ajax.reload()  // 重新 load table
+      }, 0)
+    },
+    clear () {
+      this.textareaGeneName = ''
+      this.textareaGeneId = ''
+    },
+    createExperiment () {
+      this.$router.push('/admin_create_experiment')
+    },
   }
 }
 </script>

@@ -80,7 +80,6 @@
               <th>pValue</th>
               <th>correctedPValue</th>
               <th>inputGenes</th>
-              <th>hyperlink</th>
             </tr>
           </thead>
       </table>
@@ -153,7 +152,10 @@ export default {
               }, {
                   "mDataProp" : "database"
               }, {
-                  "mDataProp" : "entryId"
+                  "mDataProp" : "entryId",
+                  "mRender" : function(data, type, full) {
+                      return "<a href='" + full.hyperlink + "' target='_blank'>"+ data +"</a>"
+                  },
               }, {
                   "mDataProp" : "inputNumber",
               }, {
@@ -166,11 +168,6 @@ export default {
                   "mDataProp" : "inputGenes",
                   "mRender" : function(data, type, full) {
                       return data.replace(/\|/g, ' ')
-                  },
-              }, {
-                  "mDataProp" : "hyperlink",
-                  "mRender" : function(data, type, full) {
-                      return "<a href='" + data + "' target='_blank'>"+ data +"</a>"
                   },
               }],
           });
