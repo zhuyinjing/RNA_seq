@@ -18,6 +18,13 @@ module.exports = {
           '/server/kobas2_entry': '/server/kobas2_entry'
         }
       },
+      '/server/enrich_bubble_diagram': {
+        target: 'http://162.105.250.248:7003',
+        changeOrigin: true,
+        pathRewrite: {
+          '/server/enrich_bubble_diagram': '/server/enrich_bubble_diagram'
+        }
+      },
       '/server': {
         target: 'https://colorseq.com',
         changeOrigin: true,

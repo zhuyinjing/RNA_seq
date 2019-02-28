@@ -8,8 +8,9 @@
       <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>{{$t('create_experiment.edit_experiment')}}</el-button>
       <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>{{$t('create_experiment.clear_experiment')}}</el-button>
     </div>
-    <div class="tableStyle">
-      <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
+    <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
+
+    <div class="">
       <table class="gridtable">
         <tr>
             <th>样本组</th><th>样本数</th><th>样本名称</th>
@@ -21,8 +22,10 @@
         </tr>
       </table>
     </div>
-    <div class="degtable">
-      <p class="p-font-style">{{$t('create_experiment.case_control')}}</p>
+
+    <br>
+
+    <div class="">
       <table class="gridtable">
         <tr>
             <th>样本数</th><th>样本名称</th>

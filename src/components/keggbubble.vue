@@ -14,6 +14,59 @@
 
         <h2>{{$t('leftMenu.kegg')}}</h2>
 
+        <h4>Choose Databases:</h4>
+        <el-row>
+          <el-col :span="8">
+              <el-row>
+                <el-col :span="24">
+                  <h4>Pathway</h4>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="KEGG PATHWAY">KEGG PATHWAY</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="Reactome">Reactome</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="BioCyc">BioCyc</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="PANTHER">PANTHER</el-radio>
+                </el-col>
+              </el-row>
+          </el-col>
+          <el-col :span="8">
+            <el-col :span="24">
+              <h4>Disease</h4>
+            </el-col>
+              <el-row>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="OMIM">OMIM</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="KEGG DISEASE">KEGG DISEASE</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="NHGRI GWAS Catalog">NHGRI GWAS Catalog</el-radio>
+                </el-col>
+              </el-row>
+          </el-col>
+          <el-col :span="8">
+              <el-row>
+                <el-col :span="24">
+                  <h4>GO</h4>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="Gene Ontology">Gene Ontology</el-radio>
+                </el-col>
+                <el-col :span="24">
+                  <el-radio v-model="database" label="Gene Ontology Slim">Gene Ontology Slim</el-radio>
+                </el-col>
+              </el-row>
+          </el-col>
+        </el-row>
+        <br>
+
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', 'KEGG 富集分析气泡图')">生成 PDF</el-button> -->
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['KEGG 富集分析气泡图'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -38,7 +91,8 @@ export default {
       xData: [],
       yData: [],
       tableValue: [],
-      href: ''
+      href: '',
+      database: 'KEGG PATHWAY',
     }
   },
   components: {
@@ -46,21 +100,31 @@ export default {
     imgMenuShowComp
   },
   mounted () {
-    this.axios.get('/server/enrich_bubble_diagram?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&fileType=KEGG').then((res) => {
-      this.xData = res.data.x
-      this.yData = res.data.y
-      this.tableValue = res.data.coordinateList
-      this.initD3()
-    })
+    this.getData()
+  },
+  watch: {
+    'database': 'getData'
   },
   methods: {
+    getData () {
+      this.axios.get('/server/enrich_bubble_diagram?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&database=' + this.database + '&count=' + 10).then((res) => {
+        this.xData = res.data.x
+        this.yData = res.data.y
+        this.tableValue = res.data.coordinateList
+        this.initD3()
+      })
+    },
     initD3 () {
+      let hassvg = d3.selectAll('svg')
+      if (hassvg) {
+        d3.selectAll('svg').remove()
+      }
           let self = this
           var initWidth = 1000
-          var initHeight = 1000
+          var initHeight = 1050
 
           var padding = {
-            left: 400,
+            left: 450,
             top: 40,
             right: 200,
             bottom: 80
@@ -352,5 +416,8 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+h4 {
+  margin: 0px;
 }
 </style>

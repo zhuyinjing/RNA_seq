@@ -3,6 +3,7 @@ let router = [
     path: '/sc',
     component: resolve => require(['@/views/sc/index'], resolve),
     children: [
+      // PCA
       {
         path: '',
         name: 'sc_report',
@@ -77,6 +78,12 @@ let router = [
         path: 'report_nGene_nUMI', // nGene nUMI scatter
         name: 'report_nGene_nUMI',
         component: resolve => require(['@/views/sc/report_nGene_nUMI'], resolve)
+      },
+      // CCA
+      {
+        path: 'CCA_UMI_count', // nGene nUMI scatter
+        name: 'CCA_UMI_count',
+        component: resolve => require(['@/views/sc/CCA/CCA_UMI_count'], resolve)
       },
 
     ]
