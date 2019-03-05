@@ -13,13 +13,6 @@
 
         <div :id="index + 'geneContainer'"></div>
       </div>
-      <div class="svgbox">
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['UMIcounts', index + 'umiContainer'])">{{$t('button.svg')}}</el-button>
-        <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
-
-        <div :id="index + 'umiContainer'"></div>
-      </div>
-
     </div>
 
   </div>
@@ -48,7 +41,6 @@ export default {
           let number = Object.keys(this.sample)
           number.map((sampleName) => {
             this.initGene(sampleName)
-            this.initUMI(sampleName)
           })
         } else {
           this.$message.error(res.data.message)
@@ -61,9 +53,10 @@ export default {
       if (hassvg) {
         d3.selectAll('#'+ sampleName +'geneCountsSvg').remove()
       }
+      let svgWidth = 1200, svgHeight = 500
       let width = 600, height = 500 // 每个 g 标签的宽度/高度
       let padding = {top:30,right:80,bottom:60,left:80}
-      let violinsvg = d3.select("#" + sampleName +"geneContainer").append("svg").attr("width", width).attr("height", height).attr("id", sampleName + "geneCountsSvg")
+      let violinsvg = d3.select("#" + sampleName +"geneContainer").append("svg").attr("width", svgWidth).attr("height", svgHeight).attr("id", sampleName + "geneCountsSvg")
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       let tooltip = d3.select('#container')
         .append('div')
@@ -186,32 +179,7 @@ export default {
           .text("nGene")
           .attr("font-size", "16px")
 
-    },
-    initUMI (sampleName) {
-      let self = this
-      let hassvg = d3.selectAll('#'+ sampleName +'UMIcountsSvg')._groups[0].length
-      if (hassvg) {
-        d3.selectAll('#'+ sampleName +'UMIcountsSvg').remove()
-      }
-      let width = 600, height = 500 // 每个 g 标签的宽度/高度
-      let padding = {top:30,right:80,bottom:60,left:80}
-      let violinsvg = d3.select("#"+  sampleName +"umiContainer").append("svg").attr("width", width).attr("height", height).attr("id", sampleName + sampleName + "UMIcountsSvg")
-      let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-      let tooltip = d3.select('#container')
-        .append('div')
-        .style('position', 'absolute')
-        .style('z-index', '10')
-        .style('color', '#3497db')
-        .style('visibility', 'hidden')
-        .style('font-size', '12px')
-        .style('font-weight', 'bold')
-        .text('')
-        let xData = []
-        for (let i = 0;i < this.sample[sampleName];i++) {
-          xData.push(sampleName + (i + 1))
-        }
-
-        let svg = violinsvg.append("g")
+   let svgUMI = violinsvg.append("g").attr("transform","translate("+ width +",0)")
 
         var yValueArr = this.data.umiCount.map(item => item.count)
 
@@ -220,7 +188,7 @@ export default {
           .range([ padding.left, width - padding.right ])
           .domain(xData)
           .padding(0.05)     // This is important: it is the space between 2 groups. 0 means no padding. 1 is the maximum..
-        svg.append("g")
+        svgUMI.append("g")
           .attr("transform", "translate(0" +"," + (height - padding.bottom) + ")")
           .call(d3.axisBottom(x))
 
@@ -229,7 +197,7 @@ export default {
           .domain(d3.extent(yValueArr))          // Note that here the Y scale is set manually
           .range([height - padding.bottom, padding.top]).nice()
 
-        svg.append("g")
+        svgUMI.append("g")
            .attr("transform", "translate("+ padding.left +",0)")
            .call(d3.axisLeft(y))
 
@@ -272,7 +240,7 @@ export default {
             .domain([-maxNum,maxNum])
 
           // Add the shape to this svg!
-          svg
+          svgUMI
             .selectAll("myViolin")
             .data(sumstat)
             .enter()        // So now we are working group per group
@@ -294,7 +262,7 @@ export default {
 
           let randomData = d3.range(yData.length).map(d => d3.randomUniform(x0, x1)())
 
-          svg.selectAll("g.circle")
+          svgUMI.selectAll("g.circle")
             .data(data)
             .enter()
             .append("circle")
@@ -314,10 +282,11 @@ export default {
         }
 
         // x 轴文字
-        svg.append("text")
+        svgUMI.append("text")
           .attr("transform", "translate("+ (width / 2 - 25) +", " + padding.top + ")")
           .text("nUMI")
           .attr("font-size", "16px")
+
     },
 
   }

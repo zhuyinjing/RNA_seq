@@ -81,11 +81,35 @@ let router = [
       },
       // CCA
       {
-        path: 'CCA_UMI_count', // nGene nUMI scatter
+        path: 'CCA_UMI_count',
         name: 'CCA_UMI_count',
         component: resolve => require(['@/views/sc/CCA/CCA_UMI_count'], resolve)
       },
-
+      {
+        path: 'CCA_nGene_nUMI',
+        name: 'CCA_nGene_nUMI',
+        component: resolve => require(['@/views/sc/CCA/CCA_nGene_nUMI'], resolve)
+      },
+      {
+        path: 'CCA_heterogeneous_gene',
+        name: 'CCA_heterogeneous_gene',
+        component: resolve => require(['@/views/sc/CCA/CCA_heterogeneous_gene'], resolve)
+      },
+      {
+        path: 'CCA_scatter',
+        name: 'CCA_scatter',
+        component: resolve => require(['@/views/sc/CCA/CCA_scatter'], resolve)
+      },
+      {
+        path: 'CCA_elbow',
+        name: 'CCA_elbow',
+        component: resolve => require(['@/views/sc/CCA/CCA_elbow'], resolve)
+      },
+      {
+        path: 'CCA_heatmap',
+        name: 'CCA_heatmap',
+        component: resolve => require(['@/views/sc/CCA/CCA_heatmap'], resolve)
+      },
     ]
   }
 ]

@@ -35,14 +35,14 @@
       <el-menu-item-group>
         <span slot="" class="title-style">数据质控</span>
         <router-link to="/sc/CCA_UMI_count"><el-menu-item index="CCA_UMI_count">基因与UMI数量分布</el-menu-item></router-link>
-        <router-link to="/sc/report_sequence_amount"><el-menu-item index="report_sequence_amount">基因与UMI数量相关关系</el-menu-item></router-link>
-        <router-link to="/sc/report_sequence_amount"><el-menu-item index="report_sequence_amount">基因表达量特征分布</el-menu-item></router-link>
+        <router-link to="/sc/CCA_nGene_nUMI"><el-menu-item index="CCA_nGene_nUMI">基因与UMI数量相关关系</el-menu-item></router-link>
+        <router-link to="/sc/CCA_heterogeneous_gene"><el-menu-item index="CCA_heterogeneous_gene">基因表达量特征分布</el-menu-item></router-link>
       </el-menu-item-group>
       <el-menu-item-group>
         <span slot="" class="title-style">降维分析</span>
-        <router-link to="/sc/report_viz_PCA"><el-menu-item index="report_viz_PCA">典型相关分析散点图</el-menu-item></router-link>
-        <router-link to="/sc/report_pca"><el-menu-item index="report_pca">典型相关分析肘形图</el-menu-item></router-link>
-        <router-link to="/sc/report_pca_3d"><el-menu-item index="report_pca_3d">典型相关分析热图</el-menu-item></router-link>
+        <router-link to="/sc/CCA_scatter"><el-menu-item index="CCA_scatter">典型相关分析散点图</el-menu-item></router-link>
+        <router-link to="/sc/CCA_elbow"><el-menu-item index="CCA_elbow">典型相关分析肘形图</el-menu-item></router-link>
+        <router-link to="/sc/CCA_heatmap"><el-menu-item index="CCA_heatmap">典型相关分析热图</el-menu-item></router-link>
       </el-menu-item-group>
       <el-menu-item-group>
         <span slot="" class="title-style">聚类分析</span>
