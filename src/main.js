@@ -77,6 +77,8 @@ import {
   DropdownMenu,
   DropdownItem,
   DatePicker,
+  Carousel,
+  CarouselItem,
 } from 'element-ui';
 
 HighchartsMore(Highcharts)
@@ -122,6 +124,8 @@ Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Loading.directive);
 Vue.use(DatePicker);
+Vue.use(Carousel);
+Vue.use(CarouselItem);
 
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;
@@ -198,6 +202,9 @@ if (sessionStorage.menuShow) {
 }
 if (sessionStorage.appmenuShow) {
   store.state.appmenuShow = JSON.parse(sessionStorage.appmenuShow)
+}
+if (sessionStorage.projectType) {
+  store.state.projectType = sessionStorage.projectType
 }
 
 axios.get('/getUser').then((res) => {

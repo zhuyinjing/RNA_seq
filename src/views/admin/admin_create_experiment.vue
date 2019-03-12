@@ -6,74 +6,68 @@
     <p>{{$t('project_list.project_name')}}: {{this.$store.state.projectName}}</p>
     <div class="">
       <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>{{$t('create_experiment.edit_experiment')}}</el-button>
-      <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>{{$t('create_experiment.clear_experiment')}}</el-button>
+      <!-- <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>{{$t('create_experiment.clear_experiment')}}</el-button> -->
     </div>
     <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
 
-    <div class="">
+    <div class="" v-if="$store.state.projectType === 'ScRNA_CCA'">
       <table class="gridtable">
         <tr>
             <th>样本组</th><th>样本数</th><th>样本名称</th>
         </tr>
-        <tr v-for="item in 3">
-            <td :class="{'bgcolor': item % 2 === 0 ? false: true}">{{item}}</td>
-            <td :class="{'bgcolor': item % 2 === 0 ? false: true}">{{item}}</td>
-            <td :class="{'bgcolor': item % 2 === 0 ? false: true}">{{item}}</td>
+        <tr v-for="(item, index) in experimentDesign.sampleGroups">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.groupName}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.sampleNum}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.sampleList.join(", ")}}</td>
         </tr>
       </table>
     </div>
 
-    <br>
-
-    <div class="">
+    <div class="" v-if="$store.state.projectType === 'ScRNA_PCA'">
       <table class="gridtable">
         <tr>
             <th>样本数</th><th>样本名称</th>
         </tr>
-        <tr v-for="item in 3">
-            <td :class="{'bgcolor': item % 2 === 0 ? false: true}">{{item}}</td>
-            <td :class="{'bgcolor': item % 2 === 0 ? false: true}">{{item}}</td>
+        <tr>
+            <td>{{experimentDesign.sampleNum}}</td>
+            <td>{{experimentDesign.sampleName.join(", ")}}</td>
         </tr>
       </table>
     </div>
 
     <el-dialog  :title="$t('create_experiment.edit_experiment')" :visible.sync="step1Dialog" width="50%">
-      <div class="">
-        <el-radio v-model="radioMethod" label="CCA">CCA</el-radio>
-        <el-radio v-model="radioMethod" label="PCA">PCA</el-radio>
-      </div> <br>
-      <div class="" v-show="radioMethod === 'CCA'">
+      <div class="" v-if="$store.state.projectType === 'ScRNA_CCA'">
         <el-button type="danger" @click="addCondition()">
           <i class="el-icon-circle-plus"></i>
           {{$t('create_experiment.add_condition')}}
         </el-button>
-        <div class="padding-10-5" v-for="item in CCAJson">
+        <div class="padding-10-5" v-for="(item, index) in editCCA.sampleGroups">
           样本组
           <el-input
             class="conditioninput width-100"
-            v-model="item.sample_group"
+            v-model="item.groupName"
             clearable>
           </el-input>
           样本数
           <el-input
             class="numberinput width-100"
-            v-model="item.sample_number"
+            v-model.number="item.sampleNum"
             clearable>
           </el-input>
-          <i class="el-icon-remove cursor-poiter" @click="deleteOption(item)"></i>
+          <i class="el-icon-remove cursor-poiter" @click="deleteOption(index)"></i>
         </div>
       </div>
-      <div class="" v-show="radioMethod === 'PCA'">
+      <div class="" v-if="$store.state.projectType === 'ScRNA_PCA'">
         样本数
         <el-input
           class="conditioninput width-100"
-          v-model="PCAJson.sample_number"
+          v-model.number="editPCA.sampleNum"
           clearable>
         </el-input>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="step1Dialog = false">{{$t('button.cancel')}}</el-button>
-        <el-button type="danger" @click="nextStepClick()">{{$t('button.confirm')}}</el-button>
+        <el-button type="danger" @click="createExperiment()">{{$t('button.confirm')}}</el-button>
       </div>
     </el-dialog>
 
@@ -84,140 +78,105 @@
 export default {
   data () {
     return {
-      radioMethod: 'CCA',
       step1Dialog: false,
       step2Dialog: false,
       condition: [],
       conditionNumMap: {},
       conditionList: [],
-      experiments: [],
-      message: {},
-      CCAJson: [
-        // {
-        //   sample_group: '',
-        //   number: ''
-        // },
-        // {
-        //   sample_group: '',
-        //   number: ''
-        // }
-      ],
-      PCAJson: {
-        sample_number: null,
-      }
+      experiments: null,
+      experimentDesign: {'sampleName':[]},
+      editCCA: [],
+      editPCA: [],
     }
   },
   components: {
   },
   mounted () {
-    // this.getExperiment()
+    this.getExperiment()
   },
   methods: {
     getExperiment () {
       this.axios.get('/server/experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (!res.data.message) {
-          this.message = {}
+        if (res.data.message_type === 'success') {
+          if (res.data.experimentDesign) {
+            this.experimentDesign = res.data.experimentDesign
+          } else {
+            this.$message("暂无实验设计，请编辑！")
+          }
         } else {
-          this.message = res.data.message
+          this.$message.error(res.data.message)
         }
       })
     },
     editDesign () {
-      this.condition = []
-      for (let k in this.message.conditionNumMap) {
-        let obj = {'option': k, 'number': this.message.conditionNumMap[k]}
-        this.condition.push(obj)
+      if (this.experimentDesign) {
+        if (this.$store.state.projectType === 'ScRNA_CCA') {
+          this.editCCA = JSON.parse(JSON.stringify(this.experimentDesign))
+        } else {
+          this.editPCA = JSON.parse(JSON.stringify(this.experimentDesign))
+        }
       }
       this.step1Dialog = true
     },
     addCondition () {
-      this.CCAJson.push({})
+      this.editCCA.sampleGroups.push({sampleGroups: '', groupNum: null})
     },
-    nextStepClick () {
-      console.log(this.CCAJson);
-      return
-      if (this.condition.length < 2) {
-        this.$message.error('实验条件的数量需要大于2个!');
-        return
-      }
-      this.conditionList = []
-      this.experiments = []
-      for (let i = 0;i < this.condition.length;i++) {
-        if (/[,.!\u3002\uff0c]/.test(this.condition[i].option)) {
-          this.$message.error('请将实验条件包含不规则字符，请重新填写!');
-          return
-        }
-        if(!this.condition[i].option || !this.condition[i].number) {
-          this.$message.error('请将实验条件和样本数目填写完整!');
-          return
-        }
-        this.conditionNumMap[this.condition[i].option] = this.condition[i].number
-        this.conditionList.push(this.condition[i].option)
-      }
-      let array = this.conditionList
-      for(let i = 0; i < array.length; i++) {
-          let a2 = array.concat()
-          a2.splice(0, i + 1)
-          for(let j = 0; j < a2.length; j++) {
-              let a3 = a2.concat()
-              a3.splice(0, j + 1)
-              this.experiments.push({'_case': array[i], '_control': a2[j]})
-          }
-      }
-      this.step2Dialog = true
-      setTimeout(() => {
-        this.step1Dialog = false
-      }, 0)
-    },
-    deleteOption (item) {
-      let index = this.CCAJson.indexOf(item)
-      this.CCAJson.splice(index, 1)
-    },
-    deleteVs (item) {
-      let index = this.experiments.indexOf(item)
-      this.experiments.splice(index, 1)
-    },
-    refresh (item) {
-      let k = item['_case']
-      let v = item['_control']
-      item['_case'] = v
-      item['_control'] = k
+    deleteOption (index) {
+      this.editCCA.sampleGroups.splice(index, 1)
     },
     createExperiment () {
-      if (this.experiments.length === 0) {
-        this.$message.error('对比条件不能为空，请返回上一步重新选择！');
-        return
-      }
-      let obj = {}
-      obj.projectId = this.$store.state.projectId
-      obj.conditionNumMap = {}
-      for (let i in this.condition) {
-        obj.conditionNumMap[this.condition[i]['option']] = this.condition[i]['number']
-      }
-      obj.nameSampleMap = {}
-      for(let i = 0; i < this.condition.length; i++) {
-        for(let j = 1; j <= this.condition[i]['number']; j++) {
-          let key = this.condition[i]['option'] + '_' + j
-          obj.nameSampleMap[key] = {
-            'name': key,
-            'condition': this.condition[i]['option'],
-            'readPairList': []
+      if (this.$store.state.projectType === 'ScRNA_CCA') {
+        if (this.editCCA.sampleGroups.length === 0) { // 不填写条件
+          this.$message.error('请填写完整信息！')
+          return
+        }
+        let flag = this.editCCA.sampleGroups.some(item => !item.groupName || !item.sampleNum) // 条件中有一项为空
+        if (flag === true) {
+          this.$message.error('请填写完整信息！')
+          return
+        }
+
+        let obj = {}
+        this.editCCA.sampleGroups.map(item => {
+          obj[item.groupName] = [...new Array(item.sampleNum)].map((k,i) => item.groupName + (i + 1))
+        })
+
+        let formData = new FormData()
+        formData.append('username', this.$store.state.username)
+
+        formData.append('p', this.$store.state.projectId)
+        formData.append('experimentObjectString', JSON.stringify(obj))
+        this.axios.post('/server/create_experiment', formData).then((res) => {
+          if(res.data.message_type === 'success') {
+            this.$message.success(res.data.message)
+            this.getExperiment()
+          } else {
+            this.$message.error('请求异常！')
           }
+          this.step1Dialog = false
+        })
+      } else {
+        if (!this.editPCA.sampleNum) { // 不填写条件
+          this.$message.error('请填写完整信息！')
+          return
         }
+        // 构建样本名称 [s1,s2...]
+        let sampleArr = [...new Array(this.editPCA.sampleNum)].map((k,i) => 'S' + (i + 1))
+
+        let formData = new FormData()
+        formData.append('username', this.$store.state.username)
+        formData.append('p', this.$store.state.projectId)
+        formData.append('experimentObjectString', JSON.stringify(sampleArr))
+        this.axios.post('/server/create_experiment', formData).then((res) => {
+          if(res.data.message_type === 'success') {
+            this.$message.success(res.data.message)
+            this.getExperiment()
+          } else {
+            this.$message.error('请求异常！')
+          }
+          this.step1Dialog = false
+        })
       }
-      obj.experiments = this.experiments
-      let formData = new FormData()
-      formData.append('username', this.$store.state.username)
-      formData.append('p', this.$store.state.projectId)
-      formData.append('experimentObjectString', JSON.stringify(obj))
-      this.axios.post('/server/create_experiment', formData).then((res) => {
-        if(res.data.message_type === 'success') {
-          this.message = res.data.message
-        } else {
-          this.$message.error('请求异常！');
-        }
-        this.step2Dialog = false
-      })
     },
     clearDesign () {
       this.$confirm('确认清空该实验设计吗?', '提示', {

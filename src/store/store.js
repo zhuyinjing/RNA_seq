@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     username: 'test',
-    role: 'user',
+    role: 'admin',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -44,6 +44,7 @@ export default new Vuex.Store({
       'Thale cress (Arabidopsis thaliana)': 3702
     },
     svgDescribeShow: false,
+    projectType: null,
   },
   mutations: {
     setusername: (state, data) => {
@@ -108,6 +109,10 @@ export default new Vuex.Store({
     setappmenuShow: (state, data) => {
       sessionStorage.setItem('appmenuShow', data)
       state.appmenuShow = data
+    },
+    setprojectType: (state, data) => {
+      sessionStorage.setItem('projectType', data)
+      state.projectType = data
     },
     // d3savePDF: (state, data) => {
     //   let that = this

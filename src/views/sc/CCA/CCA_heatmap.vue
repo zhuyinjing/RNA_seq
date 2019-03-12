@@ -12,10 +12,10 @@
     <el-button type="primary" size="small" @click="getData()">{{$t('button.confirm')}}</el-button>
     <el-button type="info" size="small" @click="pcArr = []">{{$t('button.clear')}}</el-button>
 
-    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'd3container'])">{{$t('button.svg')}}</el-button>
+    <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['heatmap', 'heatmapContainer'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
-    <div id="d3container"></div>
+    <div id="heatmapContainer"></div>
 
   </div>
 </template>
@@ -66,7 +66,7 @@ export default {
       let width = 5, height = 15  // 每个 rect 的宽度/高度
       let number = this.pcArr.length > 2 ? 3 : this.pcArr.length // 一行显示几个图，默认为 3，小于 3 则按 个数显示
       let xData = this.data[this.pcArr[0]].cellIdList
-      let heatmapsvg = d3.select("#d3container").append("svg").attr("width", (width * xData.length + padding.left + padding.right) * number).attr("height", ((height * this.data[this.pcArr[0]].geneIdList.length + padding.top + padding.bottom) * Math.ceil(this.pcArr.length / number))).attr("id", "heatmapsvg")
+      let heatmapsvg = d3.select("#heatmapContainer").append("svg").attr("width", (width * xData.length + padding.left + padding.right) * number).attr("height", ((height * this.data[this.pcArr[0]].geneIdList.length + padding.top + padding.bottom) * Math.ceil(this.pcArr.length / number))).attr("id", "heatmapsvg")
       let tooltip = d3.select('#container')
       	.append('div')
       	.style('position', 'absolute')

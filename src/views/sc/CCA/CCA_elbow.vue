@@ -5,9 +5,20 @@
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['pc_elbow_plot', 'd3container'])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
-    <div id="d3container"></div>
 
-    <div class="clear"></div>
+    <!-- <div id="d3container"></div> -->
+
+    <el-carousel style="width:900px" height="620px" arrow="always" indicator-position="outside" trigger="click" :autoplay="false" @change="change">
+      <el-carousel-item >
+        <div id="d3container"></div>
+      </el-carousel-item>
+      <el-carousel-item >
+      2
+      </el-carousel-item>
+      <el-carousel-item >
+      3
+      </el-carousel-item>
+    </el-carousel>
 
   </div>
 </template>
@@ -27,6 +38,9 @@ export default {
     this.initData()
   },
   methods: {
+    change (last, next) {
+      // console.log(last,next);
+    },
     initData () {
       this.axios.get('/singel_cell/server/get_sdev_of_pc?username='+ this.$store.state.username +'&p=' + this.$store.state.projectId).then((res) => {
         if (res.data.message_type === 'success') {
@@ -73,16 +87,16 @@ export default {
           .curve(d3.curveMonotoneX) // apply smoothing to the line
 
       let krr = [{pcNum:2,standardDeviation:10,id:'cc'},{pcNum:6,standardDeviation:12,id:'cc'},{pcNum:4,standardDeviation:11,id:'pc'},{pcNum:8,standardDeviation:4,id:'pc'}]
-      scattersvg
-          .selectAll('.line-group')
-          .data(['cc','pc']).enter()
-          .append('g')
-          .append("path")
-          // .datum(data) // 10 . Binds data to the line
-          .attr("d", (d) => line(krr.filter(item => item.id === d)))
-          .attr("fill", "none")
-          .attr("stroke", (d,i) => colorScale(i))
-          .attr("stroke-width", "3")
+      // scattersvg
+      //     .selectAll('.line-group')
+      //     .data(['cc','pc']).enter()
+      //     .append('g')
+      //     .append("path")
+      //     // .datum(data) // 10 . Binds data to the line
+      //     .attr("d", (d) => line(krr.filter(item => item.id === d)))
+      //     .attr("fill", "none")
+      //     .attr("stroke", (d,i) => colorScale(i))
+      //     .attr("stroke-width", "3")
 
       // svg 被 rect 围住
       var circle = scattersvg.selectAll("circle")
@@ -150,5 +164,21 @@ export default {
 }
 #d3container {
   white-space: nowrap;
+}
+</style>
+<style media="screen">
+.el-carousel__arrow {
+  top: 100% !important;
+}
+.el-carousel__arrow--right {
+  right: 45% !important;
+  /* background: #409eff !important; */
+}
+.el-carousel__arrow--left {
+  left: 45% !important;
+  /* background: #409eff !important; */
+}
+.el-carousel__indicators--outside button {
+  display: none !important;
 }
 </style>

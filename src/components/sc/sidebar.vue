@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-menu v-show="type === 'PCA'" style="padding: 0 10px;" :default-active="$route.name" class="el-menu-vertical-demo">
+    <el-menu v-if="type === 'PCA'" style="padding: 0 10px;" :default-active="$route.name" class="el-menu-vertical-demo">
       <router-link to="/sc"><el-menu-item index="sc_report">报告首页</el-menu-item></router-link>
       <el-menu-item-group>
         <span slot="" class="title-style">测序数据分布统计</span>
@@ -30,7 +30,7 @@
       </el-menu-item-group>
     </el-menu>
 
-    <el-menu v-show="type === 'CCA'" style="padding: 0 10px;" :default-active="$route.name" class="el-menu-vertical-demo">
+    <el-menu v-if="type === 'CCA'" style="padding: 0 10px;" :default-active="$route.name" class="el-menu-vertical-demo">
       <router-link to="/sc"><el-menu-item index="sc_report">报告首页</el-menu-item></router-link>
       <el-menu-item-group>
         <span slot="" class="title-style">数据质控</span>
