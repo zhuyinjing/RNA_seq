@@ -75,7 +75,6 @@ export default {
         species: 'Human (Homo sapiens)',
         type: 'rnaseq'
       },
-      speciesList: ['homo_sapiens', 'ictidomys_tridecemlineatus', 'glycine_max'],
       typeList: ['rnaseq'],
       deleteId: ''
     }

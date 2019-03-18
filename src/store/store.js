@@ -7,8 +7,8 @@ import Vue from 'vue'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    username: 'test',
-    role: 'admin',
+    username: '',
+    role: 'user',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -37,11 +37,12 @@ export default new Vuex.Store({
     menuShow: true,
     appmenuShow: true,
     speciesArr: {
+      'Fruit Fly': 7227,
       'Human (Homo sapiens)': 9606,
       'Mouse (Mus musculus)': 10090,
       'Soybean (Clycine max)': 3847,
-      'Zebrafish (Danio rerio)': 7955,
-      'Thale cress (Arabidopsis thaliana)': 3702
+      'Thale cress (Arabidopsis thaliana)': 3702,
+      'Zebrafish (Danio rerio)': 7955
     },
     svgDescribeShow: false,
     projectType: null,
