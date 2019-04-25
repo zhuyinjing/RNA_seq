@@ -79,7 +79,6 @@
               <th>backgroundNumber</th>
               <th>pValue</th>
               <th>correctedPValue</th>
-              <th>inputGenes</th>
             </tr>
           </thead>
       </table>
@@ -164,11 +163,6 @@ export default {
                   "mDataProp" : "pValue"
               }, {
                   "mDataProp" : "correctedPValue"
-              }, {
-                  "mDataProp" : "inputGenes",
-                  "mRender" : function(data, type, full) {
-                      return data.replace(/\|/g, ' ')
-                  },
               }],
           });
 

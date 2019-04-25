@@ -7,7 +7,7 @@
     <el-tabs type="border-card">
       <el-tab-pane :label="$t('upload_file.import_server_side')">
         <el-input v-model="path" clearable></el-input> <br><br>
-        <el-button type="primary" @click="uploadPath()">{{$t('upload_file.upload')}}</el-button>
+        <el-button type="primary" @click="uploadPath()">{{$t('upload_file.import')}}</el-button>
       </el-tab-pane>
       <el-tab-pane :label="$t('upload_file.upload_file')">
         <div class="margin-top-10">
