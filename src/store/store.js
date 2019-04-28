@@ -37,7 +37,7 @@ export default new Vuex.Store({
     menuShow: true,
     appmenuShow: true,
     speciesArr: {
-      'Fruit Fly': 7227,
+      'Fruit Fly (Drosophila melanogaster)': 7227,
       'Human (Homo sapiens)': 9606,
       'Mouse (Mus musculus)': 10090,
       'Soybean (Clycine max)': 3847,
