@@ -97,8 +97,6 @@ export default {
         node, link,
         brushMode, brush, zoomLayer, brushLayer; //intercation canvas: Brush + zoom
 
-      var color = d3.scaleOrdinal(d3.schemeCategory20);
-
       if (this.singleGeneShow === false) {
         var simulation = d3.forceSimulation()
           .force("link", d3.forceLink().id(function(d) {
@@ -294,12 +292,14 @@ export default {
             .on("drag", dragged)
             .on("end", dragended));
 
+
       simulation
         .nodes(graph.nodes)
         .on("tick", ticked);
 
       simulation.force("link")
         .links(graph.links)
+
 
       function ticked() {
         link
@@ -369,6 +369,7 @@ export default {
           d.picked = d.previouslyPicked = false;
         })
       }
+
       d3.selectAll(".links").selectAll("line").style("stroke", "#999").style("stroke-opacity", 0.6)
     },
   }

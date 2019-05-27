@@ -42,7 +42,8 @@ export default new Vuex.Store({
       'Mouse (Mus musculus)': 10090,
       'Soybean (Clycine max)': 3847,
       'Thale cress (Arabidopsis thaliana)': 3702,
-      'Zebrafish (Danio rerio)': 7955
+      'Zebrafish (Danio rerio)': 7955,
+      'Rat (Rattus norvegicus)': 10116
     },
     svgDescribeShow: false,
     projectType: null,

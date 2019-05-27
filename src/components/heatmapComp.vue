@@ -193,7 +193,6 @@ export default {
                   for (var m = 0; m < stages.length; ++ m) {
                       class2values[stages[m]] = [];
                   }
-
                   var max_y = min_y + target_element.height() - dendrogram.footer_height;
                   var i, j, values, row_id, key;
                   //var header = dendrogram.header;

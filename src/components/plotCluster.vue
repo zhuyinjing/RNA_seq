@@ -158,6 +158,7 @@ export default {
             .style("font-family", "Consolas, Monaco, monospace")
             .attr("transform", "translate("+ (gridSize * (self.yData.length) + 10) +"," + ""+ (gridHeight / 2) +")")
             .attr('class', 'ySum')
+
         rightArea.selectAll(".score")
             .data(self.tableValue)
             .enter()
@@ -200,6 +201,7 @@ export default {
 
       function linkVariable(d) {
         return linkStep(d.source.x, d.source.radius, d.target.x, d.target.radius);
+        // return linkStep(d.target.radius, d.target.x, d.source.radius, d.source.x); // x 轴聚类
       }
 
       function linkConstant(d) {
@@ -208,6 +210,7 @@ export default {
 
       function linkExtensionVariable(d) {
         return linkStep(d.target.x, d.target.radius, d.target.x, innerRadius);
+        // return linkStep(innerRadius, d.target.x, d.target.radius, d.target.x); // x 轴聚类
       }
 
       function linkExtensionConstant(d) {

@@ -181,6 +181,7 @@ export default {
           return tooltip.style('visibility', 'hidden')
         })
 
+
       g.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + height + ")")

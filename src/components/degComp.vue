@@ -69,11 +69,11 @@ export default {
       formData.append('caseSample', this.$store.state._case)
       formData.append('controlSample', this.$store.state._control)
       this.axios.post('/server/ppi_chord_plot.app.for_report', formData).then((res) => {
-        if (res.data.message_type === 'warn') {
-          this.$message.error(res.data.message)
-        } else {
+        if (res.data.message_type === 'success') {
           this.$store.commit('setppiJson', res.data.message)
           this.$router.push({'name': 'ppi_chord_plot'})
+        } else {
+          this.$message.error(res.data.message)
         }
       })
     },

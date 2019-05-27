@@ -12,28 +12,28 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/server/kobas2_entry': {
-        target: 'http://162.105.250.248:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server/kobas2_entry': '/server/kobas2_entry'
         }
       },
       '/server/enrich_bubble_diagram': {
-        target: 'http://162.105.250.248:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server/enrich_bubble_diagram': '/server/enrich_bubble_diagram'
         }
       },
       '/server': {
-        target: 'http://10.10.10.6:8089',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server': '/server/'
         }
       },
       '/singel_cell': {
-        target: 'http://10.10.10.6:8089',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/singel_cell': '/singel_cell/'

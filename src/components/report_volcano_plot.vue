@@ -154,14 +154,14 @@ export default {
   data () {
     return {
       rangeShow: false,
-      showNum: 3000,
+      showNum: 20000,
       arr: [],
       xvalueShow: true,
       geneNameShow: false,
       xLeft: 1,
       yTop: 0,
-      xmin: -3,
-      xmax: 3,
+      xmin: -5,
+      xmax: 5,
       ymin: 0,
       ymax: 12,
       radius: 1.8,
@@ -206,7 +206,7 @@ export default {
     getDataReset () {
       this.xvalueShow = true
       this.geneNameShow = false
-      this.showNum = 3000
+      this.showNum = 20000
       this.xLeft = 1
       this.yTop = 2
       this.xmin = -3
