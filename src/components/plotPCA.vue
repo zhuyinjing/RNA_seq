@@ -28,7 +28,7 @@
         &nbsp;&nbsp;&nbsp;
         {{$t('d3.opacity')}}：<el-input-number size="mini" v-model="opacity" :step="0.1" :min="0" @change="initD3()"></el-input-number>&nbsp;
         <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '样本聚类')">生成 PDF</el-button> -->
-        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['样本聚类'])">{{$t('button.svg')}}</el-button>
+        <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['PCA'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div class="margin-top-10" id="d3container"></div>

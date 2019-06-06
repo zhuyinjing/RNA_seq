@@ -108,7 +108,7 @@ export default {
         center: true
       }).then(() => {
         sessionStorage.removeItem('navbarItem')
-        window.location.href = 'https://colorseq.com/logout'
+        window.location.href = document.location.origin +'/logout'
       }).catch(() => {});
     },
   }

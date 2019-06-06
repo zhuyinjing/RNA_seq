@@ -102,7 +102,7 @@ export default {
       })
     },
     login () {
-      window.location.href = 'https://colorseq.com/login'
+      window.location.href = document.location.origin + '/login'
     },
     createClick () {
       if (!this.form.name) {

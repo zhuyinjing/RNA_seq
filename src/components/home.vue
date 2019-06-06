@@ -45,9 +45,6 @@ export default {
   mounted () {
   },
   methods: {
-    // login () {
-    //   this.$refs.loginDiv.loginDialog = true
-    // },
     project_list () {
       if (this.$store.state.role === 'admin') {
         bus.$emit("handleSelect","admin_project_list")

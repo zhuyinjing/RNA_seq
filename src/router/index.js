@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import singleCellRouter from './single_cell_router'
 import adminRouter from './admin_router'
 
 Vue.use(Router)
@@ -182,7 +181,6 @@ export default new Router({
       name: 'app_force',
       component: resolve => require(['@/components/app_force'], resolve)
     },
-    ...singleCellRouter,
     ...adminRouter
   ]
 })
