@@ -6,6 +6,8 @@
     <el-menu-item index="project" v-if="$store.state.role !== 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="admin_project_list" v-if="$store.state.role === 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
+    <el-menu-item index="admin_species_config">物种配置信息</el-menu-item>
+    <a href="http://www.eclickgene.com/" target="_blank" class="alink">易点基因</a>
   </el-menu>
   <div class="userDiv" v-show="$store.state.username">
     <el-dropdown trigger="click" @command="changeLocale">
@@ -98,6 +100,13 @@ export default {
             'path': '/admin'
           })
           break
+        case 'admin_species_config':
+        this.activeIndex = 'admin_species_config'
+        localStorage.setItem('navbarItem', 'admin_species_config')
+        this.$router.push({
+          'path': '/admin_species_config'
+        })
+        break
       }
     },
     logout() {
@@ -136,5 +145,18 @@ export default {
   }
 .el-icon-arrow-down {
   font-size: 12px;
+}
+.alink {
+  text-decoration: none;
+  out-line: none !important;
+  line-height: 60px;
+  color: #909399;
+  margin-left: 20px;
+}
+.alink:focus {
+  outline-style:none; -moz-outline-style: none;
+}
+.alink:hover {
+  color: #303133;
 }
 </style>

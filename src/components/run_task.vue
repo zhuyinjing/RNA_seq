@@ -42,6 +42,7 @@ export default {
       loading: null,
       logContent: '',
       timerLog: null,
+      type: null
     }
   },
   components: {
@@ -75,6 +76,7 @@ export default {
           this.runBtnShow = true
           this.refreshBtnShow = false
         }
+        this.type = res.data.project.type
         this.currentStepSn = res.data.message.currentStepSn
         this.status = res.data.message.status
         if (this.status === 300) {
@@ -99,11 +101,15 @@ export default {
 
       var FINISHED = 300;
 
-      var pipeline = [
-              "FastQC", "Mapping", "Assembling", "Quantification", "DEG"
-          ];
+      var pipeline = []
 
-      var arrows = [1, 1, 1, 1];
+      if (this.type === 'DEG') {
+        pipeline = ["DEG"]
+      } else {
+        pipeline = ["FastQC", "Mapping", "Assembling", "Quantification", "DEG"]
+      }
+
+      var arrows = new Array(pipeline.length - 1).fill(1);
 
       var padding = {
           top: 30,

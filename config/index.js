@@ -39,6 +39,13 @@ module.exports = {
           '/singel_cell': '/singel_cell/'
         }
       },
+      '/admin': {
+        target: 'http://10.10.10.6:7003',
+        changeOrigin: true,
+        pathRewrite: {
+          '/admin': '/admin/'
+        }
+      },
     },
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

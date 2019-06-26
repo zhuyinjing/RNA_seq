@@ -138,7 +138,7 @@ export default {
       var height2 = initHeight - padding.top - padding.bottom
 
       // color 配色
-      var colorRandom = d3.scaleOrdinal(d3.schemeCategory20)
+      var colorRandom = d3.scaleOrdinal(d3.schemeCategory10)
 
       let tooltip = d3.select('body')
       	.append('div')
@@ -243,7 +243,7 @@ export default {
             .tickFormat("")
           )
         // color 配色
-        var colorRandom = d3.scaleOrdinal(d3.schemeCategory20)
+        var colorRandom = d3.scaleOrdinal(d3.schemeCategory10)
         //添加circle包裹层，有几种类型添加几个
         var cover = svg.append("g")
 
