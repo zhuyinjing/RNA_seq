@@ -109,6 +109,10 @@
         </el-card>
         <br>
 
+        <a :href="fileUrl" download ref="downloadA"></a>
+
+        <el-button size="" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+
         <!-- <div class="overflow-auto"> -->
         <div class="">
           <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
@@ -168,6 +172,8 @@ export default {
       codingProbabilityEnd: null,
       coding: false,
       noncoding: false,
+      fileUrl: '',
+      filterArgObj: {}, // 用来保存点击筛选后的条件
     }
   },
   components: {
@@ -209,6 +215,8 @@ export default {
         return res;
     },
     initTable () {
+      let self = this
+
       this.genetextarea = this.genetextarea.replace(/\s/g,'')
       let exonNumStart = this.exonNumStart?this.exonNumStart:0
       let exonNumEnd = this.exonNumEnd?this.exonNumEnd:2147483647
@@ -230,7 +238,20 @@ export default {
       } else {
         codingtemp.join(',')
       }
-      let self = this
+
+      // 保存筛选条件
+      this.filterArgObj['gene'] = this.genetextarea
+      this.filterArgObj['referenceTranscriptId'] = this.referenceTranscriptIdtextarea
+      this.filterArgObj['classCode'] = this.classCodetextarea
+      this.filterArgObj['exonNumStart'] = exonNumStart
+      this.filterArgObj['exonNumEnd'] = exonNumEnd
+      this.filterArgObj['transcriptLengthStart'] = transcriptLengthStart
+      this.filterArgObj['transcriptLengthEnd'] = transcriptLengthEnd
+      this.filterArgObj['codingProbabilityStart'] = codingProbabilityStart
+      this.filterArgObj['codingProbabilityEnd'] = codingProbabilityEnd
+      this.filterArgObj['peptideLengthStart'] = peptideLengthStart
+      this.filterArgObj['peptideLengthEnd'] = peptideLengthEnd
+      this.filterArgObj['label'] = codingtemp
 
       $(document).ready(function() {
           var table = $('#patients').DataTable({
@@ -350,6 +371,14 @@ export default {
         this.codingProbabilityEnd = null
         this.coding = false
         this.noncoding = false
+      },
+      exportTable () {
+        this.axios.get("/server/export_transcripts?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username + "&gene=" + this.filterArgObj.gene + "&referenceTranscriptId=" + this.filterArgObj.referenceTranscriptId + "&classCode=" + this.filterArgObj.classCode + "&exonNumStart=" + this.filterArgObj.exonNumStart + "&exonNumEnd=" + this.filterArgObj.exonNumEnd + "&transcriptLengthStart=" + this.filterArgObj.transcriptLengthStart + "&transcriptLengthEnd=" + this.filterArgObj.transcriptLengthEnd + "&peptideLengthStart=" + this.filterArgObj.peptideLengthStart + "&peptideLengthEnd=" + this.filterArgObj.peptideLengthEnd + "&codingProbabilityStart=" + this.filterArgObj.codingProbabilityStart + "&codingProbabilityEnd=" + this.filterArgObj.codingProbabilityEnd + "&label=" + this.filterArgObj.label).then(res => {
+          this.fileUrl = res.data.filePath
+          setTimeout(() => {
+            this.$refs.downloadA.click()
+          }, 0)
+        })
       },
   }
 }
