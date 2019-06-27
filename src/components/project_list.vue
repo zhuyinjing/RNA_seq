@@ -82,6 +82,14 @@ export default {
   components: {
     login
   },
+  created () {
+    this.axios.get('/server/get_species_info?username=' + this.$store.state.username).then(res => {
+      if (res.data.message_type === 'success') {
+        this.form.species = Object.keys(res.data.speciesInfo)[0] // 默认显示第一个
+        this.$store.commit('setspeciesArr', res.data.speciesInfo)
+      }
+    })
+  },
   mounted () {
     if (!this.$store.state.username) {
       this.loginBtnShow = true

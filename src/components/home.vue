@@ -58,8 +58,7 @@ export default {
 
 <style scoped="true">
 .imgStyle {
-  width: 280px;
-  height: 200px;
+  width: 350px;
   margin: 10px auto;
 }
 .textStyle {

@@ -38,18 +38,21 @@ export default new Vuex.Store({
     menuShow: true,
     appmenuShow: true,
     speciesArr: {
-      'Fruit Fly (Drosophila melanogaster)': 7227,
-      'Human (Homo sapiens)': 9606,
-      'Mouse (Mus musculus)': 10090,
-      'Soybean (Clycine max)': 3847,
-      'Thale cress (Arabidopsis thaliana)': 3702,
-      'Zebrafish (Danio rerio)': 7955,
-      'Rat (Rattus norvegicus)': 10116
+      // 'Fruit Fly (Drosophila melanogaster)': 7227,
+      // 'Human (Homo sapiens)': 9606,
+      // 'Mouse (Mus musculus)': 10090,
+      // 'Soybean (Clycine max)': 3847,
+      // 'Thale cress (Arabidopsis thaliana)': 3702,
+      // 'Zebrafish (Danio rerio)': 7955,
+      // 'Rat (Rattus norvegicus)': 10116
     },
     svgDescribeShow: false,
     projectType: null,
   },
   mutations: {
+    setspeciesArr: (state, data) => {
+      state.speciesArr = data
+    },
     setusername: (state, data) => {
       sessionStorage.setItem('username', data)
       state.username = data

@@ -29,6 +29,9 @@
           <el-form-item label="Common Name" prop="commonName">
             <el-input v-model.number="ruleForm2.commonName"></el-input>
           </el-form-item>
+          <el-form-item label="keggOrgCode" prop="keggOrgCode">
+            <el-input v-model.number="ruleForm2.keggOrgCode"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm2('ruleForm2')">提交</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
@@ -81,7 +84,8 @@ export default {
         ruleForm2: {
           id: '',
           latinName: '',
-          commonName: ''
+          commonName: '',
+          keggOrgCode: ''
         },
         rules2: {
           id: [
@@ -91,6 +95,9 @@ export default {
             { validator: validateNotNull, trigger: 'blur' }
           ],
           commonName: [
+            { validator: validateNotNull, trigger: 'blur' }
+          ],
+          keggOrgCode: [
             { validator: validateNotNull, trigger: 'blur' }
           ]
         },
@@ -119,7 +126,7 @@ export default {
       submitForm2(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.axios.get('/admin/create_species_info?username=' + this.$store.state.username + '&speciesId=' + this.ruleForm2.id + '&commonName=' + this.ruleForm2.commonName + '&commonName=' + this.ruleForm2.commonName).then(res => {
+            this.axios.get('/admin/create_species_info?username=' + this.$store.state.username + '&speciesId=' + this.ruleForm2.id + '&commonName=' + this.ruleForm2.commonName + '&commonName=' + this.ruleForm2.commonName + '&keggOrgCode=' + this.ruleForm2.keggOrgCode).then(res => {
               this.$message.info(res.data.message)
             })
           } else {
