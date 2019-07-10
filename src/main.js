@@ -156,6 +156,9 @@ request.onerror = (e) => {
 if (sessionStorage.username) {
   store.state.username = sessionStorage.username
 }
+if (sessionStorage.role) {
+  store.state.role = sessionStorage.role
+}
 if (sessionStorage.projectId) {
   store.state.projectId = sessionStorage.projectId
 }

@@ -29,17 +29,26 @@ export default new Router({
     {
       path: '/create_experiment',
       name: 'create_experiment',
-      component: resolve => require(['@/components/create_experiment'], resolve)
+      component: resolve => require(['@/components/create_experiment'], resolve),
+      meta: {
+        role: 'ADMIN'
+      }
     },
     {
       path: '/upload_file',
       name: 'upload_file',
-      component: resolve => require(['@/components/upload_file'], resolve)
+      component: resolve => require(['@/components/upload_file'], resolve),
+      meta: {
+        role: 'ADMIN'
+      }
     },
     {
       path: '/run_task',
       name: 'run_task',
-      component: resolve => require(['@/components/run_task'], resolve)
+      component: resolve => require(['@/components/run_task'], resolve),
+      meta: {
+        role: 'ADMIN'
+      }
     },
     {
       path: '/report',

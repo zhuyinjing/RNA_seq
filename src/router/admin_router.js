@@ -4,7 +4,7 @@ let router = [
     name: 'admin',
     component: resolve => require(['@/views/admin/project_list'], resolve),
     meta: {
-      role: 'admin'
+      role: 'ADMIN'
     }
   },
   {
@@ -12,7 +12,7 @@ let router = [
     name: 'admin_create_experiment',
     component: resolve => require(['@/views/admin/admin_create_experiment'], resolve),
     meta: {
-      role: 'admin'
+      role: 'ADMIN'
     }
   },
   {

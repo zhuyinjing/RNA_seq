@@ -19,7 +19,7 @@
             <el-col :span="2"><div class="grid-content bg-purple line-height-40">项目类型</div></el-col>
             <el-col :span="4"><div class="grid-content bg-purple">
               <el-select v-model="type" placeholder="请选择" clearable>
-                <el-option v-for="item in typeList" :value="item" :label="item"></el-option>
+                <el-option v-for="item in typeList" :value="item" :label="item" :key="item"></el-option>
               </el-select>
             </div></el-col>
             <el-col :span="4"><div class="grid-content bg-purple line-height-40">

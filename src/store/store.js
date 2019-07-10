@@ -50,6 +50,7 @@ export default new Vuex.Store({
       state.username = data
     },
     setrole: (state, data) => {
+      sessionStorage.setItem('role', data)
       state.role = data
     },
     setprojectId: (state, data) => {
