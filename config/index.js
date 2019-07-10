@@ -45,7 +45,7 @@ module.exports = {
         pathRewrite: {
           '/admin': '/admin/'
         }
-      },
+      }
     },
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

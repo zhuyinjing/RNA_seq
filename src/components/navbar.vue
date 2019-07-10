@@ -2,11 +2,9 @@
 <div>
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
     <el-menu-item index="home">{{$t('navbar.home')}}</el-menu-item>
-    <!-- <el-menu-item index="sc">单细胞</el-menu-item> -->
-    <el-menu-item index="project" v-if="$store.state.role !== 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
-    <el-menu-item index="admin_project_list" v-if="$store.state.role === 'admin'">{{$t('navbar.project_list')}}</el-menu-item>
+    <el-menu-item index="project">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
-    <el-menu-item index="admin_species_config">物种配置信息</el-menu-item>
+    <el-menu-item index="admin_species_config" v-if="$store.state.role === 'ADMIN'">物种配置信息</el-menu-item>
     <a href="http://www.eclickgene.com/" target="_blank" class="alink">易点基因</a>
   </el-menu>
   <div class="userDiv" v-show="$store.state.username">

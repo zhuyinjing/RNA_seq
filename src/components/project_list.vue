@@ -1,34 +1,55 @@
 <template>
-  <div class="">
-    <div class="textStyle" v-if="loginBtnShow">
-      <el-card class="box-card">
-        <div class="text item">
-          请先登录后再查看！
-        </div>
-        <el-button type="danger" @click="login()">登录</el-button>
-      </el-card>
-    </div>
-    <div class="min-width-div" v-if="projectShow">
-      <div class="createbtn">
-        <el-button type="primary" plain @click="createProjectDialog = true">+ {{$t('project_list.create_project')}}</el-button>
-      </div>
-      <div class="tableDiv">
-        <div class="table-item" v-for="item in projectList">
-          <div class="titleDiv">
-            {{$t('project_list.project_name')}}：{{item.name}} {{$t('project_list.create_time')}}：{{item.openTime}}
-          </div>
-          <div class="btnDiv">
-            <el-button @click="createExperiment(item)">{{$t('project_list.edit_button')}}<i class="el-icon-menu el-icon--right"></i></el-button>
-            <el-button @click="upload(item)">{{$t('project_list.upload_button')}}<i class="el-icon-upload el-icon--right"></i></el-button>
-            <el-button @click="runTask(item)">{{$t('project_list.run_button')}}<i class="el-icon-caret-right el-icon--right"></i></el-button>
-            <el-button @click="report(item)">{{$t('project_list.report_button')}}<i class="el-icon-document el-icon--right"></i></el-button>
-            <el-button class="float-right" type="danger" @click="deleteProject(item.id)">{{$t('project_list.delete_button')}}<i class="el-icon-delete el-icon--right"></i></el-button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <el-row :gutter="20">
+    <el-col :span="18" :offset="2">
+      <div class="grid-content bg-purple">
+        <br>
 
-    <login ref="loginDiv"></login>
+        <el-button type="primary" size="medium" @click="createProjectDialog = true" v-if="$store.state.role=== 'ADMIN'">+ 创建项目</el-button><br><br>
+
+        <el-card class="" shadow="hover">
+          <el-row :gutter="22">
+            <el-col :span="2"><div class="grid-content bg-purple line-height-40">项目ID</div></el-col>
+            <el-col :span="4"><div class="grid-content bg-purple">
+              <el-input v-model="projectId" placeholder="请输入内容" clearable></el-input>
+            </div></el-col>
+            <el-col :span="2"><div class="grid-content bg-purple line-height-40">项目名称</div></el-col>
+            <el-col :span="4"><div class="grid-content bg-purple">
+              <el-input v-model="projectName" placeholder="请输入内容" clearable></el-input>
+            </div></el-col>
+            <el-col :span="2"><div class="grid-content bg-purple line-height-40">项目类型</div></el-col>
+            <el-col :span="4"><div class="grid-content bg-purple">
+              <el-select v-model="type" placeholder="请选择" clearable>
+                <el-option v-for="item in typeList" :value="item" :label="item"></el-option>
+              </el-select>
+            </div></el-col>
+            <el-col :span="4"><div class="grid-content bg-purple line-height-40">
+              <el-button type="primary" size="small" @click="search()">查询</el-button>
+              <el-button type="" size="small" @click="clear()">清空</el-button>
+            </div></el-col>
+          </el-row>
+        </el-card>
+        <br>
+
+        <div class="">
+          <table id="table" cellspacing="0" width="100%" class="display table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>项目ID</th>
+                <th>项目名称</th>
+                <th>项目类型</th>
+                <th>物种</th>
+                <th>创建时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="clear">
+
+      </div>
+      </div>
+    </el-col>
 
     <el-dialog :title="$t('project_list.create_project')" :visible.sync="createProjectDialog" width="30%">
       <el-form :model="form">
@@ -57,7 +78,7 @@
       </div>
   </el-dialog>
 
-  </div>
+  </el-row>
 </template>
 <script>
 import login from '@/components/login'
@@ -65,7 +86,6 @@ export default {
   data () {
     return {
       loginBtnShow: false,
-      projectShow: false,
       createProjectDialog: false,
       projectList: null,
       form: {
@@ -73,10 +93,14 @@ export default {
         name: '',
         description: '',
         species: 'Human (Homo sapiens)',
-        type: 'rnaseq'
+        type: 'BulkRNA'
       },
-      typeList: ['rnaseq'],
-      deleteId: ''
+      typeList: ['BulkRNA', 'DEG'],
+      deleteId: '',
+      table: null,
+      projectId: '',
+      type: '',
+      projectName: ''
     }
   },
   components: {
@@ -91,23 +115,92 @@ export default {
     })
   },
   mounted () {
-    if (!this.$store.state.username) {
-      this.loginBtnShow = true
-      this.projectShow = false
-    } else {
-      this.loginBtnShow = false
-      this.projectShow = true
-      this.getProjects()
-    }
+    this.getProjects()
   },
   methods: {
+    search () {
+      this.getProjects()
+      setTimeout(() => {
+        this.table.ajax.reload()  // 重新 load table
+      }, 0)
+    },
     getProjects () {
-      this.axios.get('/server/projects?username=' + this.$store.state.username).then((res) => {
-        this.projectList = res.data.projects
-        for (let i = 0;i < this.projectList.length;i++) {
-          this.projectList[i]['openTime'] = this.projectList[i]['openTime'].split('T')[0] + ' ' + this.projectList[i]['openTime'].split('T')[1].split('.')[0]
-        }
-      })
+      let self = this
+      $(document).ready(function() {
+          this.table = $('#table').DataTable(
+            {
+              "pageLength": 25,
+              "bPaginate" : true,//分页工具条显示
+              //"sPaginationType" : "full_numbers",//分页工具条样式
+              "bStateSave" : true, //是否打开客户端状态记录功能,此功能在ajax刷新纪录的时候不会将个性化设定回复为初始化状态
+              "bScrollCollapse" : true, //当显示的数据不足以支撑表格的默认的高度
+              "bLengthChange" : true, //每页显示的记录数
+              "bFilter" : false, //搜索栏
+              "bSort" : false, //是否支持排序功能
+              "bInfo" : true, //显示表格信息
+              "bAutoWidth" : true, //自适应宽度
+              "bJQueryUI" : false,//是否开启主题
+              "bDestroy" : true,
+              "bProcessing" : true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
+              "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
+              "sAjaxDataProp" : "aData",
+              //通过ajax实现分页的url路径
+              "sAjaxSource" : "/server/projects?username=" + self.$store.state.username + '&p=' + self.projectId + '&projectName=' + self.projectName + '&type=' + self.type,
+              "aoColumns" : [
+                  {
+                    "mDataProp" : "id"
+                },
+                  {
+                    "mDataProp" : "name"
+                }, {
+                    "mDataProp" : "type"
+                }, {
+                    "mDataProp" : "speciesInfoEntity.commonName"
+                }, {
+                    "mDataProp" : "openTime",
+                    "mRender" : function(data, type, full) {
+                        let time = data.split('T')[0] + ' ' + data.split('T')[1].split('.')[0]
+                        return time
+                    }
+                }, {
+                    "mDataProp" : "id",
+                    "mRender" : function(data, type, full) {
+                        if (self.$store.state.role === 'ADMIN') {
+                          return '<button id="experimentBtn" value="'+ data + '" class="el-button el-button--info el-button--mini" @click="createExperiment()">实验设计</button>' + '<button id="uploadFileBtn" value="'+ data + '" class="el-button el-button--warning el-button--mini" @click="createExperiment()">上传文件</button>' + '<button id="runTaskBtn" value="'+ data + '" class="el-button el-button--success el-button--mini" @click="createExperiment()">运行分析</button>' + '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button>' + '<button id="deleteBtn" value="'+ data + '" class="el-button el-button--danger el-button--mini is-plain" @click="createExperiment()">'+ '<i class="el-icon-delete"></i>'+'</button>'
+                        } else {
+                          return '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button>'
+                        }
+                    }
+                }
+              ],
+            }
+          );
+          $('#table tbody').on( 'click', '#experimentBtn', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#table").dataTable().fnGetData(row)
+            self.createExperiment(data)
+          })
+          $('#table tbody').on( 'click', '#uploadFileBtn', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#table").dataTable().fnGetData(row)
+            self.upload(data)
+          })
+          $('#table tbody').on( 'click', '#runTaskBtn', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#table").dataTable().fnGetData(row)
+            self.runTask(data)
+          })
+          $('#table tbody').on( 'click', '#reportBtn', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#table").dataTable().fnGetData(row)
+            self.report(data)
+          })
+          $('#table tbody').on( 'click', '#deleteBtn', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#table").dataTable().fnGetData(row)
+            self.deleteProject(data.id)
+          })
+        })
     },
     login () {
       window.location.href = document.location.origin + '/login'
@@ -125,9 +218,10 @@ export default {
       formData.append('type', this.form.type)
       this.axios.post('/server/create_project', formData).then((res) => {
         if (res.data.message_type === 'success') {
+          this.$message.success('项目创建成功！');
           this.getProjects()
         } else {
-          this.$message.error('请求错误!');
+          this.$message.error(res.data.message);
         }
         this.form.name = ''
         this.form.description = ''
@@ -185,15 +279,24 @@ export default {
       this.$router.push({'name': 'report'})
     },
     commitStore (item) {
+      this.$store.commit('setprojectType', item.type)
       this.$store.commit('setprojectName', item.name)
       this.$store.commit('setprojectId', item.id)
       this.$store.commit('setspecies', item.speciesInfoEntity.id)
+    },
+    clear () {
+      this.projectId = ''
+      this.projectName = ''
+      this.type = ''
     },
   }
 }
 </script>
 
 <style scoped="true">
+.line-height-40 {
+  line-height: 40px;
+}
 .textStyle {
   text-align: center;
   margin-top: 20px;

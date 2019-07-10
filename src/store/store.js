@@ -9,7 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     username: 'test',
-    role: 'user',
+    role: 'ADMIN',
     projectId: '',
     projectName: '',
     geneList: [],
@@ -37,15 +37,7 @@ export default new Vuex.Store({
     },
     menuShow: true,
     appmenuShow: true,
-    speciesArr: {
-      // 'Fruit Fly (Drosophila melanogaster)': 7227,
-      // 'Human (Homo sapiens)': 9606,
-      // 'Mouse (Mus musculus)': 10090,
-      // 'Soybean (Clycine max)': 3847,
-      // 'Thale cress (Arabidopsis thaliana)': 3702,
-      // 'Zebrafish (Danio rerio)': 7955,
-      // 'Rat (Rattus norvegicus)': 10116
-    },
+    speciesArr: {},
     svgDescribeShow: false,
     projectType: null,
   },
@@ -56,6 +48,9 @@ export default new Vuex.Store({
     setusername: (state, data) => {
       sessionStorage.setItem('username', data)
       state.username = data
+    },
+    setrole: (state, data) => {
+      state.role = data
     },
     setprojectId: (state, data) => {
       sessionStorage.setItem('projectId', data)

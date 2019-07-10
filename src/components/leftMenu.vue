@@ -2,16 +2,16 @@
   <div>
     <el-menu v-show="isCollapse" style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
         <el-menu-item index="0-0" @click="report">{{$t('leftMenu.report_home')}}</el-menu-item>
-        <el-menu-item-group>
+        <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
           <el-menu-item index="1-0" @click="report_fastqc">{{$t('leftMenu.fastqc')}}</el-menu-item>
           <el-menu-item index="1-1" @click="report_mappingqc">{{$t('leftMenu.mappingqc')}}</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group>
+        <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.trans')}}</span>
           <el-menu-item index="2-0" @click="report_new_trans">{{$t('leftMenu.new_trans')}}</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group>
+        <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.gene_matrix')}}</span>
           <el-menu-item index="3-0" @click="report_expr_matrix">{{$t('leftMenu.expr_matrix')}}（TPM）</el-menu-item>
         </el-menu-item-group>
@@ -38,7 +38,7 @@
           <span class="title-style">{{$t('leftMenu.deg_chart')}}</span>
           <el-menu-item index="5-1" @click="keggbubble">{{$t('leftMenu.kegg')}}</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group>
+        <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.asprofile')}}</span>
           <el-menu-item index="6-1" @click="ASprofile">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
           <el-menu-item index="6-2" @click="ASprofilePercent">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>

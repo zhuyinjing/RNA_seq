@@ -208,7 +208,14 @@ if (sessionStorage.projectType) {
 }
 
 axios.get('/getUser').then((res) => {
-  store.commit('setusername', res.data)
+  store.commit('setusername', res.data.username)
+  // 判断权限列表里是否存在 ADMIN
+  let role = res.data.authorities.some(item => item.authority === 'ADMIN' || item.authority === 'ROLE_ADMIN')
+  if (role) {
+    store.commit('setrole', 'ADMIN')
+  } else {
+    store.commit('setrole', 'USER')
+  }
 })
 
 Vue.use(vueAxios, axios)
