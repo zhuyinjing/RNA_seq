@@ -4,7 +4,7 @@
       <div class="grid-content bg-purple">
         <br>
 
-        <el-button type="primary" size="medium" @click="createProjectDialog = true" v-if="$store.state.role=== 'ADMIN'">+ 创建项目</el-button><br><br>
+        <el-button type="primary" size="medium" @click="createProjectDialog = true">+ 创建项目</el-button><br><br>
 
         <el-card class="" shadow="hover">
           <el-row :gutter="22">
@@ -97,7 +97,7 @@ export default {
       },
       typeList: ['BulkRNA', 'DEG'],
       deleteId: '',
-      table: null,
+      table: '',
       projectId: '',
       type: '',
       projectName: ''

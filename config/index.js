@@ -45,6 +45,13 @@ module.exports = {
         pathRewrite: {
           '/admin': '/admin/'
         }
+      },
+      '/getUser': {
+        target: 'http://10.10.10.6:7003',
+        changeOrigin: true,
+        pathRewrite: {
+          '/getUser': '/getUser/'
+        }
       }
     },
     // Various Dev Server settings
