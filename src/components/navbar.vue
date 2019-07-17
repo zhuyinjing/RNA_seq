@@ -4,7 +4,7 @@
     <el-menu-item index="home">{{$t('navbar.home')}}</el-menu-item>
     <el-menu-item index="project">{{$t('navbar.project_list')}}</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
-    <el-menu-item index="admin_species_config" v-if="$store.state.role === 'ADMIN'">物种配置信息</el-menu-item>
+    <el-menu-item index="admin_species_config" v-if="$store.state.role === 'ADMIN'">物种配置</el-menu-item>
     <a href="http://www.eclickgene.com/" target="_blank" class="alink">易点基因</a>
   </el-menu>
   <div class="userDiv" v-show="$store.state.username">

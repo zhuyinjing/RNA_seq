@@ -19,9 +19,9 @@ let router = [
     path: '/admin_species_config',
     name: 'admin_species_config',
     component: resolve => require(['@/views/admin/admin_species_config'], resolve),
-    // meta: {
-    //   role: 'admin'
-    // },
+    meta: {
+      role: 'ADMIN'
+    },
   }
 ]
 export default router

@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <el-tabs type="border-card">
-      <el-tab-pane label="物种参考信息">
+      <el-tab-pane label="参考基因组">
         <el-form :model="ruleForm1" status-icon :rules="rules1" ref="ruleForm1" label-width="200px">
           <el-form-item label="物种 id" prop="id">
             <el-input v-model="ruleForm1.id"></el-input>
@@ -18,7 +18,18 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="物种对照信息">
+      <el-tab-pane label="基因注释">
+        <el-form :model="ruleForm4" status-icon :rules="rules4" ref="ruleForm4" label-width="200px">
+          <el-form-item label="物种 id" prop="id">
+            <el-input v-model="ruleForm4.id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm4('ruleForm4')">提交</el-button>
+            <el-button @click="resetForm('ruleForm4')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="物种对照">
         <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="200px">
           <el-form-item label="id" prop="id">
             <el-input v-model="ruleForm2.id"></el-input>
@@ -38,7 +49,7 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="基因-转录组-蛋白 三元组信息">
+      <el-tab-pane label="基因-转录组-蛋白 三元组">
         <el-form :model="ruleForm3" status-icon :rules="rules3" ref="ruleForm3" label-width="200px">
           <el-form-item label="id" prop="id">
             <el-input v-model="ruleForm3.id"></el-input>
@@ -109,6 +120,14 @@ export default {
             { validator: validateNotNull, trigger: 'blur' }
           ]
         },
+        ruleForm4: {
+          id: ''
+        },
+        rules4: {
+          id: [
+            { validator: validateNotNull, trigger: 'blur' }
+          ]
+        },
       };
     },
     methods: {
@@ -138,6 +157,17 @@ export default {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.axios.get('/admin/create_centrol_dogma_triple?username=' + this.$store.state.username + '&speciesId=' + this.ruleForm3.id).then(res => {
+              this.$message.info(res.data.message)
+            })
+          } else {
+            return false;
+          }
+        });
+      },
+      submitForm4(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.axios.get('/admin/create_gene_desc_info?speciesId=' + this.ruleForm4.id).then(res => {
               this.$message.info(res.data.message)
             })
           } else {

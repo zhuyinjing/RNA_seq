@@ -12,42 +12,42 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/server/kobas2_entry': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server/kobas2_entry': '/server/kobas2_entry'
         }
       },
       '/server/enrich_bubble_diagram': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server/enrich_bubble_diagram': '/server/enrich_bubble_diagram'
         }
       },
       '/server': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/server': '/server/'
         }
       },
       '/singel_cell': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/singel_cell': '/singel_cell/'
         }
       },
       '/admin': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/admin': '/admin/'
         }
       },
       '/getUser': {
-        target: 'http://202.205.131.50:7003',
+        target: 'http://10.10.10.6:7003',
         changeOrigin: true,
         pathRewrite: {
           '/getUser': '/getUser/'
