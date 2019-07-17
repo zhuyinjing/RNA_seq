@@ -87,8 +87,8 @@
                 <td>{{item.description}}</td>
                 <td>{{item.type}}</td>
                 <td>{{numFormat(parseFloat(item.baseMean).toFixed(0))}}</td>
-                <td>{{parseFloat(item.log2FoldChange).toFixed(3)}}</td>
-                <td>{{num2e(item.pvalue)}}</td>
+                <td>{{item.log2FoldChange === '-Inf' || item.log2FoldChange === 'Inf' ? item.log2FoldChange : parseFloat(item.log2FoldChange).toFixed(3)}}</td>
+                <td>{{item.pvalue ? num2e(item.pvalue) : num2e(item.pval)}}</td>
                 <td>{{num2e(item.padj)}}</td>
               </tr>
             </tbody>
