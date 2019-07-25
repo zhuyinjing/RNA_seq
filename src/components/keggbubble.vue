@@ -127,7 +127,7 @@ export default {
             left: 450,
             top: 40,
             right: 200,
-            bottom: 80
+            bottom: 100
           }
 
           var width = initHeight - padding.left - padding.bottom

@@ -225,9 +225,14 @@ export default {
         if (res.data.length > 0) {
           this.pvalueArr = []
           this.padjArr = []
-          res.data = res.data.slice(1)
-          for (let i = 0;i< res.data.length; i++) {
-            let val = res.data[i]
+          let temp = []
+          temp = res.data.slice(1)
+          // temp = temp.filter(d => ['Inf', '-Inf'].indexOf(d[2]) === -1)       // mouse 1v1
+          for (let i = 0;i< temp.length; i++) {
+            let val = temp[i]
+            // this.pvalueArr.push([val[2] - 0, Math.log10(val[3]) * -1, val[4]])    // mouse 1v1
+            // this.padjArr.push([val[2] - 0, Math.log10(val[3]) * -1, val[4]])     // mouse 1v1
+
             this.pvalueArr.push([val[1] - 0, Math.log10(val[2]) * -1, val[4]])
             this.padjArr.push([val[1] - 0, Math.log10(val[3]) * -1, val[4]])
           }

@@ -99,7 +99,7 @@ export default {
       if (hassvg) {
         d3.selectAll('svg').remove()
       }
-      let width = 800
+      let width = 1000
       let height = 400
       let margin = {left: 100, right: 30, top: 30, bottom: 80}
 
