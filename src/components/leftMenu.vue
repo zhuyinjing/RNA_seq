@@ -37,6 +37,7 @@
         <el-menu-item-group>
           <span class="title-style">{{$t('leftMenu.deg_chart')}}</span>
           <el-menu-item index="5-1" @click="keggbubble">{{$t('leftMenu.kegg')}}</el-menu-item>
+          <el-menu-item index="5-2" @click="venn">维恩图</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.asprofile')}}</span>
@@ -116,6 +117,10 @@ export default {
     keggbubble () {
       this.$store.commit('setleftMenuIndex', '5-1')
       this.$router.push({'name': 'keggbubble'})
+    },
+    venn () {
+      this.$store.commit('setleftMenuIndex', '5-2')
+      this.$router.push({'name': 'venn'})
     },
     ASprofile () {
       this.$store.commit('setleftMenuIndex', '6-1')

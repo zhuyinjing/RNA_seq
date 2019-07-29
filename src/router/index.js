@@ -190,6 +190,11 @@ export default new Router({
       name: 'app_force',
       component: resolve => require(['@/components/app_force'], resolve)
     },
+    {
+      path: '/venn',
+      name: 'venn',
+      component: resolve => require(['@/components/venn'], resolve)
+    },
     ...adminRouter
   ]
 })
