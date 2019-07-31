@@ -19,7 +19,7 @@
     <login ref="loginDiv"></login>
 
     <!-- <div class="footer">{{$t('home.footer_font')}}</div> -->
-    <div class="footer">京ICP备18032172号-3 | Powered by <a href="http://www.eclickgene.com/" target="_blank" style="color: #970720;">eClickGene</a> </div>
+    <div class="footer">{{record_num}} | Powered by <a :href="hrefUrl" target="_blank" style="color: #970720;">{{urlText}}</a> </div>
   </div>
 </template>
 
@@ -27,6 +27,8 @@
 import bus from '../bus.js'
 import navbar from './navbar.vue'
 import login from './login.vue'
+import footerText from '../../static/footer.json'
+
 export default {
   data () {
     return {
@@ -35,7 +37,10 @@ export default {
           email: '',
           password: ''
         },
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        record_num: footerText.record_num,
+        urlText: footerText.urlText,
+        hrefUrl: footerText.hrefUrl,
     }
   },
   components: {

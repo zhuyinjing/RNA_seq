@@ -84,18 +84,19 @@ export default {
     },
     initD3() {
       // 屏幕宽度
-      let containerWidth = document.getElementById("d3container").clientWidth
+      let containerWidth = document.getElementById("d3container").clientWidth * 0.8
+
+      var g,
+        width = containerWidth,
+        height = 960,
+        node, link,
+        brushMode, brush, zoomLayer, brushLayer; //intercation canvas: Brush + zoom
 
       let svg = d3.select('#d3container')
         .append('svg')
         .attr('id', 'svg')
-        .attr('width', 1200)
-        .attr('height', 960)
-      var g,
-        width = +svg.attr("width"),
-        height = +svg.attr("height"),
-        node, link,
-        brushMode, brush, zoomLayer, brushLayer; //intercation canvas: Brush + zoom
+        .attr('width', width)
+        .attr('height', height)
 
       if (this.singleGeneShow === false) {
         var simulation = d3.forceSimulation()
@@ -119,60 +120,65 @@ export default {
         .on("keyup", keyup)
 
       // brushable network: http://jsfiddle.net/pkerpedjiev/29majy5c/2/
-      brush = d3.brush()
-        .extent([
-          [0, 0],
-          [width, height]
-        ])
-        .on("start", function(d) {
-          node.each(function(d) {
-            d.previouslyPicked = brushMode && d.picked;
-          });
-        })
-        .on("brush", function() {
-          if (!d3.event.selection) return;
-          var extent = d3.event.selection,
-            zoomProp = d3.zoomTransform(zoomLayer.node());
-          node.classed("picked", function(d) {
-            return d.picked = d.previouslyPicked ^ ((extent[0][0] - zoomProp.x) / zoomProp.k <= d.x && d.x < (extent[1][0] - zoomProp.x) / zoomProp.k && (extent[0][1] - zoomProp.y) / zoomProp.k <= d.y && d.y < (extent[1][1] - zoomProp.y) /
-              zoomProp.k);
-          });
-        })
-        .on("end", function() {
-          if (!d3.event.selection) return;
-          d3.select(this).call(d3.event.target.move, null);
-        })
+      // brush = d3.brush()
+      //   .extent([
+      //     [0, 0],
+      //     [width, height]
+      //   ])
+      //   .on("start", function(d) {
+      //     node.each(function(d) {
+      //       d.previouslyPicked = brushMode && d.picked;
+      //     });
+      //   })
+      //   .on("brush", function() {
+      //     if (!d3.event.selection) return;
+      //     var extent = d3.event.selection,
+      //       zoomProp = d3.zoomTransform(zoomLayer.node());
+      //     node.classed("picked", function(d) {
+      //       return d.picked = d.previouslyPicked ^ ((extent[0][0] - zoomProp.x) / zoomProp.k <= d.x && d.x < (extent[1][0] - zoomProp.x) / zoomProp.k && (extent[0][1] - zoomProp.y) / zoomProp.k <= d.y && d.y < (extent[1][1] - zoomProp.y) /
+      //         zoomProp.k);
+      //     });
+      //   })
+      //   .on("end", function() {
+      //     if (!d3.event.selection) return;
+      //     d3.select(this).call(d3.event.target.move, null);
+      //   })
 
-      var zoom = d3.zoom()
-        .scaleExtent([1 / 2, 4])
-        .on("zoom", zoomed);
+      // var zoom = d3.zoom()
+      //   .scaleExtent([1 / 2, 4])
+      //   .on("zoom", zoomed);
+      //
+      // brushLayer = svg.append("g")
+      //   .attr("id", "brush-layer")
+      //   .attr("width", width)
+      //   .attr("height", height)
+      //   .style("fill", "none")
+      //   .datum(function() {
+      //     return {
+      //       picked: false,
+      //       previouslyPicked: false
+      //     };
+      //   })
+      //   .call(brush)
+      //   .on("click", function(d) {
+      //     node.classed("picked", false);
+      //     node.each(function(d) {
+      //       d.picked = d.previouslyPicked = false;
+      //     })
+      //   });
 
-      brushLayer = svg.append("g")
-        .attr("id", "brush-layer")
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "none")
-        .datum(function() {
-          return {
-            picked: false,
-            previouslyPicked: false
-          };
-        })
-        .call(brush)
-        .on("click", function(d) {
-          node.classed("picked", false);
-          node.each(function(d) {
-            d.picked = d.previouslyPicked = false;
-          })
-        });
+      var zoom_handler = d3.zoom().scaleExtent([1 / 2, 4])
+      .on("zoom", zoomed);
 
-      zoomLayer = svg.append("rect")
-        .attr("id", "zoom-layer")
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "none")
-        .attr("pointer-events", "all")
-        .call(zoom)
+      zoom_handler(svg);
+
+      // zoomLayer = svg.append("rect")
+      //       .attr("id", "zoom-layer")
+      //       .attr("width", width)
+      //       .attr("height", height)
+      //       .style("fill", "none")
+      //       .attr("pointer-events", "all")
+      //       .call(zoom)
 
       g = svg.append("g");
 

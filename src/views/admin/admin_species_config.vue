@@ -1,6 +1,26 @@
 <template>
   <div class="content">
     <el-tabs type="border-card">
+      <el-tab-pane label="物种信息">
+        <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="200px">
+          <el-form-item label="id" prop="id">
+            <el-input v-model="ruleForm2.id"></el-input>
+          </el-form-item>
+          <el-form-item label="Latin Name" prop="latinName">
+            <el-input v-model="ruleForm2.latinName"></el-input>
+          </el-form-item>
+          <el-form-item label="Common Name" prop="commonName">
+            <el-input v-model.number="ruleForm2.commonName"></el-input>
+          </el-form-item>
+          <el-form-item label="keggOrgCode" prop="keggOrgCode">
+            <el-input v-model.number="ruleForm2.keggOrgCode"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm2('ruleForm2')">提交</el-button>
+            <el-button @click="resetForm('ruleForm2')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
       <el-tab-pane label="参考基因组">
         <el-form :model="ruleForm1" status-icon :rules="rules1" ref="ruleForm1" label-width="200px">
           <el-form-item label="物种 id" prop="id">
@@ -26,26 +46,6 @@
           <el-form-item>
             <el-button type="primary" @click="submitForm4('ruleForm4')">提交</el-button>
             <el-button @click="resetForm('ruleForm4')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="物种对照">
-        <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="200px">
-          <el-form-item label="id" prop="id">
-            <el-input v-model="ruleForm2.id"></el-input>
-          </el-form-item>
-          <el-form-item label="Latin Name" prop="latinName">
-            <el-input v-model="ruleForm2.latinName"></el-input>
-          </el-form-item>
-          <el-form-item label="Common Name" prop="commonName">
-            <el-input v-model.number="ruleForm2.commonName"></el-input>
-          </el-form-item>
-          <el-form-item label="keggOrgCode" prop="keggOrgCode">
-            <el-input v-model.number="ruleForm2.keggOrgCode"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm2('ruleForm2')">提交</el-button>
-            <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>

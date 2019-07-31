@@ -307,7 +307,7 @@ export default {
     getReportStatus () {
       this.timer = setInterval(() => {
         this.axios.get('/server/create_report_status?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-          if (res.data === 300) {
+          if (res.data.ProcessStatus === 300) {
             this.loading.close()
             this.$message.success('报告已生成!')
             window.clearInterval(this.timer)
