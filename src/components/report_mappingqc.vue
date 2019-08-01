@@ -36,6 +36,10 @@
         </div> -->
       </div>
 
+      <a :href="fileUrl" download ref="downloadA"></a>
+
+      <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+
       <table class="gridtable">
         <thead>
           <tr>
@@ -78,6 +82,7 @@ export default {
       tableData: [],
       barChartArr: [],
       xData: ['总碱基数', '核糖体碱基数', '编码区碱基数', 'UTR碱基数', '内含子碱基数', '基因间区碱基数'],
+      fileUrl: '',
     }
   },
   components: {
@@ -315,6 +320,14 @@ export default {
           this.barChartArr.push(temp)
         }
         this.initD3()
+      })
+    },
+    exportTable () {
+      this.axios.get("/server/export_mappingqc?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username).then(res => {
+        this.fileUrl = res.data.filePath
+        setTimeout(() => {
+          this.$refs.downloadA.click()
+        }, 0)
       })
     },
   }

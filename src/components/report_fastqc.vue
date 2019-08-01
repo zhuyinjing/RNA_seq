@@ -12,6 +12,11 @@
           <el-breadcrumb-item>{{$t('leftMenu.fastqc')}}</el-breadcrumb-item>
         </el-breadcrumb>
         <h2>{{$t('fastqc.title')}}</h2>
+
+        <a :href="fileUrl" download ref="downloadA"></a>
+
+        <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+
         <table class="gridtable">
           <thead>
             <tr>
@@ -171,7 +176,8 @@ export default {
     return {
       tableData: [],
       imgDialog: false,
-      imgSrc: ''
+      imgSrc: '',
+      fileUrl: '',
     }
   },
   components: {
@@ -192,6 +198,14 @@ export default {
     imgClick(imgSrc) {
       this.imgDialog = true
       this.imgSrc = imgSrc
+    },
+    exportTable () {
+      this.axios.get("/server/export_fastqc?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username).then(res => {
+        this.fileUrl = res.data.filePath
+        setTimeout(() => {
+          this.$refs.downloadA.click()
+        }, 0)
+      })
     },
   }
 }

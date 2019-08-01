@@ -63,6 +63,10 @@
         </el-card>
         <br>
 
+        <a :href="fileUrl" download ref="downloadA"></a>
+
+        <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+
         <!-- <div class="overflow-auto"> -->
         <div class="">
           <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
@@ -95,7 +99,8 @@ export default {
           "mDataProp" : "geneName"
       }],
       textareaGeneName: '',
-      textareaGeneId: ''
+      textareaGeneId: '',
+      fileUrl: '',
     }
   },
   components: {
@@ -154,9 +159,6 @@ export default {
               //通过ajax实现分页的url路径
               "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
               "aoColumns" : self.arr,
-              // "aoColumnDefs":[{"aTargets":[2][1],"mRender":function(){
-              //        return "<a href=#>1441</a>"}
-              // }]
           });
         })
       },
@@ -169,6 +171,14 @@ export default {
       clear () {
         this.textareaGeneName = ''
         this.textareaGeneId = ''
+      },
+      exportTable () {
+        this.axios.get("/server/export_gene_tpms?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username +  "&geneName=" + this.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + this.textareaGeneId.replace(/\s/g,'')).then(res => {
+          this.fileUrl = res.data.filePath
+          setTimeout(() => {
+            this.$refs.downloadA.click()
+          }, 0)
+        })
       },
   }
 }

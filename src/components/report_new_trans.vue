@@ -111,7 +111,7 @@
 
         <a :href="fileUrl" download ref="downloadA"></a>
 
-        <el-button size="" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+        <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
 
         <!-- <div class="overflow-auto"> -->
         <div class="">

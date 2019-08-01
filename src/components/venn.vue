@@ -81,13 +81,20 @@ export default {
   },
   methods: {
     initData () {
-      if (this.checkedArr.length > 3) {
-        this.$message.error('最多选择 3 个!')
+      if (this.checkedArr.length === 0) {
+        this.$message.error('选项不能为空！')
+        return
+      }
+      if (this.checkedArr.length > 4) {
+        this.$message.error('最多选择 4 个!')
+        return
       }
       this.axios.get('/server/get_deg_venn_info?p=' + this.$store.state.projectId + '&case_control=' + this.checkedArr.join(',')).then(res => {
         if (res.data.resultList) {
           this.data = res.data.resultList
           this.initVenn()
+        } else if (res.data.message_type === 'error') {
+          this.$message.error(res.data.message)
         }
       })
 
