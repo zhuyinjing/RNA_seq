@@ -85,8 +85,8 @@ export default {
         this.$message.error('选项不能为空！')
         return
       }
-      if (this.checkedArr.length > 4) {
-        this.$message.error('最多选择 4 个!')
+      if (this.checkedArr.length > 5) {
+        this.$message.error('最多选择 5 个!')
         return
       }
       this.axios.get('/server/get_deg_venn_info?p=' + this.$store.state.projectId + '&case_control=' + this.checkedArr.join(',')).then(res => {

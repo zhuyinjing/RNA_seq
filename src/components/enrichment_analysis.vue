@@ -68,6 +68,10 @@
       </el-row>
       <br>
 
+      <a :href="fileUrl" download ref="downloadA"></a>
+
+      <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+
       <table id="patients" cellspacing="0" width="100%" class="display table table-striped table-bordered">
           <thead>
             <tr>
@@ -99,6 +103,7 @@ export default {
       table: null,
       deg: null,
       selected: ["KEGG PATHWAY", "Reactome", "BioCyc", "PANTHER", "OMIM", "KEGG DISEASE", "NHGRI GWAS Catalog", "Gene Ontology", "Gene Ontology Slim"],
+      fileUrl: '',
     }
   },
   components: {
@@ -246,6 +251,14 @@ export default {
       req.onsuccess = (e) => {
         this.deg = e.target.result.value
       }
+    },
+    exportTable () {
+      this.axios.get("/server/export_kobas2_entry?username="+ this.$store.state.username +"&p="+ this.$store.state.projectId +"&caseSample="+ this.$store.state._case +"&controlSample="+ this.$store.state._control).then(res => {
+        this.fileUrl = res.data.filePath
+        setTimeout(() => {
+          this.$refs.downloadA.click()
+        }, 0)
+      })
     },
   }
 }
