@@ -27,7 +27,6 @@
 import bus from '../bus.js'
 import navbar from './navbar.vue'
 import login from './login.vue'
-import footerText from '../../static/footer.json'
 
 export default {
   data () {
@@ -38,14 +37,21 @@ export default {
           password: ''
         },
         formLabelWidth: '120px',
-        record_num: footerText.record_num,
-        urlText: footerText.urlText,
-        hrefUrl: footerText.hrefUrl,
+        record_num: '',
+        urlText: '',
+        hrefUrl: '',
     }
   },
   components: {
     navbar,
     login
+  },
+  created () {
+    this.axios('/static/footer.json').then(res => {
+      this.record_num = res.data.record_num
+      this.urlText = res.data.urlText
+      this.hrefUrl = res.data.hrefUrl
+    })
   },
   mounted () {
   },
