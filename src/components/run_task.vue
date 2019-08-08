@@ -11,6 +11,7 @@
         <el-button v-if="refreshBtnShow" type="danger" @click="selectTask()">{{$t('run_task.refresh')}}</el-button>
       </transition>
       <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> {{$t('run_task.report')}}</el-button>
+      <el-button v-show="reportBtnShow" type="primary" @click="reportOffline()" plain><i class="el-icon-tickets"></i> 生成离线报告 </el-button>
 
       <br><br>
       <div v-show="!runBtnShow">
@@ -42,7 +43,8 @@ export default {
       loading: null,
       logContent: '',
       timerLog: null,
-      type: null
+      type: null,
+      loadingOffline: null,
     }
   },
   components: {
@@ -314,6 +316,32 @@ export default {
           }
         })
       }, 15000)
+    },
+    reportOffline () {
+      this.$confirm('生成离线报告可能要等待8~10分钟左右的时间, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loadingOffline = this.$loading({
+          lock: true,
+          text: '离线报告正在生成中...请稍等...可能需要等待5~8分钟左右的时间...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        this.axios.get('/admin/create_offline_report?p=' + this.$store.state.projectId).then(res => {
+          if(res.data.message_type === 'success') {
+            this.$message.success('生成离线报告已完成！')
+            this.loadingOffline.close()
+          } else {
+            this.$message.success('生成离线报告失败！')
+            this.loadingOffline.close()
+          }
+        }).catch(() => {
+          this.$message.error('请求出错！')
+          this.loadingOffline.close()
+        })
+      }).catch(() => {});
     },
     result () {
 

@@ -100,7 +100,7 @@ export default {
       table: '',
       projectId: '',
       type: '',
-      projectName: ''
+      projectName: '',
     }
   },
   components: {
@@ -127,7 +127,7 @@ export default {
     getProjects () {
       let self = this
       $(document).ready(function() {
-          this.table = $('#table').DataTable(
+          self.table = $('#table').DataTable(
             {
               "pageLength": 25,
               "bPaginate" : true,//分页工具条显示
@@ -166,9 +166,9 @@ export default {
                     "mDataProp" : "id",
                     "mRender" : function(data, type, full) {
                         if (self.$store.state.role === 'ADMIN') {
-                          return '<button id="experimentBtn" value="'+ data + '" class="el-button el-button--info el-button--mini" @click="createExperiment()">实验设计</button>' + '<button id="uploadFileBtn" value="'+ data + '" class="el-button el-button--warning el-button--mini" @click="createExperiment()">上传文件</button>' + '<button id="runTaskBtn" value="'+ data + '" class="el-button el-button--success el-button--mini" @click="createExperiment()">运行分析</button>' + '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button>' + '<button id="deleteBtn" value="'+ data + '" class="el-button el-button--danger el-button--mini is-plain" @click="createExperiment()">'+ '<i class="el-icon-delete"></i>'+'</button>'
+                          return '<button id="experimentBtn" value="'+ data + '" class="el-button el-button--info el-button--mini" @click="createExperiment()">实验设计</button>' + '<button id="uploadFileBtn" value="'+ data + '" class="el-button el-button--warning el-button--mini" @click="createExperiment()">上传文件</button>' + '<button id="runTaskBtn" value="'+ data + '" class="el-button el-button--success el-button--mini" @click="createExperiment()">运行分析</button>' + '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button>  <a href="/projects/' + data +'/sphinx.tar.gz" download><button class="el-button el-button--warning el-button--mini is-plain">下载离线报告</button></a> ' + '<button id="deleteBtn" value="'+ data + '" class="el-button el-button--danger el-button--mini is-plain" @click="createExperiment()">'+ '<i class="el-icon-delete"></i>'+'</button>'
                         } else {
-                          return '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button>'
+                          return '<button id="reportBtn" class="el-button el-button--primary el-button--mini">查看报告</button> <a href="/projects/' + data +'/sphinx.tar.gz" download><button class="el-button el-button--warning el-button--mini is-plain">下载离线报告</button></a>'
                         }
                     }
                 }

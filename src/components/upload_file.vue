@@ -10,7 +10,7 @@
         <el-button type="primary" @click="uploadPath()">{{$t('upload_file.import')}}</el-button>
       </el-tab-pane>
       <el-tab-pane :label="$t('upload_file.upload_file')">
-        <div class="margin-top-10">
+        <div class="margin-top-10" v-if="$store.state.projectType !== 'DEG'">
           <span class="p-font-style">{{$t('upload_file.sample_data')}}：</span>
             <el-select v-model="sample_name" placeholder="请选择" @change="change()" :disabled="disabled">
               <el-option v-for="item in message.nameSampleMap" :key="item.name" :value="item.name"></el-option>
@@ -20,18 +20,19 @@
             <span class="p-font-style">{{$t('upload_file.file')}}1:</span>
             <input type="file" name="" ref="file1">
           </div>
-          <div class="fileDivStyle">
+          <div class="fileDivStyle" v-if="$store.state.projectType !== 'DEG'">
             <span class="p-font-style">{{$t('upload_file.file')}}2:</span>
             <input type="file" name="" ref="file2">
           </div>
-          <el-button type="primary" @click="upload()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
+          <el-button v-if="$store.state.projectType !== 'DEG'" type="primary" @click="upload()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
+          <el-button v-else type="primary" @click="uploadDeg()" :disabled="disabled">{{$t('upload_file.upload')}}</el-button>
           <p class="p-font-style">{{$t('upload_file.upload_progress')}}：</p>
           <el-progress :percentage="progress"></el-progress>
       </el-tab-pane>
     </el-tabs>
 
 
-    <div class="">
+    <div class="" v-if="$store.state.projectType !== 'DEG'">
       <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
       <table class="gridtable">
         <tr>
@@ -48,6 +49,9 @@
         </tr>
       </table>
     </div>
+    <div class="" v-if="$store.state.projectType === 'DEG' && message">
+      <a :href="message" download ref="downloadA"><el-button type="text">下载已上传的文件 <i class="el-icon-download"></i> </el-button></a>
+    </div>
   </div>
 </template>
 
@@ -61,7 +65,8 @@ export default {
       progress: 0,
       currentItem: null,
       fileObj: {},
-      disabled: false
+      disabled: false,
+      fileUrl: ''
     }
   },
   components: {
@@ -72,20 +77,24 @@ export default {
   methods: {
     getFile () {
       this.axios.get('/server/experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (!res.data.message) {
-          this.message = {}
+        if (this.$store.state.projectType !== 'DEG') {
+          if (!res.data.message) {
+            this.message = {}
+          } else {
+            this.message = res.data.message
+          }
         } else {
-          this.message = res.data.message
+          this.message = res.data.filePath
         }
       })
     },
     upload () {
-      if (!this.$refs.file1.files[0] && !this.$refs.file2.files[0]) {
-        this.$message.error('请选择要上传的文件!');
-        return
-      }
       if (!this.sample_name) {
         this.$message.error('请选择样本数据!');
+        return
+      }
+      if (!this.$refs.file1.files[0] && !this.$refs.file2.files[0]) {
+        this.$message.error('请选择要上传的文件!');
         return
       }
       this.disabled = true
@@ -106,6 +115,36 @@ export default {
           this.disabled = false
           this.$message.success('上传成功!');
           this.getFile()
+        } else {
+          this.disabled = false
+          this.$message.success('上传失败!');
+        }
+      }).catch(() => {
+        this.disabled = false
+        this.$message.success('上传失败!');
+      })
+    },
+    uploadDeg () {
+      if (!this.$refs.file1.files[0]) {
+        this.$message.error('请选择要上传的文件!');
+        return
+      }
+      this.disabled = true
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('r1', this.$refs.file1.files[0])
+      let config = {
+        onUploadProgress: progressEvent => {
+          let complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+          this.progress = complete
+        }
+      }
+      this.axios.post('/server/upload_deg_file', formData, config).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.disabled = false
+          this.$message.success('上传成功!');
+          this.getFile()
         }
       })
     },
@@ -118,7 +157,14 @@ export default {
       formData.append('username', this.$store.state.username)
       formData.append('p', this.$store.state.projectId)
       formData.append('path', this.path)
-      this.axios.post('/server/import_rnaseq_fastq_directory', formData).then((res) => {
+
+      let url
+      if (this.$store.state.projectType !== 'DEG') {
+        url = '/server/import_rnaseq_fastq_directory'
+      } else {
+        url = '/server/import_deg_directory'
+      }
+      this.axios.post(url, formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.$message.success('上传成功!');
           this.getFile()
