@@ -318,7 +318,7 @@ export default {
       }, 15000)
     },
     reportOffline () {
-      this.$confirm('生成离线报告可能要等待8~10分钟左右的时间, 是否继续?', '提示', {
+      this.$confirm('生成离线报告可能要等待5~8分钟左右的时间, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -329,7 +329,7 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
-        this.axios.get('/admin/create_offline_report?p=' + this.$store.state.projectId).then(res => {
+        this.axios.get('/admin/create_offline_report?p=' + this.$store.state.projectId + '&weburl=' + document.location.origin).then(res => {
           if(res.data.message_type === 'success') {
             this.$message.success('生成离线报告已完成！')
             this.loadingOffline.close()
