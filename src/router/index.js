@@ -91,6 +91,11 @@ export default new Router({
       component: resolve => require(['@/components/report_expr_matrix'], resolve)
     },
     {
+      path: '/report_gene_count',
+      name: 'report_gene_count',
+      component: resolve => require(['@/components/report_gene_count'], resolve)
+    },
+    {
       path: '/report_volcano_plot',
       name: 'report_volcano_plot',
       component: resolve => require(['@/components/report_volcano_plot'], resolve)

@@ -12,17 +12,7 @@
           <el-breadcrumb-item>{{$t('leftMenu.expr_matrix')}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>{{$t('leftMenu.expr_matrix')}}</h2>
-
-        <p>{{$t('expr_matrix.introduction')}}</p>
-
-        <p>{{$t('expr_matrix.describe')}}</p>
-
-        <p>$$ TPM_{i} = \frac{ \frac{ N_{i} }{ L_{i} } * 1000000}{\sum_{i=1}^{n} \frac{N_{i}}{L_{i}}}$$</p>
-
-        <p>N<sub>i</sub>：{{$t('expr_matrix.Ni')}}</p>
-        <p>L<sub>i</sub>：{{$t('expr_matrix.Li')}}</p>
-        <p>{{$t('expr_matrix.TMP_span1')}} (N<sub>i</sub>/L<sub>i</sub>) {{$t('expr_matrix.TMP_span2')}}</p>
+        <h2>{{$t('leftMenu.expr_matrix')}} (COUNT)</h2>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -72,7 +62,7 @@
           <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
               <thead>
               <tr>
-                  <th v-for="item in tpmsArray">{{item}}</th>
+                  <th v-for="item in countsArray">{{item}}</th>
               </tr>
               </thead>
           </table>
@@ -92,7 +82,7 @@ import imgMenuShowComp from './imgMenuShowComp.vue'
 export default {
   data () {
     return {
-      tpmsArray: [],
+      countsArray: [],
       arr: [{
           "mDataProp" : "geneId"
       }, {
@@ -109,30 +99,27 @@ export default {
   },
   mounted () {
     this.getTableHead()  // 获取动态表头
-    this.$nextTick(function() {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    });
   },
   methods: {
     getTableHead () {
-      this.axios('/server/gene_tpms?p=' + this.$store.state.projectId + '&username=' + this.$store.state.username + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
+      this.axios('/server/gene_counts?p=' + this.$store.state.projectId + '&username=' + this.$store.state.username + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
         if (res.data.aData.length > 0)  {
-          let obj = res.data.aData[0].tpms
+          let obj = res.data.aData[0].counts
           for (let k in obj) {
-            this.tpmsArray.push(k)
+            this.countsArray.push(k)
           }
           // table head 按照 a～z 排序
-          this.tpmsArray.sort()
-          this.tpmsArray.map((item) => {
+          this.countsArray.sort()
+          this.countsArray.map((item) => {
             this.arr.push({
-                "mDataProp" : "tpms",
+                "mDataProp" : "counts",
                 "mRender" : function(data, type, full) {
                     return Math.ceil(data[item])
                 }
             })
           })
-          this.tpmsArray.unshift('geneName')
-          this.tpmsArray.unshift('geneId')
+          this.countsArray.unshift('geneName')
+          this.countsArray.unshift('geneId')
         }
         this.initTable()
       })
@@ -157,7 +144,7 @@ export default {
               "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
               "sAjaxDataProp" : "aData",
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
+              "sAjaxSource" : "/server/gene_counts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
               "aoColumns" : self.arr,
           });
         })
@@ -173,7 +160,7 @@ export default {
         this.textareaGeneId = ''
       },
       exportTable () {
-        this.axios.get("/server/export_gene_tpms?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username +  "&geneName=" + this.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + this.textareaGeneId.replace(/\s/g,'')).then(res => {
+        this.axios.get("/server/export_gene_counts?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username +  "&geneName=" + this.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + this.textareaGeneId.replace(/\s/g,'')).then(res => {
           this.fileUrl = res.data.filePath
           setTimeout(() => {
             this.$refs.downloadA.click()

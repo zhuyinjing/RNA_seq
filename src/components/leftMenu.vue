@@ -1,24 +1,25 @@
 <template>
   <div>
     <el-menu v-show="isCollapse" style="padding: 0 10px;" :default-active="$store.state.leftMenuIndex" class="el-menu-vertical-demo">
-        <el-menu-item index="0-0" @click="report">{{$t('leftMenu.report_home')}}</el-menu-item>
+        <el-menu-item index="0-0" @click="menuItemClick('0-0', 'report')">{{$t('leftMenu.report_home')}}</el-menu-item>
         <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span slot="" class="title-style">{{$t('leftMenu.qc')}}</span>
-          <el-menu-item index="1-0" @click="report_fastqc">{{$t('leftMenu.fastqc')}}</el-menu-item>
-          <el-menu-item index="1-1" @click="report_mappingqc">{{$t('leftMenu.mappingqc')}}</el-menu-item>
+          <el-menu-item index="1-0" @click="menuItemClick('1-0', 'report_fastqc')">{{$t('leftMenu.fastqc')}}</el-menu-item>
+          <el-menu-item index="1-1" @click="menuItemClick('1-1', 'report_mappingqc')">{{$t('leftMenu.mappingqc')}}</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.trans')}}</span>
-          <el-menu-item index="2-0" @click="report_new_trans">{{$t('leftMenu.new_trans')}}</el-menu-item>
+          <el-menu-item index="2-0" @click="menuItemClick('2-0', 'report_new_trans')">{{$t('leftMenu.new_trans')}}</el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
+        <el-menu-item-group>
           <span class="title-style">{{$t('leftMenu.gene_matrix')}}</span>
-          <el-menu-item index="3-0" @click="report_expr_matrix">{{$t('leftMenu.expr_matrix')}}（TPM）</el-menu-item>
+          <el-menu-item index="3-0" v-if="$store.state.projectType !== 'DEG'" @click="menuItemClick('3-0', 'report_expr_matrix')">{{$t('leftMenu.expr_matrix')}}（TPM）</el-menu-item>
+          <el-menu-item index="3-1" @click="menuItemClick('3-1', 'report_gene_count')">{{$t('leftMenu.expr_matrix')}}（COUNT）</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <span class="title-style">{{$t('leftMenu.cluster_all')}}</span>
-          <el-menu-item index="4-0" @click="plotCluster">{{$t('leftMenu.cluster')}}</el-menu-item>
-          <el-menu-item index="4-1" @click="plotPCA">{{$t('leftMenu.pca')}}</el-menu-item>
+          <el-menu-item index="4-0" @click="menuItemClick('4-0', 'plotCluster')">{{$t('leftMenu.cluster')}}</el-menu-item>
+          <el-menu-item index="4-1" @click="menuItemClick('4-1', 'plotPCA')">{{$t('leftMenu.pca')}}</el-menu-item>
           <!-- <a :href="'/projects/'+ $store.state.projectId +'/results/050.DESeq2/plotMA_deseq.pdf'" target="_blank"><el-menu-item index="4-2" >MA 图</el-menu-item></a> -->
           <a :href="'/projects/'+ this.$store.state.projectId +'/results/050.DESeq2/ALL.pairs.pdf'" target="_blank"><el-menu-item index="4-3">{{$t('leftMenu.paris')}}</el-menu-item></a>
         </el-menu-item-group>
@@ -36,13 +37,13 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <span class="title-style">{{$t('leftMenu.deg_chart')}}</span>
-          <el-menu-item index="5-1" @click="keggbubble">{{$t('leftMenu.kegg')}}</el-menu-item>
-          <el-menu-item index="5-2" @click="venn">维恩图</el-menu-item>
+          <el-menu-item index="5-1" @click="menuItemClick('5-1', 'keggbubble')">{{$t('leftMenu.kegg')}}</el-menu-item>
+          <el-menu-item index="5-2" @click="menuItemClick('5-2', 'venn')">维恩图</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group v-if="$store.state.projectType !== 'DEG'">
           <span class="title-style">{{$t('leftMenu.asprofile')}}</span>
-          <el-menu-item index="6-1" @click="ASprofile">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
-          <el-menu-item index="6-2" @click="ASprofilePercent">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>
+          <el-menu-item index="6-1" @click="menuItemClick('6-1', 'ASprofile')">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
+          <el-menu-item index="6-2" @click="menuItemClick('6-2', 'ASprofilePercent')">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>
         </el-menu-item-group>
     </el-menu>
   </div>
@@ -65,9 +66,9 @@ export default {
     }
   },
   methods: {
-    report () {
-      this.$store.commit('setleftMenuIndex', '0-0')
-      this.$router.push({'name': 'report'})
+    menuItemClick (index, url) {
+      this.$store.commit('setleftMenuIndex', index)
+      this.$router.push({'name': url})
     },
     report_deg (_case, _control, index) {
       this.$store.commit('set_case', _case)
@@ -75,60 +76,11 @@ export default {
       this.$store.commit('setleftMenuIndex', '5-' + index + '-1')
       this.$router.push({'name': 'report_deg', query: {'_case': _case, '_control': _control}})
     },
-    report_fastqc () {
-      this.$store.commit('setleftMenuIndex', '1-0')
-      this.$router.push({'name': 'report_fastqc'})
-    },
-    report_mappingqc () {
-      this.$store.commit('setleftMenuIndex', '1-1')
-      this.$router.push({'name': 'report_mappingqc'})
-    },
-    report_new_trans () {
-      this.$store.commit('setleftMenuIndex', '2-0')
-      this.$router.push({'name': 'report_new_trans'})
-    },
-    report_expr_matrix () {
-      this.$store.commit('setleftMenuIndex', '3-0')
-      this.$router.push({'name': 'report_expr_matrix'})
-    },
     report_volcano_plot (_case, _control, index) {
       this.$store.commit('setleftMenuIndex', '5-' + index)
       this.$store.commit('set_case', _case)
       this.$store.commit('set_control', _control)
       this.$router.push({'name': 'report_volcano_plot', query: {'_case': _case, '_control': _control}})
-    },
-    plotCluster () {
-      this.$store.commit('setleftMenuIndex', '4-0')
-      this.$router.push({'name': 'plotCluster'})
-    },
-    plot_cluster () {
-      this.$store.commit('setleftMenuIndex', '4-0')
-    },
-    plotPCA () {
-      this.$store.commit('setleftMenuIndex', '4-1')
-      this.$router.push({'name': 'plotPCA'})
-    },
-    plot_ma () {
-      this.$store.commit('setleftMenuIndex', '4-2')
-    },
-    plot_correlation () {
-      this.$store.commit('setleftMenuIndex', '4-3')
-    },
-    keggbubble () {
-      this.$store.commit('setleftMenuIndex', '5-1')
-      this.$router.push({'name': 'keggbubble'})
-    },
-    venn () {
-      this.$store.commit('setleftMenuIndex', '5-2')
-      this.$router.push({'name': 'venn'})
-    },
-    ASprofile () {
-      this.$store.commit('setleftMenuIndex', '6-1')
-      this.$router.push({'name': 'ASprofile'})
-    },
-    ASprofilePercent () {
-      this.$store.commit('setleftMenuIndex', '6-2')
-      this.$router.push({'name': 'ASprofilePercent'})
     },
     heatmap (_case, _control, index) {
       this.$store.commit('setleftMenuIndex', '5-' + index + '-2')
