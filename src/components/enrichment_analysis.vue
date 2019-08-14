@@ -8,6 +8,8 @@
 
     <degComp></degComp>
 
+    <p>富集分析工具为 <a href="http://kobas.cbi.pku.edu.cn/">KOBAS 2.0</a>，输入基因列表取自差异表达基因列表的前 1000 个，如果不满 1000 则是全部差异表达基因（差异表达基因排序的顺序权重为 log2FoldChange 绝对值 > 平均表达量 > FDR > pValue）。</p>
+
     <div class="">
       <h4>Choose Databases:</h4>
       <el-row>

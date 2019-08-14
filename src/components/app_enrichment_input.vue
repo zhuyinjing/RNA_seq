@@ -46,7 +46,7 @@
           </div>
           <div class="inline-block" style="width:300px;">
             <el-select class="input-style" v-model="specie" placeholder="请选择">
-              <el-option :value="key" v-for="(item, key) in speciesArr" :key="key">{{key}}</el-option>
+              <el-option :value="key" v-for="(item, key) in $store.state.speciesArr" :key="key">{{key}}</el-option>
             </el-select>
           </div>
         </div>
@@ -72,11 +72,7 @@ export default {
       textareaGeneId: '',
       radioName: 'geneId',
       loading: null,
-      specie: 'Human (Homo sapiens)',
-      speciesArr:{
-        'Human (Homo sapiens)': 9606,
-        'Soybean (Clycine max)': 3847,
-      },
+      specie: null,
       timer: null,
     }
   },
@@ -85,6 +81,13 @@ export default {
     appImgMenuShowComp
   },
   mounted () {
+    //  获取物种列表
+    this.axios.get('/server/get_species_info?username=' + this.$store.state.username).then(res => {
+      if (res.data.message_type === 'success') {
+        this.specie = Object.keys(res.data.speciesInfo)[0] // 默认显示第一个
+        this.$store.commit('setspeciesArr', res.data.speciesInfo)
+      }
+    })
   },
   destroyed () {
     window.clearInterval(this.timer)
@@ -121,9 +124,9 @@ export default {
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('geneList', geneList)
-      formData.append('speciesId', this.speciesArr[this.specie])
+      formData.append('speciesId', this.$store.state.speciesArr[this.specie])
       formData.append('infoType', infoType)
-      this.$store.commit('setspecies', this.speciesArr[this.specie])
+      this.$store.commit('setspecies', this.$store.state.speciesArr[this.specie])
       this.axios.post('/server/enrich_do', formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.getStatus()

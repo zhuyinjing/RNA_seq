@@ -1,5 +1,7 @@
 <template>
   <div class="">
+    <p>蛋白相互作用数据来自 <a href="https://string-db.org">stringdb</a> 数据库，图中的基因取自差异表达基因列表的前 50 个 (差异表达基因排序的顺序权重为 log2FoldChange 绝对值 > 平均表达量 > FDR > pValue )，捆图中两个基因之间的连线表示该对基因之间有相互作用，连线的粗细表示相互作用的强弱。</p>
+
     <!-- <el-button type="primary" size="small" icon="el-icon-document" @click="$store.commit('d3savePDF', '蛋白互作图')">生成 PDF</el-button> -->
     <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['ppi_' + $store.state._case + '_' + $store.state._control])">{{$t('button.svg')}}</el-button>
     <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>

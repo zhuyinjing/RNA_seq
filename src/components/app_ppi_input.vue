@@ -71,7 +71,7 @@ export default {
       textareaGeneId: '',
       radioName: 'geneId',
       loading: null,
-      specie: 'Human (Homo sapiens)',
+      specie: null,
     }
   },
   components: {
@@ -79,6 +79,13 @@ export default {
     appImgMenuShowComp
   },
   mounted () {
+    //  获取物种列表
+    this.axios.get('/server/get_species_info?username=' + this.$store.state.username).then(res => {
+      if (res.data.message_type === 'success') {
+        this.specie = Object.keys(res.data.speciesInfo)[0] // 默认显示第一个
+        this.$store.commit('setspeciesArr', res.data.speciesInfo)
+      }
+    })
   },
   methods: {
     submit () {

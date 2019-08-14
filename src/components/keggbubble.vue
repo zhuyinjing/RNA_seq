@@ -121,7 +121,7 @@ export default {
       }
           let self = this
           var initWidth = 1000
-          var initHeight = 1050
+          var initHeight = this.yData.length * 40
 
           var padding = {
             left: 450,
@@ -130,8 +130,8 @@ export default {
             bottom: 100
           }
 
-          var width = initHeight - padding.left - padding.bottom
-          var height = initWidth - padding.top - padding.bottom
+          var width = initWidth - padding.left - padding.bottom
+          var height = initHeight - padding.top - padding.bottom
 
           var svgG = d3.select("#d3container")
             .append("svg")

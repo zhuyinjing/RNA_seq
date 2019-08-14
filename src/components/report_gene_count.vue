@@ -16,8 +16,7 @@
 
         <p>一个基因表达水平的直接体现就是看有多少 reads 回帖到该基因区域，这个可以称之为基因的表达丰度。我们利用 <a href="https://pachterlab.github.io/kallisto/">kallisto</a> 软件来进行转录本定量，基因表达量为该基因所有转录本表达量之和。</p>
 
-        <p>{{$t('mappingqc.references')}}</p>
-        <p>Nicolas L Bray, Harold Pimentel, Páll Melsted and Lior Pachter, <a href="http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html">Near-optimal probabilistic RNA-seq quantification</a>, Nature Biotechnology 34, 525–527 (2016), doi:10.1038/nbt.3519</p>
+        <p>{{$t('mappingqc.references')}} : Nicolas L Bray, Harold Pimentel, Páll Melsted and Lior Pachter, <a href="http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html">Near-optimal probabilistic RNA-seq quantification</a>, Nature Biotechnology 34, 525–527 (2016), doi:10.1038/nbt.3519</p>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
