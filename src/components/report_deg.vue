@@ -367,11 +367,29 @@ export default {
         self.$store.commit("setdegFilterArgs", degFilterArgs)
       }
     },
-    initTable(data) {
+    initTable (data) {
       let self = this
+
       this.data = data
+
+      $.fn.dataTable.ext.type.order['value-abs-pre'] = function ( d ) { // log2FoldChange 按照绝对值进行排序
+        var v = Math.abs(d);
+        return v;
+      };
+
       $(document).ready(function() {
         $('#exampledeg').DataTable({
+          columnDefs: [
+            {
+              targets: 0,
+              orderData: [5, 4, 7, 6]  //如果第一列进行排序，有相同数据则按照第 6 列顺序排列
+            },
+            {
+              targets: 5,
+              type: "value-abs",
+            }
+          ],
+          "order": [[ 5, "desc" ],[ 4, "desc" ]],
           lengthMenu: [
             [25, 50, 100, -1],
             [25, 50, 100, "All"]
@@ -408,7 +426,7 @@ export default {
         self.tableShow = true
       });
     },
-    getTabelValue() {
+    getTabelValue () {
       let _case = sessionStorage.getItem('_case')
       let _control = sessionStorage.getItem('_control')
       this.tableLoading = true
