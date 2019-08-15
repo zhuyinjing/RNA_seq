@@ -65,7 +65,7 @@ export default {
       }
     }
     function preOrder(node){
-       if(node.distance === 0){
+       if(node.count === 1){
          self.temp.push(node.objects[0]);  // y 轴的gene名称
          for(let i = 0;i < node.features.length;i++) {
            self.value.push(node.features[i])   // 每一行的值

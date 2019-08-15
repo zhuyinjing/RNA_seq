@@ -121,7 +121,7 @@ export default {
       }
           let self = this
           var initWidth = 1000
-          var initHeight = this.yData.length * 40
+          var initHeight = this.yData.length > 15 ? this.yData.length * 40 : this.yData.length * 60
 
           var padding = {
             left: 450,
