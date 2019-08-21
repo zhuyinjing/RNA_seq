@@ -62,7 +62,7 @@ module.exports = {
   navbar: {
     home: '首页',
     project_list: '项目列表',
-    app_tool: '可视化工具',
+    app_tool: '分析工具',
     logout: '退出账号',
   },
   //  首页

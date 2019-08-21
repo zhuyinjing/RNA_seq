@@ -42,6 +42,7 @@ import {
   Input,
   InputNumber,
   Radio,
+  RadioGroup,
   Switch,
   Select,
   Option,
@@ -91,6 +92,7 @@ Vue.use(MenuItemGroup);
 Vue.use(Input);
 Vue.use(InputNumber);
 Vue.use(Radio);
+Vue.use(RadioGroup);
 Vue.use(Switch);
 Vue.use(Select);
 Vue.use(Option);

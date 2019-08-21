@@ -15,6 +15,7 @@
           <div class="inline-block">
             <el-radio v-model="radioName" label="geneId">{{$t('input.gene_id')}}</el-radio>
             <el-radio v-model="radioName" label="geneName">{{$t('input.gene_name')}}</el-radio>
+            <el-radio v-model="radioName" label="jobId">按 jobId 查询结果</el-radio>
           </div>
         </div>
         <div class="margin-top-10" v-show="radioName === 'geneName'">
@@ -40,7 +41,13 @@
           </div>
           <!-- <el-button type="text">(example)</el-button> -->
         </div>
-        <div class="margin-top-10">
+        <div class="margin-top-10" v-show="radioName === 'jobId'">
+          <div class="labelStyle">jobId</div>
+          <div class="inline-block">
+            <el-input v-model="jobId" placeholder="" clearable></el-input>
+          </div>
+        </div>
+        <div class="margin-top-10" v-show="radioName !== 'jobId'">
           <div class="labelStyle">
             <label class="label-font">{{$t('app.choose_sample')}}</label>
           </div>
@@ -50,10 +57,20 @@
             </el-select>
           </div>
         </div>
+        <div class="margin-top-10" v-show="loading">
+          <div class="labelStyle"></div>
+          <div class="inline-block">
+            <el-alert
+             show-icon
+             :title="'当前 jobId 为: ' + jobId + ' , 您可以通过 jobId 进行结果查询！'"
+             type="info">
+           </el-alert>
+          </div>
+        </div>
         <div class="margin-top-10">
           <div class="labelStyle"></div>
           <div class="inline-block" style="width:300px;">
-            <el-button type="primary" @click="submit()">{{$t('button.submit')}}</el-button>
+            <el-button type="primary" :loading="loading" @click="submit()">{{$t('button.submit')}}</el-button>
           </div>
         </div>
       </div>
@@ -71,9 +88,10 @@ export default {
       textareaGeneName: '',
       textareaGeneId: '',
       radioName: 'geneId',
-      loading: null,
+      loading: false,
       specie: null,
       timer: null,
+      jobId: '',
     }
   },
   components: {
@@ -103,24 +121,27 @@ export default {
         }
         geneList = this.textareaGeneId
         infoType = 1
-      } else {
+      } else if (this.radioName === 'geneName') {
         if (!this.textareaGeneName.trim()) {
           this.$message.error('请输入基因 Name 列表!');
           return
         }
         geneList = this.textareaGeneName
         infoType = 2
+      } else {
+        if (!this.jobId.trim()) {
+          this.$message.error('请输入 jobId!');
+          return
+        }
+        sessionStorage.setItem('jobId', this.jobId)
+        this.getStatusJobId()
+        return
       }
-      sessionStorage.setItem('geneInfo', geneList)
+      // sessionStorage.setItem('geneInfo', geneList)
       sessionStorage.setItem('infoType', infoType)
       // 正则 替换 逗号 空格 为 换行
       this.textareaGeneId = this.textareaGeneId.replace(/(\,|\s)+/g, '\n')
-      this.loading = this.$loading({
-        lock: true,
-        text: '列表正在处理中...请稍等...可能需要等待1～2分钟左右的时间...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
+      this.loading = true
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('geneList', geneList)
@@ -129,24 +150,39 @@ export default {
       this.$store.commit('setspecies', this.$store.state.speciesArr[this.specie])
       this.axios.post('/server/enrich_do', formData).then((res) => {
         if (res.data.message_type === 'success') {
+          this.jobId = res.data.message.randNum
+          sessionStorage.setItem('jobId', this.jobId)
           this.getStatus()
         } else {
           this.$message.error(res.data.message)
-          this.loading.close()
+          this.loading = false
         }
+      }).catch(e => {
+        this.$message.error('请求出错！')
+        this.loading = false
       })
     },
     getStatus () {
       this.timer = setInterval(() => {
-        this.axios.get('/server/enrich_do_status?username=' + this.$store.state.username).then((res) => {
+        this.axios.get('/server/enrich_do_status?username=' + this.$store.state.username + '&randNum=' + this.jobId).then((res) => {
           if (res.data.message_type === 'success') {
-            this.loading.close()
+            this.loading = false
             this.$message.success('富集分析已完成!')
             window.clearInterval(this.timer)
             this.$router.push('app_enrichment')
           }
         })
       }, 2000)
+    },
+    getStatusJobId () {
+      this.axios.get('/server/enrich_do_status?username=' + this.$store.state.username + '&randNum=' + this.jobId).then((res) => {
+        if (res.data.message_type === 'success') {
+          this.$message.success('富集分析已完成!')
+          this.$router.push('app_enrichment')
+        } else {
+          this.$message.warning('富集分析未完成，请稍后再查询!')
+        }
+      })
     },
   }
 }
