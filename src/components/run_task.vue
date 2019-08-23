@@ -12,6 +12,8 @@
       </transition>
       <el-button v-show="reportBtnShow" type="" @click="report()" plain><i class="el-icon-document"></i> {{$t('run_task.report')}}</el-button>
       <el-button v-show="reportBtnShow" type="primary" @click="reportOffline()" plain><i class="el-icon-tickets"></i> 生成离线报告 </el-button>
+      <el-button type="info" plain @click="reset_project()">重置项目</el-button>
+
 
       <br><br>
       <div v-show="!runBtnShow">
@@ -342,6 +344,22 @@ export default {
           this.loadingOffline.close()
         })
       }).catch(() => {});
+    },
+    reset_project () {
+      this.$confirm('该操作将重新分析, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.get('/server/reset_project').then(res => {
+          if (res.data.message_type === 'success') {
+            this.$message.success('重置成功！')
+            this.selectTask()
+          } else {
+            this.$message.error('重置失败！')
+          }
+        })
+      })
     },
     result () {
 
