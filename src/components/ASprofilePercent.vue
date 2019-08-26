@@ -83,7 +83,7 @@ export default {
       	.style('position', 'absolute')
         .style('z-index', '10')
         .style('visibility', 'hidden')
-        .style('font-size', '14px')
+        .style('font-size', '16px')
       	.style('font-weight', 'bold')
       	.text('')
       var x = d3.scaleBand()
