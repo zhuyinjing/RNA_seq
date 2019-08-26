@@ -351,13 +351,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios.get('/server/reset_project').then(res => {
+        let formData = new FormData()
+        formData.append('p', this.$store.state.projectId)
+
+        this.axios.post('/server/reset_project', formData).then((res) => {
           if (res.data.message_type === 'success') {
             this.$message.success('重置成功！')
             this.selectTask()
           } else {
             this.$message.error('重置失败！')
           }
+        }).catch((e) => {
+          this.$message.error('请求错误!')
         })
       })
     },
