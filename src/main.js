@@ -136,25 +136,6 @@ Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$message = Message;
 
-//  每一次登录进来 都清一下 indexedDB 的 degTable 表
-let db
-var request = indexedDB.open("deg")
-request.onerror =  (e) => {}
-request.onupgradeneeded = (e) => {
-  db = e.target.result
-  var objectStore = db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
-}
-request.onsuccess = (e) => {
-  console.log("success!");
-  db = e.target.result
-  var tx = db.transaction(["degTable"],"readwrite")
-  var store = tx.objectStore("degTable")
-  store.clear()
-}
-request.onerror = (e) => {
-  console.log("error!");
-}
-
 if (sessionStorage.username) {
   store.state.username = sessionStorage.username
 }
@@ -229,7 +210,24 @@ Vue.config.productionTip = false
 
 // 路由权限判断
 router.beforeEach((to, from, next) => {
-  if (to.path === '/') {
+  if (to.path === '/') {  // 只有刚进入首页的时候，清空 indexedDB，其他页面刷新时，不清空
+    let db
+    var request = indexedDB.open("deg")
+    request.onerror =  (e) => {}
+    request.onupgradeneeded = (e) => {
+      db = e.target.result
+      var objectStore = db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
+    }
+    request.onsuccess = (e) => {
+      console.log("success!");
+      db = e.target.result
+      var tx = db.transaction(["degTable"],"readwrite")
+      var store = tx.objectStore("degTable")
+      store.clear()
+    }
+    request.onerror = (e) => {
+      console.log("error!");
+    }
     next()
   }
   if (to.meta.role) { // 需要权限的页面
