@@ -202,45 +202,46 @@ axios.get('/getUser').then((res) => {
   } else {
     store.commit('setrole', 'USER')
   }
+
+  // 路由权限判断
+  router.beforeEach((to, from, next) => {
+    if (to.path === '/') {  // 只有刚进入首页的时候，清空 indexedDB，其他页面刷新时，不清空
+      let db
+      var request = indexedDB.open("deg")
+      request.onerror =  (e) => {}
+      request.onupgradeneeded = (e) => {
+        db = e.target.result
+        var objectStore = db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
+      }
+      request.onsuccess = (e) => {
+        console.log("success!");
+        db = e.target.result
+        var tx = db.transaction(["degTable"],"readwrite")
+        var store = tx.objectStore("degTable")
+        store.clear()
+      }
+      request.onerror = (e) => {
+        console.log("error!");
+      }
+      next()
+    }
+    if (to.meta.role) { // 需要权限的页面
+      if (to.meta.role === store.state.role) {
+        next()
+      } else {  // 权限不够的页面
+        Message.error('抱歉，您将要访问的页面权限不够！')
+        next({name: from.name})
+      }
+    } else {  // 不需要权限的页面
+      next()
+    }
+  })
+
 })
 
 Vue.use(vueAxios, axios)
 
 Vue.config.productionTip = false
-
-// 路由权限判断
-router.beforeEach((to, from, next) => {
-  if (to.path === '/') {  // 只有刚进入首页的时候，清空 indexedDB，其他页面刷新时，不清空
-    let db
-    var request = indexedDB.open("deg")
-    request.onerror =  (e) => {}
-    request.onupgradeneeded = (e) => {
-      db = e.target.result
-      var objectStore = db.createObjectStore("degTable", {keyPath:'name', autoIncrement:true})
-    }
-    request.onsuccess = (e) => {
-      console.log("success!");
-      db = e.target.result
-      var tx = db.transaction(["degTable"],"readwrite")
-      var store = tx.objectStore("degTable")
-      store.clear()
-    }
-    request.onerror = (e) => {
-      console.log("error!");
-    }
-    next()
-  }
-  if (to.meta.role) { // 需要权限的页面
-    if (to.meta.role === store.state.role) {
-      next()
-    } else {  // 权限不够的页面
-      Message.error('抱歉，您将要访问的页面权限不够！')
-      next({name: from.name})
-    }
-  } else {  // 不需要权限的页面
-    next()
-  }
-})
 
 /* eslint-disable no-new */
 new Vue({

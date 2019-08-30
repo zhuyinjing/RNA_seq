@@ -3,6 +3,7 @@
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
     <el-menu-item index="home">{{$t('navbar.home')}}</el-menu-item>
     <el-menu-item index="project">{{$t('navbar.project_list')}}</el-menu-item>
+    <el-menu-item index="userList" v-if="$store.state.role === 'ADMIN'">用户列表</el-menu-item>
     <el-menu-item index="app_heatmap_input">{{$t('navbar.app_tool')}}</el-menu-item>
     <el-menu-item index="admin_species_config" v-if="$store.state.role === 'ADMIN'">物种配置</el-menu-item>
     <a href="http://www.eclickgene.com/" target="_blank" class="alink">易点基因</a>
@@ -59,52 +60,39 @@ export default {
       }
     },
     handleSelect(key, keyPath) {
+      setTimeout(() => {
+        this.activeIndex = key
+      }, 0)
+      sessionStorage.setItem('navbarItem', key)
       let self = this
       switch (key) {
         case 'home':
-          this.activeIndex = 'home'
-          sessionStorage.setItem('navbarItem', 'home')
           this.$router.push({
             'path': '/'
           })
           break
-        case 'sc':
-          this.activeIndex = 'sc'
-          sessionStorage.setItem('navbarItem', 'sc')
-          this.$store.commit('setprojectId',11)
-          this.$router.push({
-            'path': '/sc'
-          })
-          break
         case 'project':
           sessionStorage.clear()
-          this.activeIndex = 'project'
-          sessionStorage.setItem('navbarItem', 'project')
+          sessionStorage.setItem('navbarItem', key)
           this.$router.push({
             'name': 'project_list'
           })
           break
+        case 'userList':
+          this.$router.push({
+            'name': 'user_list'
+          })
+          break
         case 'app_heatmap_input':
-          this.activeIndex = 'app_heatmap_input'
-          sessionStorage.setItem('navbarItem', 'app_heatmap_input')
           this.$router.push({
             'name': 'app_heatmap_input'
           })
           break
-        case 'admin_project_list':
-          this.activeIndex = 'admin_project_list'
-          sessionStorage.setItem('navbarItem', 'admin_project_list')
+        case 'admin_species_config':
           this.$router.push({
-            'path': '/admin'
+            'path': '/admin_species_config'
           })
           break
-        case 'admin_species_config':
-        this.activeIndex = 'admin_species_config'
-        localStorage.setItem('navbarItem', 'admin_species_config')
-        this.$router.push({
-          'path': '/admin_species_config'
-        })
-        break
       }
     },
     logout() {

@@ -74,7 +74,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="createProjectDialog = false">{{$t('button.cancel')}}</el-button>
-        <el-button type="primary" @click="createClick()">{{$t('button.confirm')}}</el-button>
+        <el-button v-if="createLoading === false" type="primary" @click="createClick()">{{$t('button.confirm')}}</el-button>
+        <el-button v-else type="primary" :loading="true">正在创建中...</el-button>
       </div>
   </el-dialog>
 
@@ -101,6 +102,7 @@ export default {
       projectId: '',
       type: '',
       projectName: '',
+      createLoading: false
     }
   },
   components: {
@@ -210,6 +212,7 @@ export default {
         this.$message.error('项目名不能为空!')
         return
       }
+      this.createLoading = true // 正在创建中... 显示
       let formData = new FormData()
       formData.append('username', this.$store.state.username)
       formData.append('name', this.form.name)
@@ -223,6 +226,7 @@ export default {
         } else {
           this.$message.error(res.data.message);
         }
+        this.createLoading = false
         this.form.name = ''
         this.form.description = ''
         this.createProjectDialog = false
