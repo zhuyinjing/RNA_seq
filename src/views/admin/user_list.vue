@@ -4,7 +4,7 @@
       <div class="grid-content bg-purple">
         <br>
 
-        <el-button type="primary" size="medium" @click="form.username = '';userOptionDialog = true;dialogTitle = '新建用户'">+ 创建用户</el-button><br><br>
+        <el-button type="primary" size="medium" @click="createUserDialog = true">+ 创建用户</el-button><br><br>
 
         <el-card class="" shadow="hover">
           <el-row :gutter="22">
@@ -39,10 +39,10 @@
       </div>
     </el-col>
 
-    <el-dialog :title="dialogTitle" :visible.sync="userOptionDialog" width="30%">
+    <el-dialog title="新建用户" :visible.sync="createUserDialog" width="30%">
       <el-form :model="form" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" auto-complete="off" :disabled="dialogTitle === '修改密码'" clearable></el-input>
+        <el-form-item label="用户名" prop="username" :rules="{required: true, message: '用户名不能为空', trigger: 'blur'}">
+          <el-input v-model="form.username" auto-complete="off" clearable></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="form.pass" auto-complete="off"></el-input>
@@ -51,9 +51,26 @@
           <el-input type="password" v-model="form.checkPass" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="dialogTitle === '新建用户'" type="primary" @click="createUser('ruleForm')">提交</el-button>
-          <el-button v-else type="primary" @click="changePassword('ruleForm')">提交</el-button>
+          <el-button type="primary" @click="createUser('ruleForm')">提交</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="修改密码" :visible.sync="updatePwdDialog" width="30%">
+      <el-form :model="pwdForm" status-icon :rules="rulesPwd" ref="pwdForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="用户名" prop="username" :rules="{required: true, message: '用户名不能为空', trigger: 'blur'}">
+          <el-input v-model="pwdForm.username" auto-complete="off" :disabled="true" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="pass">
+          <el-input type="password" v-model="pwdForm.pass" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="pwdForm.checkPass" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="changePassword('pwdForm')">提交</el-button>
+          <el-button @click="resetForm('pwdForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -90,43 +107,58 @@
 <script>
 export default {
   data () {
-    var checkUsername = (rule, value, callback) => {
-        if (value.trim() === '') {
-          callback(new Error('请输入用户名'));
-        } else {
-          callback();
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.form.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass');
         }
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.form.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.form.pass) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+    var validateChangePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.pwdForm.checkPass !== '') {
+          this.$refs.pwdForm.validateField('checkPass');
         }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.form.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
+        callback();
+      }
+    };
+    var validateChangePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.pwdForm.pass) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
-      userOptionDialog: false,
+      createUserDialog: false,
       form: {
         username: '',
         pass: '',
         checkPass: '',
       },
+      updatePwdDialog: false,
+      pwdForm: {
+        username: '',
+        pass: '',
+        checkPass: '',
+      },
       rules: {
-        username: [
-          { validator: checkUsername, trigger: 'blur' }
-        ],
         pass: [
           { validator: validatePass, trigger: 'blur' }
         ],
@@ -134,11 +166,18 @@ export default {
           { validator: validatePass2, trigger: 'blur' }
         ]
       },
+      rulesPwd: {
+        pass: [
+          { validator: validateChangePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { validator: validateChangePass2, trigger: 'blur' }
+        ]
+      },
       table: '',
       projectId: '',
       type: '',
       selectUsername: '',
-      dialogTitle: '',
       projectDialog: false,
       projectForm: {
         username: '',
@@ -212,9 +251,8 @@ export default {
           $('#table tbody').on( 'click', '#passwordBtn', function () {
             var row = $(this).parents('tr')[0]
             var data = $("#table").dataTable().fnGetData(row)
-            self.dialogTitle = '修改密码'
-            self.form.username = data.username
-            self.userOptionDialog = true
+            self.pwdForm.username = data.username
+            self.updatePwdDialog = true
           })
 
           $('#table tbody').on( 'click', '#projectBtn', function () {
@@ -237,7 +275,7 @@ export default {
           this.axios.get('/admin/create_user?username=' + this.form.username + '&password=' + this.form.pass).then((res) => {
             if (res.data.message_type === 'success') {
               this.$message.success('用户创建成功！');
-              this.userOptionDialog = false
+              this.createUserDialog = false
               this.resetForm(formName) // 清空 form 表单数据
               this.getUsers()
             } else {
@@ -252,10 +290,10 @@ export default {
     changePassword (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.axios.get('/admin/change_password?username=' + this.form.username + '&password=' + this.form.pass).then((res) => {
+          this.axios.get('/admin/change_password?username=' + this.pwdForm.username + '&password=' + this.pwdForm.pass).then((res) => {
             if (res.data.message_type === 'success') {
               this.$message.success('密码修改成功！');
-              this.userOptionDialog = false
+              this.updatePwdDialog = false
               this.resetForm(formName) // 清空 form 表单数据
             } else {
               this.$message.error(res.data.message);

@@ -62,7 +62,7 @@ export default {
     handleSelect(key, keyPath) {
       setTimeout(() => {
         this.activeIndex = key
-      }, 0)
+      }, 10)
       sessionStorage.setItem('navbarItem', key)
       let self = this
       switch (key) {
