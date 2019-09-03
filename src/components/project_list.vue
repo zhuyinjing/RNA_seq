@@ -96,7 +96,7 @@ export default {
         species: 'Human (Homo sapiens)',
         type: 'BulkRNA'
       },
-      typeList: ['BulkRNA', 'DEG'],
+      typeList: ['BulkRNA', 'DEG', 'Time_Series'],
       deleteId: '',
       table: '',
       projectId: '',
@@ -276,12 +276,12 @@ export default {
     report (item) {
       this.commitStore(item)
       this.axios.get('/server/rnaseq_report_index?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (res.data.experimentDesign !== null) {
-          this.$store.commit('setinfo', res.data)
+        // if (res.data.experimentDesign !== null) {
+        //   this.$store.commit('setinfo', res.data)
           this.$router.push({'name': 'report'})
-        } else {
-          this.$message.error('实验设计为空！')
-        }
+        // } else {
+        //   this.$message.error('实验设计为空！')
+        // }
       }).catch(e => {
         this.$message.error('请求出错！')
       })

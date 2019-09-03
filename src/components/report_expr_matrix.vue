@@ -192,9 +192,6 @@ export default {
   padding: 0 20px;
   margin: 19px auto;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .imgStyle {
   width: 100%;
 }

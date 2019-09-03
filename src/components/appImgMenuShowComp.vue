@@ -23,9 +23,6 @@ export default {
 </script>
 
 <style scoped="true">
-.cursor-pointer {
-  cursor: pointer;
-}
 .imgShowStyle {
   width:20px;
   position:absolute;

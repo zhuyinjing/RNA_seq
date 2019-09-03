@@ -9,14 +9,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>{{$t('leftMenu.expr_matrix')}}</el-breadcrumb-item>
+          <el-breadcrumb-item>时序性差异表达分析</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>{{$t('leftMenu.expr_matrix')}} (COUNT 数)</h2>
-
-        <p>一个基因表达水平的直接体现就是看有多少 reads 回帖到该基因区域，这个可以称之为基因的表达丰度。我们利用 <a href="https://pachterlab.github.io/kallisto/">kallisto</a> 软件来进行转录本定量，基因表达量为该基因所有转录本表达量之和。</p>
-
-        <p>{{$t('mappingqc.references')}} : Nicolas L Bray, Harold Pimentel, Páll Melsted and Lior Pachter, <a href="http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html">Near-optimal probabilistic RNA-seq quantification</a>, Nature Biotechnology 34, 525–527 (2016), doi:10.1038/nbt.3519</p>
+        <h2>时序性差异表达分析</h2>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -66,7 +62,11 @@
           <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
               <thead>
               <tr>
-                  <th v-for="item in countsArray">{{item}}</th>
+                <th>geneId</th>
+                <th>geneName</th>
+                <th>pAdj</th>
+                <th>pValue</th>
+                <th>操作</th>
               </tr>
               </thead>
           </table>
@@ -80,18 +80,12 @@
 </template>
 
 <script>
-import leftMenu from './leftMenu.vue'
-import imgMenuShowComp from './imgMenuShowComp.vue'
+import leftMenu from '@/components/leftMenu.vue'
+import imgMenuShowComp from '@/components/imgMenuShowComp.vue'
 
 export default {
   data () {
     return {
-      countsArray: [],
-      arr: [{
-          "mDataProp" : "geneId"
-      }, {
-          "mDataProp" : "geneName"
-      }],
       textareaGeneName: '',
       textareaGeneId: '',
       fileUrl: '',
@@ -102,32 +96,9 @@ export default {
     imgMenuShowComp
   },
   mounted () {
-    this.getTableHead()  // 获取动态表头
+    this.initTable()
   },
   methods: {
-    getTableHead () {
-      this.axios('/server/gene_counts?p=' + this.$store.state.projectId + '&username=' + this.$store.state.username + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
-        if (res.data.aData.length > 0)  {
-          let obj = res.data.aData[0].counts
-          for (let k in obj) {
-            this.countsArray.push(k)
-          }
-          // table head 按照 a～z 排序
-          this.countsArray.sort()
-          this.countsArray.map((item) => {
-            this.arr.push({
-                "mDataProp" : "counts",
-                "mRender" : function(data, type, full) {
-                    return Math.ceil(data[item])
-                }
-            })
-          })
-          this.countsArray.unshift('geneName')
-          this.countsArray.unshift('geneId')
-        }
-        this.initTable()
-      })
-    },
     initTable () {
       let self = this
       $(document).ready(function() {
@@ -148,9 +119,30 @@ export default {
               "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
               "sAjaxDataProp" : "aData",
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/server/gene_counts?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
-              "aoColumns" : self.arr,
+              "sAjaxSource" : "/server/get_time_series_list?p=" + self.$store.state.projectId +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
+              "aoColumns" : [{
+                  "mDataProp" : "geneId"
+              }, {
+                  "mDataProp" : "geneName"
+              }, {
+                  "mDataProp" : "pAdj"
+              }, {
+                  "mDataProp" : "pValue"
+              }, {
+                  "mDataProp" : "username",
+                  "mRender" : function(data, type, full) {
+                    return '<button id="lineChart" class="el-button el-button--primary el-button--mini">轨迹图</button>'
+                  }
+              }],
           });
+
+          $('#patients tbody').on( 'click', '#lineChart', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#patients").dataTable().fnGetData(row)
+            sessionStorage.setItem('time_series_data', JSON.stringify(data))
+            self.$router.push({'name': 'time_series_lineChart'})
+          })
+
         })
       },
       search () {

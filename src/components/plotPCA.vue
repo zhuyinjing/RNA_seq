@@ -444,10 +444,6 @@ export default {
   margin: 19px auto;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .el-checkbox+.el-checkbox {
   margin-left: 0 !important;
 }

@@ -414,9 +414,6 @@ export default {
   padding: 0 20px;
   margin: 19px auto;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 h4 {
   margin: 0px;
 }

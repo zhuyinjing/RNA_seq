@@ -238,9 +238,6 @@ export default {
   padding: 0 20px;
   margin: 19px auto;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 </style>
 <style media="screen">
 .node circle {

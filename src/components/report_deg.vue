@@ -502,10 +502,6 @@ export default {
   color: #666;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 .label-font {
   font-size: 14px;
 }

@@ -123,9 +123,6 @@ export default {
 </script>
 
 <style scoped="true">
-.cursor-pointer {
-  cursor: pointer;
-}
 .labelStyle {
   display:inline-block;
   width:150px;

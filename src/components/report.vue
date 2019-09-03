@@ -50,6 +50,7 @@
       </div>
 
     </div>
+
   </el-main>
 </el-container>
 </template>
@@ -133,10 +134,6 @@ export default {
 
 .p-font-style {
   /* color: #666; */
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .latinNameStyle {

@@ -432,9 +432,6 @@ export default {
   padding: 0 20px;
   margin: 19px auto;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .span-style {
   display:inline-block;
   width:120px;

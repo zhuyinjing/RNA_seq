@@ -45,6 +45,10 @@
           <el-menu-item index="6-1" @click="menuItemClick('6-1', 'ASprofile')">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
           <el-menu-item index="6-2" @click="menuItemClick('6-2', 'ASprofilePercent')">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>
         </el-menu-item-group>
+        <el-menu-item-group v-if="$store.state.projectType === 'Time_Series'">
+          <span class="title-style">时序性差异表达分析</span>
+          <el-menu-item index="7-1" @click="menuItemClick('7-1', 'time_series_table')">时序性差异表达分析</el-menu-item>
+        </el-menu-item-group>
     </el-menu>
   </div>
 </template>
@@ -125,9 +129,6 @@ export default {
 </script>
 
 <style scoped="true">
-.cursor-pointer {
-  cursor: pointer;
-}
 li {
   list-style: none;
 }

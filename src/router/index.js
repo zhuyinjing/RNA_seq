@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import adminRouter from './admin_router'
+import timeRouter from './time_router'
 
 Vue.use(Router)
 
@@ -200,6 +201,7 @@ export default new Router({
       name: 'venn',
       component: resolve => require(['@/components/venn'], resolve)
     },
-    ...adminRouter
+    ...adminRouter,
+    ...timeRouter
   ]
 })

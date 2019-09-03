@@ -266,9 +266,6 @@ table.gridtable td {
 .item {
   margin: 4px;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .bgcolor {
   background-color: #f9f9f9 !important;
 }

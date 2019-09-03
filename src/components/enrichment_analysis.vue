@@ -275,10 +275,6 @@ export default {
   margin: 19px auto;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 h4 {
   margin: 0;
 }

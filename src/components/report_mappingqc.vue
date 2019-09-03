@@ -343,10 +343,6 @@ export default {
   margin: 19px auto;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
 table.gridtable {
   width: 100%;
   text-align: center;

@@ -42,9 +42,6 @@ export default {
 .container {
   padding: 5px;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 .activebtn {
   background:#f56c6c;
   border-color:#f56c6c;

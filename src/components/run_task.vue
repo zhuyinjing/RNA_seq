@@ -394,7 +394,4 @@ export default {
 .item {
   margin: 4px;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
 </style>
