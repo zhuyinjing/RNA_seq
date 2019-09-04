@@ -32,6 +32,7 @@ import * as d3 from 'd3'
 export default {
   data () {
     return {
+      data: null
     }
   },
   components: {
@@ -45,79 +46,82 @@ export default {
     getData () {
       let gene = JSON.parse(sessionStorage.getItem('time_series_data'))
       this.axios.get('/server/get_gene_time_series_info?p='+ this.$store.state.projectId +'&geneId='+ gene.geneId +'&pAdj='+ gene.pAdj).then(res => {
-        this.initD3()
+        if (res.data.message_type === 'success') {
+          this.data = res.data
+          this.initD3()
+        } else {
+          this.$message.error('请求出错！')
+        }
       })
     },
     initD3 () {
       let self = this
-      let hassvg = d3.selectAll('#scattersvg')
+      let hassvg = d3.selectAll('#linesvg')
       if (hassvg) {
-        d3.selectAll('#scattersvg').remove()
+        d3.selectAll('#linesvg').remove()
       }
       var width = 900, height = 600;
-      var scattersvg = d3.select("#lineContainer").append("svg").attr("width", width).attr("height", height).attr("id", "scattersvg")
+      var linesvg = d3.select("#lineContainer").append("svg").attr("width", width).attr("height", height).attr("id", "linesvg")
 
-      var data = this.data.sdevOfPc
+      var data = this.data
       var padding = {top:30,right:100,bottom:60,left:60}
-      var xScale = d3.scaleLinear().domain([0, 30]).range([0,width - padding.left - padding.right])
-      var yScale = d3.scaleLinear().domain([0, 1]).range([height - padding.top - padding.bottom,0]).nice()
+      var xScale = d3.scaleLinear().domain([0.8, d3.max(data.x)]).range([0,width - padding.left - padding.right])
+      var yScale = d3.scaleLinear().domain([-10, data.y]).range([height - padding.top - padding.bottom,0]).nice()
       var xAxis = d3.axisBottom().scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
-      var x = scattersvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
+      var x = linesvg.append("g").call(xAxis.tickValues(data.x)).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
 
-      var y = scattersvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
+      var y = linesvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
 
       var line = d3.line()
-          .x(function(d, i) { return padding.left + xScale(d["pcNum"]); }) // set the x values for the line generator
-          .y(function(d) { return padding.top + yScale(d["standardDeviation"]); }) // set the y values for the line generator
+          .x(function(d, i) { return padding.left + xScale(d["time"]); }) // set the x values for the line generator
+          .y(function(d) { return padding.top + yScale(d["fitCount"]); }) // set the y values for the line generator
           .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-      let krr = [{pcNum:2,standardDeviation:0.4,id:'cc'},{pcNum:6,standardDeviation:1,id:'cc'},{pcNum:4,standardDeviation:11,id:'pc'},{pcNum:8,standardDeviation:4,id:'pc'}]
-      scattersvg
+      linesvg
           .selectAll('.line-group')
-          .data(this.data.groupName).enter()
+          .data(data.batch).enter()
           .append('g')
           .append("path")
-          // .datum(data) // 10 . Binds data to the line
-          .attr("d", (d) => line(data.filter(item => item.sampleGroup === d.groupName)))
+          .attr("d", (d) => line(data.fitInfo.filter(item => item.batch === d)))
           .attr("fill", "none")
-          .attr("stroke", (d,i) => colorScale(d.groupName))
+          .attr("stroke", (d,i) => colorScale(d))
           .attr("stroke-width", "3")
 
       // x 轴文字
-      scattersvg.append("text")
+      linesvg.append("text")
         .attr("transform", "translate("+ (width / 2) +", " + height + ")")
-        .text("CC")
+        .text(data.geneInfo.geneId)
         .attr("text-anchor", "middle")
         .attr("font-size", "16px")
 
       // y 轴文字
-      scattersvg.append("text")
-        .text("Shared Correlation Strength")
+      linesvg.append("text")
+        .text("Read counts")
         .attr("transform", "translate("+ 15 +", " + (height / 2) + ") rotate(-90)")
 
       // legend
       let legendHeight = 20
-      let legendGroup = scattersvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 3) +")")
+      let legendGroup = linesvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 3) +")")
       legendGroup.selectAll(".legend")
-                .data(this.data.groupName)
+                .data(data.batch)
                 .enter()
                 .append("line")
                 .attr("x1", 5)
                 .attr("y1", (d, i) => i * legendHeight + 5)
                 .attr("x2", 30)
                 .attr("y2", (d, i) => i * legendHeight + 5)
-                .attr("fill", (d, i) => colorScale(d.groupName))
-                .attr("stroke", (d, i) => colorScale(d.groupName))
+                .attr("fill", (d, i) => colorScale(d))
+                .attr("stroke", (d, i) => colorScale(d))
                 .attr("stroke-width", 3)
         legendGroup.selectAll(".text")
-                  .data(this.data.groupName)
+                  .data(data.batch)
                   .enter()
                   .append("text")
                   .attr("transform",(d,i) => "translate(35,"+ (i * legendHeight + 10) +")")
-                  .text(d => d.groupName)
+                  .text(d => d)
     },
   }
 }

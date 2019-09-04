@@ -91,8 +91,8 @@
           </tr>
           <tr v-for="(item, key, index) in timeObj">
               <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input v-model="item.time" clearable></el-input></td>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input v-model="item.batch" clearable></el-input></td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input size="small" v-model="item.time" clearable></el-input></td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input size="small" v-model="item.batch" clearable></el-input></td>
           </tr>
         </table>
       </div>
@@ -133,16 +133,18 @@ export default {
         if (res.data.message) {
           this.message = res.data.message
           this.timeExpObj = res.data.message.nameSampleMap // 为了使时序分析表格内的样本名称正常显示
+
+          // 项目类型为时序设计时，该请求是获取时序表格内容的显示
+          if (this.$store.state.projectType === 'Time_Series') {
+            this.axios.get('/server/get_time_series_experiment?p=' + this.$store.state.projectId).then((res) => {
+              if (res.data.message) {
+                this.timeExpObj = res.data.message.nameSampleMap
+              }
+            })
+          }
+
         }
       })
-      // 项目类型为时序设计时，该请求是获取时序表格内容的显示
-      if (this.$store.state.projectType === 'Time_Series') {
-        this.axios.get('/server/get_time_series_experiment?p=' + this.$store.state.projectId).then((res) => {
-          if (res.data.message) {
-            this.timeExpObj = res.data.message.nameSampleMap
-          }
-        })
-      }
     },
     editDesign () {
       this.condition = []
@@ -227,8 +229,8 @@ export default {
             'name': key,
             'condition': this.condition[i]['option'],
             'readPairList': [],
-            'time': '',
-            'batch': ''
+            'time': this.timeExpObj[key] ? this.timeExpObj[key].time : '',
+            'batch': this.timeExpObj[key] ? this.timeExpObj[key].batch : ''
           }
         }
       }
