@@ -6,6 +6,7 @@
     <p>{{$t('project_list.project_name')}}: {{this.$store.state.projectName}}</p>
     <div class="">
       <el-button type="danger" @click="editDesign()"><i class="el-icon-edit"></i>{{$t('create_experiment.edit_experiment')}}</el-button>
+      <el-button type="warning" @click="editTimeDesign()" v-if="$store.state.projectType === 'Time_Series'"><i class="el-icon-edit"></i>编辑时序分析实验设计</el-button>
       <el-button type="" @click="clearDesign"><i class="el-icon-delete"></i>{{$t('create_experiment.clear_experiment')}}</el-button>
     </div>
     <div class="tableStyle">
@@ -29,6 +30,19 @@
         <tr v-for="(item, index) in message.experiments">
             <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
             <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="tableStyle" v-if="$store.state.projectType === 'Time_Series'">
+      <p class="p-font-style">时序分析实验设计</p>
+      <table class="gridtable">
+        <tr>
+            <th>{{$t('create_experiment.sample_name')}}</th><th>Time</th><th>Batch</th>
+        </tr>
+        <tr v-for="(item, key, index) in timeExpObj">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.time}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.batch}}</td>
         </tr>
       </table>
     </div>
@@ -69,6 +83,25 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="编辑时序分析实验设计" :visible.sync="timeDialog" width="30%">
+      <div class="padding-10-5">
+        <table class="gridtable">
+          <tr>
+              <th>{{$t('create_experiment.sample_name')}}</th><th>Time</th><th>Batch</th>
+          </tr>
+          <tr v-for="(item, key, index) in timeObj">
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input v-model="item.time" clearable></el-input></td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}"><el-input v-model="item.batch" clearable></el-input></td>
+          </tr>
+        </table>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="timeDialog = false">{{$t('button.cancel')}}</el-button>
+        <el-button type="danger" @click="createTimeExperiment()">{{$t('button.confirm')}}</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -82,7 +115,11 @@ export default {
       conditionNumMap: {},
       conditionList: [],
       experiments: [],
-      message: {}
+      message: {},
+      timeDialog: false,
+      timeObj: {},
+      timeExpObj: {},
+
     }
   },
   components: {
@@ -92,13 +129,20 @@ export default {
   },
   methods: {
     getExperiment () {
-      this.axios.get('/server/experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        if (!res.data.message) {
-          this.message = {}
-        } else {
+      this.axios.get('/server/experiment?p=' + this.$store.state.projectId).then((res) => {
+        if (res.data.message) {
           this.message = res.data.message
+          this.timeExpObj = res.data.message.nameSampleMap // 为了使时序分析表格内的样本名称正常显示
         }
       })
+      // 项目类型为时序设计时，该请求是获取时序表格内容的显示
+      if (this.$store.state.projectType === 'Time_Series') {
+        this.axios.get('/server/get_time_series_experiment?p=' + this.$store.state.projectId).then((res) => {
+          if (res.data.message) {
+            this.timeExpObj = res.data.message.nameSampleMap
+          }
+        })
+      }
     },
     editDesign () {
       this.condition = []
@@ -164,7 +208,7 @@ export default {
         this.$message.error('对比条件不能为空，请返回上一步重新选择！');
         return
       }
-      let obj = {}
+      let obj = {}, timeObj = {}
       obj.projectId = this.$store.state.projectId
       obj.conditionNumMap = {}
       for (let i in this.condition) {
@@ -179,6 +223,13 @@ export default {
             'condition': this.condition[i]['option'],
             'readPairList': []
           }
+          timeObj[key] = { // 拼接时序分析实验设计的 JSON
+            'name': key,
+            'condition': this.condition[i]['option'],
+            'readPairList': [],
+            'time': '',
+            'batch': ''
+          }
         }
       }
       obj.experiments = this.experiments
@@ -189,10 +240,43 @@ export default {
       this.axios.post('/server/create_experiment', formData).then((res) => {
         if(res.data.message_type === 'success') {
           this.message = res.data.message
+          this.timeExpObj = timeObj
+          this.$message.success('编辑实验设计成功！');
         } else {
           this.$message.error('请求异常！');
         }
         this.step2Dialog = false
+      })
+    },
+    editTimeDesign () {
+      if (JSON.stringify(this.message) === '{}') {
+        this.$message.error('请先编辑实验设计！')
+        return
+      }
+      this.timeObj = JSON.parse(JSON.stringify(this.timeExpObj))
+      this.timeDialog = true
+    },
+    createTimeExperiment () {
+      let obj = {}
+      obj.projectId = this.$store.state.projectId
+      obj.conditionNumMap = {}
+      for (let i in this.condition) {
+        obj.conditionNumMap[this.condition[i]['option']] = this.condition[i]['number']
+      }
+      obj.nameSampleMap = this.timeObj
+      obj.experiments = this.experiments
+      let formData = new FormData()
+      formData.append('username', this.$store.state.username)
+      formData.append('p', this.$store.state.projectId)
+      formData.append('experimentObjectString', JSON.stringify(obj))
+      this.axios.post('/server/create_time_series_experiment', formData).then((res) => {
+        if(res.data.message_type === 'success') {
+          this.$message.success('编辑时序设计成功！');
+          this.timeExpObj = res.data.message.nameSampleMap
+        } else {
+          this.$message.error('请求异常！');
+        }
+        this.timeDialog = false
       })
     },
     clearDesign () {
@@ -205,7 +289,6 @@ export default {
           this.axios.get('/server/clear_experiment?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
             if (res.data === 'success') {
               this.$message.success('已清空!');
-              this.message = {}
             } else {
               this.$message.error('清空失败!');
             }
