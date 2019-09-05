@@ -65,30 +65,46 @@ export default {
 
       var data = this.data
       var padding = {top:30,right:100,bottom:60,left:60}
-      var xScale = d3.scaleLinear().domain([0.8, d3.max(data.x)]).range([0,width - padding.left - padding.right])
-      var yScale = d3.scaleLinear().domain([-10, data.y]).range([height - padding.top - padding.bottom,0]).nice()
+      var xScale = d3.scaleBand().domain(data.x).range([0,width - padding.left - padding.right]).padding(1)
+      var yScale = d3.scaleLinear().domain([0, data.y]).range([height - padding.top - padding.bottom,0]).nice()
       var xAxis = d3.axisBottom().scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
-      var x = linesvg.append("g").call(xAxis.tickValues(data.x)).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
+      var x = linesvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
 
       var y = linesvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
 
       var line = d3.line()
-          .x(function(d, i) { return padding.left + xScale(d["time"]); }) // set the x values for the line generator
+          .x(function(d, i) { console.log(i,d);return padding.left + xScale(d.time); }) // set the x values for the line generator
           .y(function(d) { return padding.top + yScale(d["fitCount"]); }) // set the y values for the line generator
           .curve(d3.curveMonotoneX) // apply smoothing to the line
 
       linesvg
           .selectAll('.line-group')
           .data(data.batch).enter()
-          .append('g')
           .append("path")
-          .attr("d", (d) => line(data.fitInfo.filter(item => item.batch === d)))
+          .attr("d", (d) => line((data.fitInfo.filter(item => item.batch === d)).sort((a,b) => a.time - b.time)))
           .attr("fill", "none")
-          .attr("stroke", (d,i) => colorScale(d))
+          .attr("stroke", (d,i) => colorScale(data.batchCondition[d]))
           .attr("stroke-width", "3")
+          .style("stroke-dasharray", (d, i) => i)
+
+      // 图形部分
+      var symbolGenerator = d3.symbol().size(50);
+      let symbolScale = d3.scaleOrdinal().domain(data.batch).range(['symbolCircle', 'symbolCross', 'symbolDiamond', 'symbolSquare', 'symbolStar', 'symbolTriangle', 'symbolWye'])
+      linesvg
+          .selectAll('.symbol-group')
+          .data(data.estInfo).enter()
+          .append("path")
+          .attr('d', function(d) {
+            symbolGenerator.type(d3[symbolScale(d.batch)]);
+        		return symbolGenerator();
+          })
+          .attr("fill", (d,i) => colorScale(data.batchCondition[d.batch]))
+          .attr('transform', function(d, i) {
+        		return 'translate(' + (padding.left + xScale(d.time)) + ', '+ (padding.top + yScale(d.estCount)) +')';
+        	})
 
       // x 轴文字
       linesvg.append("text")
@@ -102,25 +118,92 @@ export default {
         .text("Read counts")
         .attr("transform", "translate("+ 15 +", " + (height / 2) + ") rotate(-90)")
 
-      // legend
+      // legend: Condition
       let legendHeight = 20
-      let legendGroup = linesvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 3) +")")
-      legendGroup.selectAll(".legend")
+      let legendCondition = linesvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 6) +")")
+
+      legendCondition.append("text")
+                .attr("transform","translate(5,0)")
+                .text("Condition")
+
+      legendCondition.selectAll(".legend")
+                .data(Array.from(new Set(Object.values(data.batchCondition))))
+                .enter()
+                .append("line")
+                .attr("x1", 5)
+                .attr("y1", (d, i) => i * legendHeight + 10)
+                .attr("x2", 30)
+                .attr("y2", (d, i) => i * legendHeight + 10)
+                .attr("stroke", d => colorScale(d))
+                .attr("stroke-width", 3)
+
+        legendCondition.selectAll(".legend")
+                  .data(Array.from(new Set(Object.values(data.batchCondition))))
+                  .enter()
+                  .append("circle")
+                  .attr("cx", 18)
+                  .attr("cy", (d, i) => i * legendHeight + 10)
+                  .attr("r", 4)
+                  .attr("fill", d => colorScale(d))
+
+        legendCondition.selectAll(".text")
+                  .data(Array.from(new Set(Object.values(data.batchCondition))))
+                  .enter()
+                  .append("text")
+                  .attr("transform",(d,i) => "translate(35,"+ (i * legendHeight + 15) +")")
+                  .text(d => d)
+
+      // legend: Batch
+      let legendBatch = linesvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 3) +")")
+
+      legendBatch.append("text")
+                .attr("transform","translate(5,0)")
+                .text("Batch")
+
+      legendBatch.selectAll(".legend")
+                .data(data.batch)
+                .enter()
+                .append("path")
+                .attr('d', function(d) {
+                  symbolGenerator.type(d3[symbolScale(d)]);
+              		return symbolGenerator();
+                })
+                .attr("fill", (d,i) => "black")
+                .attr('transform', function(d, i) {
+              		return 'translate(15, '+ (i * legendHeight + 12) +')'
+              	})
+
+        legendBatch.selectAll(".text")
+                  .data(data.batch)
+                  .enter()
+                  .append("text")
+                  .attr("transform",(d,i) => "translate(35,"+ (i * legendHeight + 15) +")")
+                  .text(d => d)
+
+      // legend: BatchFit
+      let legendBatchFit = linesvg.append("g").attr("transform","translate("+ (width - padding.right) +","+ (height / 1.5) +")")
+
+      legendBatchFit.append("text")
+                .attr("transform","translate(5,0)")
+                .text("BatchFit")
+
+      legendBatchFit.selectAll(".legend")
                 .data(data.batch)
                 .enter()
                 .append("line")
                 .attr("x1", 5)
-                .attr("y1", (d, i) => i * legendHeight + 5)
+                .attr("y1", (d, i) => i * legendHeight + 10)
                 .attr("x2", 30)
-                .attr("y2", (d, i) => i * legendHeight + 5)
-                .attr("fill", (d, i) => colorScale(d))
-                .attr("stroke", (d, i) => colorScale(d))
+                .attr("y2", (d, i) => i * legendHeight + 10)
+                .attr("stroke", "black")
                 .attr("stroke-width", 3)
-        legendGroup.selectAll(".text")
+                .style("stroke-dasharray", (d, i) => i)
+
+        legendBatchFit.selectAll(".text")
                   .data(data.batch)
                   .enter()
                   .append("text")
-                  .attr("transform",(d,i) => "translate(35,"+ (i * legendHeight + 10) +")")
+                  .attr("transform",(d,i) => "translate(35,"+ (i * legendHeight + 15) +")")
                   .text(d => d)
     },
   }
