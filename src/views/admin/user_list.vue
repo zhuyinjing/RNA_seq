@@ -81,11 +81,17 @@
           prop="username"
           label="用户名"
         >
-          <el-input v-model="projectForm.username" style="width: 70%" :disabled="true"></el-input>
+        {{projectUsername}}
+        </el-form-item>
+        <el-form-item
+          prop="username"
+          label="已关联项目"
+        >
+        {{existsProject}}
         </el-form-item>
         <el-form-item
           v-for="(item, index) in projectForm.projectIdArr"
-          :label="'项目ID ' + (index + 1)"
+          :label="'项目ID'"
           :key="index + 'id'"
           :prop="'projectIdArr.' + index + '.id'"
           :rules="{
@@ -180,9 +186,10 @@ export default {
       selectUsername: '',
       projectDialog: false,
       projectForm: {
-        username: '',
         projectIdArr: [{id: ''}]
-      }
+      },
+      projectUsername: '',
+      existsProject: ''
     }
   },
   components: {
@@ -258,8 +265,13 @@ export default {
           $('#table tbody').on( 'click', '#projectBtn', function () {
             var row = $(this).parents('tr')[0]
             var data = $("#table").dataTable().fnGetData(row)
+            self.axios.get('/server/get_project_by_user?user=' + data.username).then(res => {
+              if (res.data.message_type === 'success') {
+                self.existsProject = res.data.projectList.length > 0 ? res.data.projectList.map(d => d.id).join(', ') : ''
+              }
+            })
             self.projectDialog = true
-            self.projectForm.username = data.username
+            self.projectUsername = data.username
           })
 
           $('#table tbody').on( 'click', '#deleteBtn', function () {
@@ -336,7 +348,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let pList = this.projectForm.projectIdArr.map(item => item.id)
-          this.axios.get('/admin/change_project_user?changeUserName=' + this.projectForm.username + '&pList=' + pList).then(res => {
+          this.axios.get('/admin/change_project_user?changeUserName=' + this.projectUsername + '&pList=' + pList).then(res => {
             if (res.data.message_type === 'success') {
               this.$message.success('项目关联成功！');
               this.projectDialog = false
