@@ -60,7 +60,7 @@ export default {
       if (hassvg) {
         d3.selectAll('#linesvg').remove()
       }
-      var width = 900, height = 600;
+      var width = 900, height = 700;
       var linesvg = d3.select("#lineContainer").append("svg").attr("width", width).attr("height", height).attr("id", "linesvg")
 
       var data = this.data
@@ -76,7 +76,7 @@ export default {
       var y = linesvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
 
       var line = d3.line()
-          .x(function(d, i) { console.log(i,d);return padding.left + xScale(d.time); }) // set the x values for the line generator
+          .x(function(d, i) { return padding.left + xScale(d.time); }) // set the x values for the line generator
           .y(function(d) { return padding.top + yScale(d["fitCount"]); }) // set the y values for the line generator
           .curve(d3.curveMonotoneX) // apply smoothing to the line
 

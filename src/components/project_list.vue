@@ -208,6 +208,7 @@ export default {
       window.location.href = document.location.origin + '/login'
     },
     createClick () {
+      let self = this
       if (!this.form.name) {
         this.$message.error('项目名不能为空!')
         return
@@ -222,7 +223,9 @@ export default {
       this.axios.post('/server/create_project', formData).then((res) => {
         if (res.data.message_type === 'success') {
           this.$message.success('项目创建成功！');
-          this.getProjects()
+          this.table.ajax.reload(function () {
+              self.table.columns.adjust().draw();
+          },false);
         } else {
           this.$message.error(res.data.message);
         }
@@ -276,12 +279,12 @@ export default {
     report (item) {
       this.commitStore(item)
       this.axios.get('/server/rnaseq_report_index?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        // if (res.data.experimentDesign !== null) {
-        //   this.$store.commit('setinfo', res.data)
+        if (res.data.experimentDesign !== null) {
+          this.$store.commit('setinfo', res.data)
           this.$router.push({'name': 'report'})
-        // } else {
-        //   this.$message.error('实验设计为空！')
-        // }
+        } else {
+          this.$message.error('实验设计为空！')
+        }
       }).catch(e => {
         this.$message.error('请求出错！')
       })
