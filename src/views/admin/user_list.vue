@@ -267,7 +267,7 @@ export default {
             var data = $("#table").dataTable().fnGetData(row)
             self.axios.get('/server/get_project_by_user?user=' + data.username).then(res => {
               if (res.data.message_type === 'success') {
-                self.existsProject = res.data.projectList.length > 0 ? res.data.projectList.map(d => d.id).join(', ') : ''
+                self.existsProject = res.data.projectList.length > 0 ? res.data.projectList.map(d => d.id).join(', ') : '暂无'
               }
             })
             self.projectDialog = true
