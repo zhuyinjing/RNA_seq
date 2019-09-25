@@ -318,20 +318,20 @@ export default {
   					.style("fill","url(#" + linearGradient.attr("id") + ")")
 
   		//添加文字
-  		var minValueText = svg.append("text")
+  		var maxValueText = svg.append("text")
   					.attr("class","valueText")
   					.attr("x", width + 100)
-  					.attr("y", height - 280)
+  					.attr("y", height / 1.5 + 15)
   					.attr("dy", "-0.3em")
   					.text(function(){
   						return d3.max(self.tableValue , function (d) {
               				  return Number(d.p_value).toFixed(3)})
   					});
 
-  		var maxValueText = svg.append("text")
+  		var minValueText = svg.append("text")
   					.attr("class","valueText")
   					.attr("x", width + 100)
-  					.attr("y", height - 190)
+  					.attr("y", height / 1.5 +  100)
   					.attr("dy", "-0.3em")
   					.text(function(){
   						return d3.min(self.tableValue , function (d) {

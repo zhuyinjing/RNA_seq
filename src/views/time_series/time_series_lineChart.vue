@@ -71,6 +71,16 @@ export default {
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
+      let tooltip = d3.select('#lineContainer')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	.style('color', '#3497db')
+        .style('visibility', 'hidden')
+        .style('font-size', '16px')
+      	.style('font-weight', 'bold')
+      	.text('')
+
       var x = linesvg.append("g").call(xAxis).attr("transform","translate("+ padding.left +"," + (height - padding.bottom) +")")
 
       var y = linesvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
@@ -105,6 +115,15 @@ export default {
           .attr('transform', function(d, i) {
         		return 'translate(' + (padding.left + xScale(d.time)) + ', '+ (padding.top + yScale(d.estCount)) +')';
         	})
+          .on('mouseover', function (d, i) {
+            return tooltip.style('visibility', 'visible').text(d.estCount)
+          })
+          .on('mousemove', function (d, i) {
+            return tooltip.style('top', (d3.event.pageY-10)+'px').style('left',(d3.event.pageX+10)+'px')
+          })
+          .on('mouseout', function (d, i) {
+            return tooltip.style('visibility', 'hidden')
+          })
 
       // x 轴文字
       linesvg.append("text")
