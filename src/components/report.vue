@@ -1,62 +1,52 @@
 <template>
-<el-container style="height:calc(100% - 62px);margin-top:2px">
-  <el-aside v-show="$store.state.menuShow" width="350px;" style="width:300px;height:100%;border-right:1px solid #e6e6e6">
-    <leftMenu style="margin-top:5px"></leftMenu>
-  </el-aside>
-  <el-main>
-    <div class="">
-      <imgMenuShowComp></imgMenuShowComp>
+  <div class="">
+    <imgMenuShowComp></imgMenuShowComp>
 
-      <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
-        <el-breadcrumb-item>{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-        <el-breadcrumb-item></el-breadcrumb-item>
-      </el-breadcrumb>
-      <h2>{{$t('report.title')}}</h2>
-      <p>{{$t('report.introduction')}}</p>
+    <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
+      <el-breadcrumb-item>{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
+      <el-breadcrumb-item></el-breadcrumb-item>
+    </el-breadcrumb>
+    <h2>{{$t('report.title')}}</h2>
+    <p>{{$t('report.introduction')}}</p>
 
-      <h2>{{$t('report.project')}}{{$store.state.projectName}}{{$t('report.describe')}}</h2>
-      <p>{{$t('report.species')}}：<span class="latinNameStyle">{{this.displayLatinName}}</span> ( {{this.displayName}} )</p>
-      <p>{{$t('report.genome')}}：{{this.genome}}</p>
+    <h2>{{$t('report.project')}}{{$store.state.projectName}}{{$t('report.describe')}}</h2>
+    <p>{{$t('report.species')}}：<span class="latinNameStyle">{{this.displayLatinName}}</span> ( {{this.displayName}} )</p>
+    <p>{{$t('report.genome')}}：{{this.genome}}</p>
 
-      <h2>{{$t('report.experiment')}}</h2>
+    <h2>{{$t('report.experiment')}}</h2>
 
-      <div class="" id="canvas">
-        <div class="tableStyle">
-          <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
-          <table class="gridtable">
-            <tr>
-              <th>{{$t('create_experiment.experiment_condition')}}</th>
-              <th>{{$t('create_experiment.sample_name')}}</th>
-            </tr>
-            <tr v-for="(item, value, index) in $store.state.info.experimentDesign.nameSampleMap">
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
-            </tr>
-          </table>
-        </div>
-        <div class="degtable">
-          <p class="p-font-style">{{$t('create_experiment.case_control')}}</p>
-          <table class="gridtable">
-            <tr>
-              <th>{{$t('create_experiment.case')}}</th>
-              <th>{{$t('create_experiment.control')}}</th>
-            </tr>
-            <tr v-for="(item, index) in $store.state.info.experimentDesign.experiments">
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
-              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
-            </tr>
-          </table>
-        </div>
+    <div class="" id="canvas">
+      <div class="tableStyle">
+        <p class="p-font-style">{{$t('create_experiment.experiment_list')}}</p>
+        <table class="gridtable">
+          <tr>
+            <th>{{$t('create_experiment.experiment_condition')}}</th>
+            <th>{{$t('create_experiment.sample_name')}}</th>
+          </tr>
+          <tr v-for="(item, value, index) in $store.state.info.experimentDesign.nameSampleMap">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.condition}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+          </tr>
+        </table>
       </div>
-
+      <div class="degtable">
+        <p class="p-font-style">{{$t('create_experiment.case_control')}}</p>
+        <table class="gridtable">
+          <tr>
+            <th>{{$t('create_experiment.case')}}</th>
+            <th>{{$t('create_experiment.control')}}</th>
+          </tr>
+          <tr v-for="(item, index) in $store.state.info.experimentDesign.experiments">
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._case}}</td>
+            <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item._control}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
-
-  </el-main>
-</el-container>
+  </div>
 </template>
 
 <script>
-import leftMenu from './leftMenu.vue'
 import imgMenuShowComp from './imgMenuShowComp.vue'
 
 export default {
@@ -71,7 +61,6 @@ export default {
     }
   },
   components: {
-    leftMenu,
     imgMenuShowComp
   },
   mounted() {

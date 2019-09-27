@@ -5,20 +5,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>{{$t('leftMenu.expr_matrix')}}</el-breadcrumb-item>
+          <el-breadcrumb-item>gene_fusion_list</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>{{$t('leftMenu.expr_matrix')}}</h2>
-
-        <p>{{$t('expr_matrix.introduction')}}</p>
-
-        <p>{{$t('expr_matrix.describe')}}</p>
-
-        <p>$$ TPM_{i} = \frac{ \frac{ N_{i} }{ L_{i} } * 1000000}{\sum_{i=1}^{n} \frac{N_{i}}{L_{i}}}$$</p>
-
-        <p>N<sub>i</sub>：{{$t('expr_matrix.Ni')}}</p>
-        <p>L<sub>i</sub>：{{$t('expr_matrix.Li')}}</p>
-        <p>{{$t('expr_matrix.TMP_span1')}} (N<sub>i</sub>/L<sub>i</sub>) {{$t('expr_matrix.TMP_span2')}}</p>
+        <h2>gene_fusion_list</h2>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -38,14 +28,14 @@
           <div class="" style="display:inline-block;vertical-align:top;">
             <div class="">
               <div class="labelStyle">
-                <label for="maxpval" class="label-font">geneName</label>
+                <label for="maxpval" class="label-font">sampleName</label>
               </div>
               <el-input
                 style="width:400px;"
                 type="textarea"
                 :rows="3"
                 :placeholder="$t('input.split')"
-                v-model="textareaGeneName">
+                v-model="textareaSampleName">
               </el-input>
             </div>
             <br>
@@ -68,7 +58,12 @@
           <table id="patients" cellspacing="0" class="display table table-striped table-bordered">
               <thead>
               <tr>
-                  <th v-for="item in tpmsArray">{{item}}</th>
+                <th>geneId</th>
+                <th>geneName</th>
+                <th>sampleName</th>
+                <th>pfamId</th>
+                <th>pfamDesc</th>
+                <th>操作</th>
               </tr>
               </thead>
           </table>
@@ -82,18 +77,12 @@
 </template>
 
 <script>
-import imgMenuShowComp from './imgMenuShowComp.vue'
+import imgMenuShowComp from '@/components/imgMenuShowComp.vue'
 
 export default {
   data () {
     return {
-      tpmsArray: [],
-      arr: [{
-          "mDataProp" : "geneId"
-      }, {
-          "mDataProp" : "geneName"
-      }],
-      textareaGeneName: '',
+      textareaSampleName: '',
       textareaGeneId: '',
       fileUrl: '',
     }
@@ -102,35 +91,9 @@ export default {
     imgMenuShowComp
   },
   mounted () {
-    this.getTableHead()  // 获取动态表头
-    this.$nextTick(function() {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    });
+    this.initTable()
   },
   methods: {
-    getTableHead () {
-      this.axios('/server/gene_tpms?p=' + this.$store.state.projectId + '&username=' + this.$store.state.username + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
-        if (res.data.aData.length > 0)  {
-          let obj = res.data.aData[0].tpms
-          for (let k in obj) {
-            this.tpmsArray.push(k)
-          }
-          // table head 按照 a～z 排序
-          this.tpmsArray.sort()
-          this.tpmsArray.map((item) => {
-            this.arr.push({
-                "mDataProp" : "tpms",
-                "mRender" : function(data, type, full) {
-                    return Math.ceil(data[item])
-                }
-            })
-          })
-          this.tpmsArray.unshift('geneName')
-          this.tpmsArray.unshift('geneId')
-        }
-        this.initTable()
-      })
-    },
     initTable () {
       let self = this
       $(document).ready(function() {
@@ -151,9 +114,32 @@ export default {
               "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
               "sAjaxDataProp" : "aData",
               //通过ajax实现分页的url路径
-              "sAjaxSource" : "/server/gene_tpms?p=" + self.$store.state.projectId + "&username=" + self.$store.state.username +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
-              "aoColumns" : self.arr,
+              "sAjaxSource" : "/server/get_gene_fusion_list?p=" + self.$store.state.projectId +  "&sampleName=" + self.textareaSampleName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
+              "aoColumns" : [{
+                  "mDataProp" : "geneId"
+              }, {
+                  "mDataProp" : "geneName"
+              }, {
+                  "mDataProp" : "sampleName"
+              }, {
+                  "mDataProp" : "pfamId"
+              }, {
+                  "mDataProp" : "pfamDesc"
+              },{
+                  "mDataProp" : "geneId",
+                  "mRender" : function(data, type, full) {
+                    return '<button id="lineChart" class="el-button el-button--primary el-button--mini">svg</button>'
+                  }
+              }],
           });
+
+          $('#patients tbody').on( 'click', '#lineChart', function () {
+            var row = $(this).parents('tr')[0]
+            var data = $("#patients").dataTable().fnGetData(row)
+            sessionStorage.setItem('gene_fusion_data', JSON.stringify(data))
+            self.$router.push({'name': 'gene_fusion_plot'})
+          })
+
         })
       },
       search () {
@@ -163,11 +149,11 @@ export default {
         }, 0)
       },
       clear () {
-        this.textareaGeneName = ''
+        this.textareaSampleName = ''
         this.textareaGeneId = ''
       },
       exportTable () {
-        this.axios.get("/server/export_gene_tpms?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username +  "&geneName=" + this.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + this.textareaGeneId.replace(/\s/g,'')).then(res => {
+        this.axios.get("/server/export_gene_counts?p=" + this.$store.state.projectId + "&username=" + this.$store.state.username +  "&geneName=" + this.textareaSampleName.replace(/\s/g,'') +  "&geneId=" + this.textareaGeneId.replace(/\s/g,'')).then(res => {
           this.fileUrl = res.data.filePath
           setTimeout(() => {
             this.$refs.downloadA.click()
@@ -179,19 +165,6 @@ export default {
 </script>
 
 <style scoped="true">
-.content {
-  float:left;
-  /* width: 60%; */
-  width: calc(100% - 350px);
-  padding: 0 20px;
-  margin: 19px auto;
-}
-.imgStyle {
-  width: 100%;
-}
-.overflow-auto {
-  overflow: auto;
-}
 .clear {
   clear: both;
 }
@@ -199,15 +172,6 @@ export default {
   display: inline-block;
   width: 95px;
   text-align: end;
-}
-
-.filterbtnDiv {
-  float: right;
-  margin-bottom: 10px;
-}
-
-.text-align-center {
-  text-align: center;
 }
 .label-font {
   font-size: 14px;

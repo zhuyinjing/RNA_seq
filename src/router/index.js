@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import adminRouter from './admin_router'
-import timeRouter from './time_router'
 
 Vue.use(Router)
 
@@ -53,78 +52,129 @@ export default new Router({
     },
     {
       path: '/report',
-      name: 'report',
-      component: resolve => require(['@/components/report'], resolve)
-    },
-    {
-      path: '/report_deg',
-      name: 'report_deg',
-      component: resolve => require(['@/components/report_deg'], resolve)
-    },
-    {
-      path: '/heatmap',
-      name: 'heatmap',
-      component: resolve => require(['@/components/heatmap'], resolve)
-    },
-    {
-      path: '/ppi_chord_plot',
-      name: 'ppi_chord_plot',
-      component: resolve => require(['@/components/ppi_chord_plot'], resolve)
-    },
-    {
-      path: '/report_fastqc',
-      name: 'report_fastqc',
-      component: resolve => require(['@/components/report_fastqc'], resolve)
-    },
-    {
-      path: '/report_mappingqc',
-      name: 'report_mappingqc',
-      component: resolve => require(['@/components/report_mappingqc'], resolve)
-    },
-    {
-      path: '/report_new_trans',
-      name: 'report_new_trans',
-      component: resolve => require(['@/components/report_new_trans'], resolve)
-    },
-    {
-      path: '/report_expr_matrix',
-      name: 'report_expr_matrix',
-      component: resolve => require(['@/components/report_expr_matrix'], resolve)
-    },
-    {
-      path: '/report_gene_count',
-      name: 'report_gene_count',
-      component: resolve => require(['@/components/report_gene_count'], resolve)
-    },
-    {
-      path: '/report_volcano_plot',
-      name: 'report_volcano_plot',
-      component: resolve => require(['@/components/report_volcano_plot'], resolve)
-    },
-    {
-      path: '/heatmapsvg',
-      name: 'heatmapsvg',
-      component: resolve => require(['@/components/heatmapsvg'], resolve)
-    },
-    {
-      path: '/enrichment_analysis',
-      name: 'enrichment_analysis',
-      component: resolve => require(['@/components/enrichment_analysis'], resolve)
-    },
-    {
-      path: '/plotCluster',
-      name: 'plotCluster',
-      component: resolve => require(['@/components/plotCluster'], resolve)
-    },
-    {
-      path: '/keggbubble',
-      name: 'keggbubble',
-      component: resolve => require(['@/components/keggbubble'], resolve)
-    },
-    {
-      path: '/plotPCA',
-      name: 'plotPCA',
-      component: resolve => require(['@/components/plotPCA'], resolve)
+      component: resolve => require(['@/views/report/index'], resolve),
+      children: [
+        {
+          path: '',
+          name: 'report',
+          component: resolve => require(['@/components/report'], resolve)
+        },
+        {
+          path: '/report_fastqc',
+          name: 'report_fastqc',
+          component: resolve => require(['@/components/report_fastqc'], resolve)
+        },
+        {
+          path: '/report_mappingqc',
+          name: 'report_mappingqc',
+          component: resolve => require(['@/components/report_mappingqc'], resolve)
+        },
+        {
+          path: '/report_new_trans',
+          name: 'report_new_trans',
+          component: resolve => require(['@/components/report_new_trans'], resolve)
+        },
+        {
+          path: '/report_expr_matrix',
+          name: 'report_expr_matrix',
+          component: resolve => require(['@/components/report_expr_matrix'], resolve)
+        },
+        {
+          path: '/report_gene_count',
+          name: 'report_gene_count',
+          component: resolve => require(['@/components/report_gene_count'], resolve)
+        },
+        {
+          path: '/plotCluster',
+          name: 'plotCluster',
+          component: resolve => require(['@/components/plotCluster'], resolve)
+        },
+        {
+          path: '/plotPCA',
+          name: 'plotPCA',
+          component: resolve => require(['@/components/plotPCA'], resolve)
+        },
+        {
+          path: '/report_deg',
+          name: 'report_deg',
+          component: resolve => require(['@/components/report_deg'], resolve)
+        },
+        {
+          path: '/report_volcano_plot',
+          name: 'report_volcano_plot',
+          component: resolve => require(['@/components/report_volcano_plot'], resolve)
+        },
+        {
+          path: '/report_ma_plot',
+          name: 'report_ma_plot',
+          component: resolve => require(['@/components/report_ma_plot'], resolve)
+        },
+        {
+          path: '/heatmap',
+          name: 'heatmap',
+          component: resolve => require(['@/components/heatmap'], resolve)
+        },
+        {
+          path: '/heatmapsvg',
+          name: 'heatmapsvg',
+          component: resolve => require(['@/components/heatmapsvg'], resolve)
+        },
+        {
+          path: '/ppi_chord_plot',
+          name: 'ppi_chord_plot',
+          component: resolve => require(['@/components/ppi_chord_plot'], resolve)
+        },
+        {
+          path: '/enrichment_analysis',
+          name: 'enrichment_analysis',
+          component: resolve => require(['@/components/enrichment_analysis'], resolve)
+        },
+        {
+          path: '/forceGraph',
+          name: 'forceGraph',
+          component: resolve => require(['@/components/forceGraph'], resolve)
+        },
+        {
+          path: '/keggbubble',
+          name: 'keggbubble',
+          component: resolve => require(['@/components/keggbubble'], resolve)
+        },
+        {
+          path: '/venn',
+          name: 'venn',
+          component: resolve => require(['@/components/venn'], resolve)
+        },
+        {
+          path: '/ASprofile',
+          name: 'ASprofile',
+          component: resolve => require(['@/components/ASprofile'], resolve)
+        },
+        {
+          path: '/ASprofilePercent',
+          name: 'ASprofilePercent',
+          component: resolve => require(['@/components/ASprofilePercent'], resolve)
+        },
+        {
+          path: '/time_series_table',
+          name: 'time_series_table',
+          component: resolve => require(['@/views/time_series/time_series_table'], resolve)
+        },
+        {
+          path: '/time_series_lineChart',
+          name: 'time_series_lineChart',
+          component: resolve => require(['@/views/time_series/time_series_lineChart'], resolve)
+        },
+        {
+          path: '/gene_fusion_list',
+          name: 'gene_fusion_list',
+          component: resolve => require(['@/views/report/gene_fusion_list'], resolve)
+        },
+        {
+          path: '/gene_fusion_plot',
+          name: 'gene_fusion_plot',
+          component: resolve => require(['@/views/report/gene_fusion_plot'], resolve)
+        }
+      ]
     },
     {
       path: '/app_heatmap_input',
@@ -146,11 +196,7 @@ export default new Router({
       name: 'app_ppi',
       component: resolve => require(['@/components/app_ppi'], resolve)
     },
-    {
-      path: '/report_ma_plot',
-      name: 'report_ma_plot',
-      component: resolve => require(['@/components/report_ma_plot'], resolve)
-    },
+
     {
       path: '/app_heatmap_input_project',
       name: 'app_heatmap_input_project',
@@ -160,21 +206,6 @@ export default new Router({
       path: '/app_heatmap_project',
       name: 'app_heatmap_project',
       component: resolve => require(['@/components/app_heatmap'], resolve)
-    },
-    {
-      path: '/ASprofile',
-      name: 'ASprofile',
-      component: resolve => require(['@/components/ASprofile'], resolve)
-    },
-    {
-      path: '/ASprofilePercent',
-      name: 'ASprofilePercent',
-      component: resolve => require(['@/components/ASprofilePercent'], resolve)
-    },
-    {
-      path: '/forceGraph',
-      name: 'forceGraph',
-      component: resolve => require(['@/components/forceGraph'], resolve)
     },
     {
       path: '/app_enrichment_input',
@@ -196,12 +227,6 @@ export default new Router({
       name: 'app_force',
       component: resolve => require(['@/components/app_force'], resolve)
     },
-    {
-      path: '/venn',
-      name: 'venn',
-      component: resolve => require(['@/components/venn'], resolve)
-    },
     ...adminRouter,
-    ...timeRouter
   ]
 })
