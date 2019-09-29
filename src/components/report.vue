@@ -42,6 +42,19 @@
           </tr>
         </table>
       </div>
+      <div class="degtable" v-if="$store.state.projectType === 'Time_Series'">
+        <p class="p-font-style">时序分析实验设计</p>
+        <table class="gridtable">
+          <tr>
+              <th>{{$t('create_experiment.sample_name')}}</th><th>Time</th><th>Batch</th>
+          </tr>
+          <tr v-for="(item, key, index) in timeExpObj">
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.name}}</td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.time}}</td>
+              <td :class="{'bgcolor': index % 2 === 0 ? false: true}">{{item.batch}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +71,7 @@ export default {
       displayName: null,
       genome: null,
       dialog: false,
+      timeExpObj: {},
     }
   },
   components: {
@@ -107,6 +121,16 @@ export default {
           this.genome = res.data.referenceInfo.genome
         }
       })
+
+      // 项目类型为时序设计时，该请求是获取时序表格内容的显示
+      if (this.$store.state.projectType === 'Time_Series') {
+        this.axios.get('/server/get_time_series_experiment?p=' + this.$store.state.projectId).then((res) => {
+          if (res.data.message) {
+            this.timeExpObj = res.data.message.nameSampleMap
+          }
+        })
+      }
+
     },
   }
 }

@@ -29,18 +29,8 @@ export default {
     imgMenuShowComp
   },
   mounted() {
-    this.getValue()
   },
   methods: {
-    getValue() {
-      this.axios.get('/server/rnaseq_report_summary?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId + '&speciesId=' + this.$store.state.species).then((res) => {
-        if (res.data.message_type === 'success') {
-          this.displayLatinName = res.data.speciesInfo.latinName
-          this.displayName = res.data.speciesInfo.commonName
-          this.genome = res.data.referenceInfo.genome
-        }
-      })
-    },
   }
 }
 </script>
