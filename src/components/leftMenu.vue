@@ -68,7 +68,7 @@ export default {
   },
   mounted () {
     switch (this.$route.path) {
-      case '/report':
+      case '/report/':
         this.$store.commit('setleftMenuIndex', '0-0')
         break;
     }
