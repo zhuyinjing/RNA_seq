@@ -5,10 +5,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>gene_fusion_list</el-breadcrumb-item>
+          <el-breadcrumb-item>junction_list</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>gene_fusion_list</h2>
+        <h2>junction_list</h2>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">

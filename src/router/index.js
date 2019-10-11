@@ -178,6 +178,11 @@ export default new Router({
           path: '/junction_seq_result_list',
           name: 'junction_seq_result_list',
           component: resolve => require(['@/views/report/junction_seq_result_list'], resolve)
+        },
+        {
+          path: '/junction_plot',
+          name: 'junction_plot',
+          component: resolve => require(['@/views/report/junction_plot'], resolve)
         }
       ]
     },
