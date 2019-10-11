@@ -53,6 +53,10 @@
           <span class="title-style">gene_fusion</span>
           <el-menu-item index="8-1" @click="menuItemClick('8-1', 'gene_fusion_list')">gene_fusion_list</el-menu-item>
         </el-menu-item-group>
+        <el-menu-item-group>
+          <span class="title-style">junction_seq_result</span>
+          <el-menu-item index="9-1" @click="menuItemClick('9-1', 'junction_seq_result_list')">junction_seq_result_list</el-menu-item>
+        </el-menu-item-group>
     </el-menu>
   </div>
 </template>

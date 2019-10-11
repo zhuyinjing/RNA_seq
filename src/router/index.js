@@ -173,6 +173,11 @@ export default new Router({
           path: '/gene_fusion_plot',
           name: 'gene_fusion_plot',
           component: resolve => require(['@/views/report/gene_fusion_plot'], resolve)
+        },
+        {
+          path: '/junction_seq_result_list',
+          name: 'junction_seq_result_list',
+          component: resolve => require(['@/views/report/junction_seq_result_list'], resolve)
         }
       ]
     },

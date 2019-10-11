@@ -231,8 +231,8 @@ export default {
                .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
 
       if (data.domainCoords[0] !== 'NA') {
-        let marginTop1 = rectBottomHeight + 5
-        let marginTop2 = rectBottomHeight + 15
+        let marginTop1 = rectBottomHeight + 15
+        let marginTop2 = rectBottomHeight + 40
         let h = 5 // 线段的高度
 
         rectGroupBottom
@@ -243,6 +243,12 @@ export default {
             })
             .attr("stroke", "red")
             .attr("fill", "none")
+
+        rectGroupBottom
+            .append("text")
+            .attr("transform", "translate(" + xScale(data.domainCoords[0] - 0 + ((data.orfCoords[1] - data.orfCoords[0]) / 2)) + ", "+ (marginTop1 + h + 15) +")")
+            .text("ORF")
+            .style('text-anchor', 'middle')
 
         rectGroupBottom
             .append("path")
