@@ -53,8 +53,8 @@ export default {
       if (hassvg) {
         d3.selectAll('#rectSvg').remove()
       }
-      let width = 800, height = 500;
-      let padding = {top:30,right:100,bottom:60,left:30}
+      let width = 1000, height = 800;
+      let padding = {top:30,right:100,bottom:60,left:100}
       let rectSvg = d3.select("#rectContainer").append("svg").attr("width", width + padding.left + padding.right).attr("height", height).attr("id", "rectSvg")
 
       let data = this.data.geneFusion
@@ -95,7 +95,7 @@ export default {
               .text(d => d.name)
               .style('text-anchor', 'middle')
 
-      let rectGroupStartY = 100
+      let rectGroupStartY = 200
       let rectGroup = rectSvg.append("g").attr("transform", "translate("+ 0 +", " + rectGroupStartY + ")")
 
       let rectHeight = 15
@@ -146,33 +146,109 @@ export default {
 
       // rect 和 chr 的连线 path
       if (Object.keys(chrData).length === 1) {
+        // 最上面的染色体
         var chrScale = d3.scaleLinear().domain([0, chrData[data.chromId[0]].length]).range([padding.left, width + padding.left])
+        // 中间扩大了范围的 rect
+        var chrRectScale = d3.scaleLinear().domain([data.preExon[0][0], data.postExon[data.preExon.length - 1][1]]).range([padding.left, width + padding.left])
       } else {
+        // 最上面的两个染色体
         var preChrScale = d3.scaleLinear().domain([0, chrData[data.chromId[0]].length]).range([padding.left, (width / 2) + padding.left])
         var postChrScale = d3.scaleLinear().domain([0, chrData[data.chromId[1]].length]).range([(width / 2) + padding.left, width + padding.left])
+        // 中间扩大了范围的两个 rect
+        var preChrRectScale = d3.scaleLinear().domain([data.preExon[0][0], data.preExon[data.preExon.length - 1][1]]).range([padding.left, (width / 2) + padding.left])
+        var postChrRectScale = d3.scaleLinear().domain([data.postExon[0][0], data.postExon[data.postExon.length - 1][1]]).range([padding.left, (width / 2) + padding.left])
       }
 
+      let chrRectMargin = 50
+      // 中间的 rect 对应染色体扩大范围
+      chrGroup.selectAll(".rect")
+              .data(Object.keys(chrData))
+              .enter()
+              .append("rect")
+              .attr("x", (d, i) => Object.keys(chrData).length === 1 ? 0 : i * (width / 2))
+              .attr("y", chrRectHeight + chrRectMargin)
+              .attr("width", Object.keys(chrData).length === 1 ? width : width / 2)
+              .attr("height", chrRectHeight)
+              .attr("fill", (d, i) => i === 0 ? "red" : "blue")
+              .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
+
+      // chrRect 映射到染色体的区域
+      rectSvg.selectAll(".path")
+               .data(Array.from(new Set(data.chromId)))
+               .enter()
+               .append("path")
+               .attr("d", (d, i) => {
+                 let pathStartY = padding.top + chrRectHeight + chrRectMargin
+                 if (Object.keys(chrData).length === 1) { // 如果前后都来自同一个染色体
+                   return "M " + padding.left + " " + pathStartY + "L " + chrScale(data.preExon[0][0]) + " " + (padding.top + chrRectHeight)
+                          + "L " + chrScale(data.postExon[data.postExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + (padding.left + width) + " " + pathStartY
+                 } else {
+                   if (i === 0) {
+                    return "M " + padding.left + " " + pathStartY + "L " + preChrScale(data.preExon[0][0]) + " " + (padding.top + chrRectHeight)
+                           + "L " + preChrScale(data.preExon[data.preExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY
+                   } else {
+                     return "M " + postScale(data.postExon[0][0]) + " " + pathStartY + "L " + postChrScale(data.postExon[0][0]) + " " + (padding.top + chrRectHeight)
+                            + "L " + postChrScale(data.postExon[data.postExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + postScale(data.postExon[data.postExon.length - 1][1]) + " " + pathStartY
+                   }
+                 }
+               })
+               .attr("stroke-width", "0.5")
+               .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
+               .attr("fill", "none")
+
+      // chrRect 对应的 coordinate
+      let chrTextY = padding.top + chrRectHeight + chrRectMargin + 20
+      if (Object.keys(chrData).length === 1) {
+        var chrText = [data.preExon[0][0], data.postExon[data.postExon.length - 1][1]]
+        rectSvg.selectAll(".text")
+               .data(chrText)
+               .enter()
+               .append("text")
+               .attr("transform", (d, i) => "translate("+ (i * width + padding.left) +"," + chrTextY+ ")")
+               .text(d => d)
+               .style('text-anchor', (d, i) => i === 0 ? "end" : "start")
+      } else {
+        var chrText = [data.preExon[0][0], data.preExon[data.preExon.length - 1][1], data.postExon[0][0], data.postExon[data.postExon.length - 1][1]]
+        rectSvg.selectAll(".text")
+               .data(chrText)
+               .enter()
+               .append("text")
+               .attr("transform", (d, i) => {
+                 if (i < 2) {
+                   return "translate("+ (i * (width / 2) + padding.left) +"," + chrTextY +")"
+                 } else if (i === 2) {
+                   return "translate("+ ((width / 2) + padding.left) +"," + chrTextY +")"
+                 } else {
+                   return "translate("+ (width + padding.left) +"," + chrTextY +")"
+                 }
+               })
+               .text(d => d)
+               .style('text-anchor', (d, i) => i < 2 ? "end" : "start")
+      }
+
+
+      // 可变剪切不分映射到 chrRect 的区域
       rectSvg.selectAll(".path")
                .data(data.chromId)
                .enter()
                .append("path")
                .attr("d", (d, i) => {
-                 let pathStartY = padding.top + chrRectHeight
+                 let pathStartY = padding.top + chrRectHeight * 2 + chrRectMargin
                  if (Object.keys(chrData).length === 1) { // 如果前后都来自同一个染色体
                    if (i === 0) {
-                    return "M " + preScale(data.preExon[data.preExon.length - 1][0]) + " " + rectGroupStartY + "L " + chrScale(data.preExon[data.preExon.length - 1][0]) + " " + pathStartY
-                           + "L " + chrScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + rectGroupStartY
+                    return "M " + preScale(data.preExon[data.preExon.length - 1][0]) + " " + rectGroupStartY + "L " + chrRectScale(data.preExon[data.preExon.length - 1][0]) + " " + pathStartY
+                           + "L " + chrRectScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + rectGroupStartY
                    } else {
-                     return "M " + postScale(data.postExon[0][0]) + " " + rectGroupStartY + "L " + chrScale(data.postExon[0][0]) + " " + pathStartY
-                            + "L " + chrScale(data.postExon[0][1]) + " " + pathStartY + "L " + postScale(data.postExon[0][1]) + " " + rectGroupStartY
+                     return "M " + postScale(data.postExon[0][0]) + " " + rectGroupStartY + "L " + chrRectScale(data.postExon[0][0]) + " " + pathStartY
+                            + "L " + chrRectScale(data.postExon[0][1]) + " " + pathStartY + "L " + postScale(data.postExon[0][1]) + " " + rectGroupStartY
                    }
                  } else {
                    if (i === 0) {
-                    return "M " + preScale(data.preExon[data.preExon.length - 1][0]) + " " + rectGroupStartY + "L " + preChrScale(data.preExon[data.preExon.length - 1][0]) + " " + pathStartY
-                           + "L " + preChrScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + rectGroupStartY
+                    return "M " + preScale(data.preExon[data.preExon.length - 1][0]) + " " + rectGroupStartY + "L " + preChrRectScale(data.preExon[data.preExon.length - 1][0]) + " " + pathStartY
+                           + "L " + preChrRectScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + rectGroupStartY
                    } else {
-                     return "M " + postScale(data.postExon[0][0]) + " " + rectGroupStartY + "L " + postChrScale(data.postExon[0][0]) + " " + pathStartY
-                            + "L " + postChrScale(data.postExon[0][1]) + " " + pathStartY + "L " + postScale(data.postExon[0][1]) + " " + rectGroupStartY
+                     return "M " + postScale(data.postExon[0][0]) + " " + rectGroupStartY + "L " + postChrRectScale(data.postExon[0][0]) + " " + pathStartY
+                            + "L " + postChrRectScale(data.postExon[0][1]) + " " + pathStartY + "L " + postScale(data.postExon[0][1]) + " " + rectGroupStartY
                    }
                  }
                })
@@ -180,7 +256,7 @@ export default {
                .attr("fill", (d, i) => i === 0 ? "red" : "blue")
 
       let rectBottomHeight = 25
-      let rectBottomStartY = 200
+      let rectBottomStartY = 400
       let rectGroupBottom = rectSvg.append("g").attr("transform", "translate("+ 0 +", " + rectBottomStartY + ")")
       // var xScale = d3.scaleLinear().domain(data.fusionCoords).range([width / 3 + padding.left, width / 3 * 2 + padding.left])
       var xScale = d3.scaleLinear().domain(data.fusionCoords).range([padding.left, width + padding.left])

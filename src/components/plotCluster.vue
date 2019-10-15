@@ -44,13 +44,15 @@ export default {
   },
   mounted () {
     this.axios.get('/server/hclust?username=' + this.$store.state.username + '&p=' + this.$store.state.projectId).then((res) => {
-        this.clusterData = res.data
-        for (let i = 0;i < res.data.distMatrix.length;i++) {
-          for(let j = 0;j < res.data.distMatrix[i].length;j++) {
-            this.tableValue.push(res.data.distMatrix[i][j])
+      if (res.data.message_type === 'success') {
+        this.clusterData = res.data.hclust
+        for (let i = 0;i < res.data.hclust.distMatrix.length;i++) {
+          for(let j = 0;j < res.data.hclust.distMatrix[i].length;j++) {
+            this.tableValue.push(res.data.hclust.distMatrix[i][j])
           }
         }
         this.initD3()
+      }
     })
   },
   methods: {
