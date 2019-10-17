@@ -53,12 +53,13 @@ export default {
       if (hassvg) {
         d3.selectAll('#rectSvg').remove()
       }
-      var width = 1500, height = 900, lineChartHeight = 300
+      var width = 1500, height = 900, lineChartHeight = 200
       var rectSvg = d3.select("#rectContainer").append("svg").attr("width", width).attr("height", height).attr("id", "rectSvg")
 
       var data = this.data
       var padding = {top:30,right:150,bottom:60,left:60}
-      var xScale = d3.scaleBand().domain(data.feature).range([0,width - padding.left - padding.right]).padding(0.8)
+      var xData = data.feature
+      var xScale = d3.scaleBand().domain(xData).range([0,width - padding.left - padding.right]).padding(0.8)
       var yScale = d3.scaleLinear().domain([data.normCountMin, data.normCountMax]).range([height - padding.top - padding.bottom - lineChartHeight,0]).nice()
       var xAxis = d3.axisBottom().scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
@@ -99,7 +100,7 @@ export default {
       //     .attr("stroke", (d,i) => colorScale(d.split("_")[0]))
       //     .style("stroke-dasharray", (d, i) => i)
 
-      let linePlotData = data.junctionSeqResultList.filter(d => d.testable === 'TRUE')
+      let linePlotData = data.junctionSeqResultList.filter(d => d.testable === 'TRUE'  && xData.indexOf(d.geneFeature) !== -1)
 
       // 小横杠
       rectSvg.selectAll(".line")
@@ -182,6 +183,51 @@ export default {
                      .append("text")
                      .attr("transform",(d,i) => "translate(30,"+ (i * legendHeight + 15) +")")
                      .text(d => d)
+
+
+           let xCoorScale = d3.scaleLinear().domain([data.coordMin, data.coordMax]).range([padding.left,width - padding.right])
+           let xCoorAxis = d3.axisBottom().scale(xCoorScale)
+           let xCoor = rectSvg.append("g")
+                         .call(xCoorAxis)
+                         .attr("transform","translate("+ 0 +"," + (height - padding.bottom) +")")
+                         .selectAll("text")
+                         .style("font-size", "14px")
+                         .style("text-anchor", "start")
+
+          // intron path
+          let intronPathY = height - padding.bottom - 50
+          rectSvg.append("path")
+                 .attr("d", "M " + padding.left + " " + intronPathY + "L " + (width - padding.right) + " " + intronPathY)
+                 .attr("stroke", "black")
+
+          // exon rect
+          let exonGroupY = height - padding.bottom - 70
+          let exonGroup = rectSvg.append("g").attr("transform","translate("+ 0 +"," + exonGroupY +")")
+          let exonRectHeight = 40
+          exonGroup.selectAll(".rect")
+                     .data(data.junctionSeqResultList.filter(d => d.featureType === "exonic_part"))
+                     .enter()
+                     .append("rect")
+                     .attr("x", d => xCoorScale(d.start))
+                     .attr("y", d => 0)
+                     .attr("width", d => xCoorScale(d.end) - xCoorScale(d.start))
+                     .attr("height", exonRectHeight)
+                     .attr("stroke", "#999")
+                     .attr("fill", d => {
+                       if (d.featureSignificance === "yes") {
+                         return "#f019ea"
+                       } else if (d.testable === "FALSE") {
+                         return "#f3f3f3"
+                       } else if (d.testable === "TRUE") {
+                         return "#c5c5c5"
+                       }
+                     })
+
+          //染色体序号
+          rectSvg.append("text")
+                 .attr("transform", "translate(" + (padding.left - 5) +"," + (height - padding.bottom + 5) + ")")
+                 .text(data.junctionSeqResultList[0]["chrom"])
+                 .style("text-anchor", "end")
 
     },
   }

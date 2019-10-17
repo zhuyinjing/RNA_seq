@@ -61,6 +61,16 @@ export default {
       let preScale = d3.scaleLinear().domain([data.preExon[0][0], data.preExon[data.preExon.length - 1][1]]).range([padding.left, (width / 2) + padding.left])
       let postScale = d3.scaleLinear().domain([data.postExon[0][0], data.postExon[data.postExon.length - 1][1]]).range([(width / 2) + padding.left, width + padding.left])
 
+      let tooltip = d3.select('#rectContainer')
+      	.append('div')
+      	.style('position', 'absolute')
+        .style('z-index', '10')
+      	.style('color', 'black')
+        .style('visibility', 'hidden')
+        .style('font-size', '16px')
+        .style('font-weight', 'bold')
+      	.text('')
+
       // 染色体部分
       let chrData = this.data.chromInfo
       // let chrData = {9:{name:'chr1',length:138394717},10:{name:'chr5',length:138394717}}
@@ -109,9 +119,18 @@ export default {
                .attr("y", d => 0)
                .attr("width", d => preScale(d[1]) - preScale(d[0]))
                .attr("height", rectHeight)
-               .attr("fill", "none")
+               .attr("fill", "#fff")
                .attr("stroke", "red")
                .style("stroke-dasharray", (d, i) => i === (data.preExon.length - 1) ? 0 : '3 2')
+               .on('mouseover', function (d, i) {
+                 return tooltip.style('visibility', 'visible').text("exon: " + ((data.exonPair.split(";")[0]) - 0 - (data.preExon.length - 1 - i)))
+               })
+               .on('mousemove', function (d, i) {
+                 return tooltip.style('top', (d3.event.pageY-20)+'px').style('left',(d3.event.pageX+10)+'px')
+               })
+               .on('mouseout', function (d, i) {
+                 return tooltip.style('visibility', 'hidden')
+               })
 
        // preIntron
        rectGroup.selectAll(".rect")
@@ -131,9 +150,18 @@ export default {
                  .attr("y", d => 0)
                  .attr("width", d => postScale(d[1]) - postScale(d[0]))
                  .attr("height", rectHeight)
-                 .attr("fill", "none")
+                 .attr("fill", "#fff")
                  .attr("stroke", "blue")
                  .style("stroke-dasharray", (d, i) => i === 0 ? 0 : '3 2')
+                 .on('mouseover', function (d, i) {
+                   return tooltip.style('visibility', 'visible').text("exon: " + ((data.exonPair.split(";")[1]) - 0 + i))
+                 })
+                 .on('mousemove', function (d, i) {
+                   return tooltip.style('top', (d3.event.pageY-20)+'px').style('left',(d3.event.pageX+10)+'px')
+                 })
+                 .on('mouseout', function (d, i) {
+                   return tooltip.style('visibility', 'hidden')
+                 })
 
          // postIntron
          rectGroup.selectAll(".rect")
@@ -144,19 +172,32 @@ export default {
                   .attr("stroke", "blue")
                   .style("stroke-dasharray", '3 2')
 
+      // exon 两端的坐标文字
+      let exonTextY = rectGroupStartY + rectHeight + 15
+      rectSvg.selectAll(".text")
+             .data([data.preExon[0][0], data.postExon[data.postExon.length - 1][1]])
+             .enter()
+             .append("text")
+             .attr("transform", (d, i) => "translate("+ (i * width + padding.left) +"," + exonTextY + ")")
+             .text(d => d)
+             .style('text-anchor', (d, i) => i === 0 ? "end" : "start")
+
       // rect 和 chr 的连线 path
       if (Object.keys(chrData).length === 1) {
         // 最上面的染色体
         var chrScale = d3.scaleLinear().domain([0, chrData[data.chromId[0]].length]).range([padding.left, width + padding.left])
         // 中间扩大了范围的 rect
-        var chrRectScale = d3.scaleLinear().domain([data.preExon[0][0], data.postExon[data.preExon.length - 1][1]]).range([padding.left, width + padding.left])
+        var xDomainData = [data.preExon,data.postExon].flat(3)
+        var chrRectScale = d3.scaleLinear().domain(d3.extent(xDomainData)).range([padding.left, width + padding.left])
       } else {
         // 最上面的两个染色体
         var preChrScale = d3.scaleLinear().domain([0, chrData[data.chromId[0]].length]).range([padding.left, (width / 2) + padding.left])
         var postChrScale = d3.scaleLinear().domain([0, chrData[data.chromId[1]].length]).range([(width / 2) + padding.left, width + padding.left])
         // 中间扩大了范围的两个 rect
-        var preChrRectScale = d3.scaleLinear().domain([data.preExon[0][0], data.preExon[data.preExon.length - 1][1]]).range([padding.left, (width / 2) + padding.left])
-        var postChrRectScale = d3.scaleLinear().domain([data.postExon[0][0], data.postExon[data.postExon.length - 1][1]]).range([padding.left, (width / 2) + padding.left])
+        var xPreDomainData = data.preExon.flat()
+        var xPostDomainData = data.postExon.flat()
+        var preChrRectScale = d3.scaleLinear().domain(d3.extent(xPreDomainData)).range([padding.left, (width / 2) + padding.left])
+        var postChrRectScale = d3.scaleLinear().domain(d3.extent(xPostDomainData)).range([padding.left, (width / 2) + padding.left])
       }
 
       let chrRectMargin = 50
@@ -180,15 +221,15 @@ export default {
                .attr("d", (d, i) => {
                  let pathStartY = padding.top + chrRectHeight + chrRectMargin
                  if (Object.keys(chrData).length === 1) { // 如果前后都来自同一个染色体
-                   return "M " + padding.left + " " + pathStartY + "L " + chrScale(data.preExon[0][0]) + " " + (padding.top + chrRectHeight)
-                          + "L " + chrScale(data.postExon[data.postExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + (padding.left + width) + " " + pathStartY
+                   return "M " + padding.left + " " + pathStartY + "L " + chrScale(d3.min(xDomainData)) + " " + (padding.top + chrRectHeight)
+                          + "L " + chrScale(d3.max(xDomainData)) + " " + (padding.top + chrRectHeight) + "L " + (padding.left + width) + " " + pathStartY
                  } else {
                    if (i === 0) {
-                    return "M " + padding.left + " " + pathStartY + "L " + preChrScale(data.preExon[0][0]) + " " + (padding.top + chrRectHeight)
-                           + "L " + preChrScale(data.preExon[data.preExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY
+                    return "M " + padding.left + " " + pathStartY + "L " + preChrScale(d3.min(xPreDomainData)) + " " + (padding.top + chrRectHeight)
+                           + "L " + preChrScale(d3.max(xPreDomainData)) + " " + (padding.top + chrRectHeight) + "L " + preScale(data.preExon[data.preExon.length - 1][1]) + " " + pathStartY
                    } else {
-                     return "M " + postScale(data.postExon[0][0]) + " " + pathStartY + "L " + postChrScale(data.postExon[0][0]) + " " + (padding.top + chrRectHeight)
-                            + "L " + postChrScale(data.postExon[data.postExon.length - 1][1]) + " " + (padding.top + chrRectHeight) + "L " + postScale(data.postExon[data.postExon.length - 1][1]) + " " + pathStartY
+                     return "M " + postScale(data.postExon[0][0]) + " " + pathStartY + "L " + postChrScale(d3.min(xPostDomainData)) + " " + (padding.top + chrRectHeight)
+                            + "L " + postChrScale(d3.max(xPostDomainData)) + " " + (padding.top + chrRectHeight) + "L " + postScale(data.postExon[data.postExon.length - 1][1]) + " " + pathStartY
                    }
                  }
                })
@@ -199,16 +240,15 @@ export default {
       // chrRect 对应的 coordinate
       let chrTextY = padding.top + chrRectHeight + chrRectMargin + 20
       if (Object.keys(chrData).length === 1) {
-        var chrText = [data.preExon[0][0], data.postExon[data.postExon.length - 1][1]]
         rectSvg.selectAll(".text")
-               .data(chrText)
+               .data(d3.extent(xDomainData))
                .enter()
                .append("text")
                .attr("transform", (d, i) => "translate("+ (i * width + padding.left) +"," + chrTextY+ ")")
                .text(d => d)
                .style('text-anchor', (d, i) => i === 0 ? "end" : "start")
       } else {
-        var chrText = [data.preExon[0][0], data.preExon[data.preExon.length - 1][1], data.postExon[0][0], data.postExon[data.postExon.length - 1][1]]
+        var chrText = [d3.extent(xPreDomainData), d3.extent(xPostDomainData)].flat()
         rectSvg.selectAll(".text")
                .data(chrText)
                .enter()
@@ -290,8 +330,19 @@ export default {
                          return "translate(" + (xScale(data.lengthPair[0]) + (xScale(data.fusionCoords[1]) - xScale(data.lengthPair[0])) / 2) + "," + (rectBottomHeight / 2 + 5) + ")"
                        }
                      })
-                     .text(d => d)
+                     .text((d, i) => d + " ( exon : "+ data.exonPair.split(";")[i] +" )")
                      .style('text-anchor', 'middle')
+
+     // 融合部分两端的坐标文字
+     let exonPairTextY = rectBottomStartY + rectBottomHeight + 15
+
+     rectSvg.selectAll(".text")
+            .data([data.preExon[data.preExon.length - 1][0], data.postExon[0][1]])
+            .enter()
+            .append("text")
+            .attr("transform", (d, i) => "translate("+ (i * width + padding.left) +"," + exonPairTextY + ")")
+            .text(d => d)
+            .style('text-anchor', (d, i) => i === 0 ? "end" : "start")
 
       rectSvg.selectAll(".path")
                .data(['preExon', 'postExon'])
