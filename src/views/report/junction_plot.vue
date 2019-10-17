@@ -201,8 +201,8 @@ export default {
                  .attr("stroke", "black")
 
           // exon rect
-          let exonGroupY = height - padding.bottom - 70
-          let exonGroup = rectSvg.append("g").attr("transform","translate("+ 0 +"," + exonGroupY +")")
+          let exonGroupStartY = height - padding.bottom - 70
+          let exonGroup = rectSvg.append("g").attr("transform","translate("+ 0 +"," + exonGroupStartY +")")
           let exonRectHeight = 40
           exonGroup.selectAll(".rect")
                      .data(data.junctionSeqResultList.filter(d => d.featureType === "exonic_part"))
@@ -222,6 +222,44 @@ export default {
                          return "#c5c5c5"
                        }
                      })
+
+          // exon 之间的连线
+          let lineData = data.junctionSeqResultList.filter(d => d.featureType !== "exonic_part")
+          let lineStartY = exonGroupStartY - 30
+          rectSvg.selectAll(".path")
+                   .data(lineData)
+                   .enter()
+                   .append("path")
+                   .attr("d", (d, i) => {
+                      return "M " + xCoorScale(d.start) + " " + exonGroupStartY + "L " + xCoorScale(d.start) + " " + lineStartY
+                              + "L " + xCoorScale(d.end) + " " + lineStartY + "L " + xCoorScale(d.end) + " " + exonGroupStartY
+                   })
+                   .attr("stroke", "#d5d5d5")
+                   .attr("fill", "none")
+
+
+          // 横坐标与 exon 的连线
+          let xAxisLineStartY = lineStartY - 50
+          let middleLineStartY = xAxisLineStartY + 10
+          rectSvg.selectAll(".path")
+                   .data(xData)
+                   .enter()
+                   .append("path")
+                   .attr("d", (d, i) => {
+                     let rectData = data.junctionSeqResultList.find(item => item.geneFeature === d)
+                     let rectMiddleX = xCoorScale(rectData.start + (rectData.end - rectData.start) / 2)
+                     let endStartY
+                     if (d.featureType === "exonic_part") {
+                       endStartY = exonGroupStartY
+                     } else {
+                       endStartY = lineStartY
+                     }
+                     let middleY = endStartY - 5
+                      return "M " + (padding.left + xScale(d)) + " " + xAxisLineStartY + "L " + rectMiddleX + " " + middleY
+                              + "L " + rectMiddleX + " " + exonGroupStartY
+                   })
+                   .attr("stroke", d => data.junctionSeqResultList.find(item => item.geneFeature === d).featureSignificance !== "yes" ? "#d5d5d5" : "#f019ea")
+                   .attr("fill", "none")
 
           //染色体序号
           rectSvg.append("text")
