@@ -13,6 +13,19 @@
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
 
         <div id="rectContainer"></div>
+        <br><br>
+        <div class="">
+          <table v-show="tebleShow" id="patients" width="100%" cellspacing="0" class="display table table-striped table-bordered">
+              <thead>
+              <tr>
+                <th>geneId</th>
+                <th>geneName</th>
+                <th>featureSignificance</th>
+                <th v-for="item in headArr">{{item}}</th>
+              </tr>
+              </thead>
+          </table>
+        </div>
 
       </div>
 </template>
@@ -24,29 +37,68 @@ import * as d3 from 'd3'
 export default {
   data () {
     return {
-      data: null
+      data: null,
+      tebleShow: false,
+      listArr: [{
+          "mDataProp" : "geneId"
+      }, {
+          "mDataProp" : "geneName"
+      }, {
+          "mDataProp" : "featureSignificance"
+      }],
+      headArr: []
     }
   },
   components: {
     imgMenuShowComp
   },
   mounted () {
-    this.getData()
+    this.getTableHead()
   },
   methods: {
-    getData () {
+    getTableHead () {
       let gene = JSON.parse(sessionStorage.getItem('junction_data'))
-      this.axios.get('/server/get_junction_seq_result_info?p='+ this.$store.state.projectId +'&geneId='+ gene.geneId).then(res => {
-        if (res.data.message_type === 'success') {
-          this.data = res.data
-          this.initD3()
-        } else {
-          this.$message.error('请求出错！')
+      this.axios('/server/get_junction_seq_result_info?p=' + this.$store.state.projectId + '&geneId=' + gene.geneId + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
+        if (res.data.aData.length > 0)  {
+          this.headArr = Object.keys(res.data.aData[0].normCount)
+          this.headArr.map(item => {
+            this.listArr.push({
+                "mDataProp" : "normCount." + item
+            })
+          })
         }
-      }).catch(e => {
-        this.$message.error('请求出错！')
+        this.data = res.data
+        this.initTable()
       })
     },
+    initTable () {
+      let self = this
+      let gene = JSON.parse(sessionStorage.getItem('junction_data'))
+      this.tebleShow = true
+      $(document).ready(function() {
+          self.table = $('#patients').DataTable({
+              "pageLength": 10,
+              "bPaginate" : true,//分页工具条显示
+              //"sPaginationType" : "full_numbers",//分页工具条样式
+              "bStateSave" : true, //是否打开客户端状态记录功能,此功能在ajax刷新纪录的时候不会将个性化设定回复为初始化状态
+              "bScrollCollapse" : true, //当显示的数据不足以支撑表格的默认的高度
+              "bLengthChange" : true, //每页显示的记录数
+              "bFilter" : false, //搜索栏
+              "bSort" : false, //是否支持排序功能
+              "bInfo" : true, //显示表格信息
+              "bAutoWidth" : true, //自适应宽度
+              "bJQueryUI" : false,//是否开启主题
+              "bDestroy" : true,
+              "bProcessing" : true, //开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
+              "bServerSide" : true,//服务器处理分页，默认是false，需要服务器处理，必须true
+              "sAjaxDataProp" : "aData",
+              //通过ajax实现分页的url路径
+              "sAjaxSource" : "/server/get_junction_seq_result_info?p=" + self.$store.state.projectId +'&geneId='+ gene.geneId,
+              "aoColumns" : [...self.listArr],
+          });
+        })
+        this.initD3()
+      },
     initD3 () {
       let self = this
       let hassvg = d3.selectAll('#rectSvg')
@@ -55,13 +107,13 @@ export default {
       }
       var width = 1500, height = 900, lineChartHeight = 200
       var rectSvg = d3.select("#rectContainer").append("svg").attr("width", width).attr("height", height).attr("id", "rectSvg")
-
       var data = this.data
       var padding = {top:30,right:150,bottom:60,left:60}
       var xData = data.feature
-      var xScale = d3.scaleBand().domain(xData).range([0,width - padding.left - padding.right]).padding(0.8)
+      let leftWidth = width - padding.left - padding.right - 100
+      var xScale = d3.scaleBand().domain(xData).range([0,leftWidth]).padding(0.8)
       var yScale = d3.scaleLinear().domain([data.normCountMin, data.normCountMax]).range([height - padding.top - padding.bottom - lineChartHeight,0]).nice()
-      var xAxis = d3.axisBottom().scale(xScale)
+      var xAxis = d3.axisBottom().tickSize(-(height - padding.top - padding.bottom - lineChartHeight)).scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
@@ -81,7 +133,18 @@ export default {
                     .selectAll("text")
                     .style("font-size", "14px")
                     .style("text-anchor", "start")
-                    .attr("transform", "rotate(45 -10 10)");
+                    .attr("transform", "rotate(45 -10 10)")
+      // grid line style
+      d3.selectAll(".tick line")
+        .attr("stroke-dasharray", 3)
+        .attr("stroke", d => {
+          let temp = data.junctionSeqResultList.find(item => item.geneFeature === d).featureSignificance
+          if (temp === "yes") {
+            return "#f019ea"
+          } else {
+            return "lightgrey"
+          }
+        })
 
       var y = rectSvg.append("g").call(yAxis).attr("transform","translate("+ padding.left +"," + padding.top +")")
 
@@ -142,7 +205,7 @@ export default {
        // legend ： sampleGroup
        let legendGroupHeight = 100
        var geneYScale = d3.scaleLinear().domain([data.normCountMin, data.normCountMax]).range([height - padding.top - padding.bottom,0]).nice()
-       let legendGroup = rectSvg.append("g").attr("transform", "translate("+ (width - padding.right + 10) +","+ padding.top +")")
+       let legendGroup = rectSvg.append("g").attr("transform", "translate("+ (width - 100) +","+ padding.top +")")
 
        let legendRectWidth = 20, legendRectHeight = 20, legendRectMargin = 5
        legendGroup.selectAll(".rect")
@@ -163,7 +226,7 @@ export default {
                    .text(d => d)
 
          // legend: sample
-         let legendBatchFit = rectSvg.append("g").attr("transform","translate("+ (width - padding.right + 10) +","+ legendGroupHeight +")")
+         let legendBatchFit = rectSvg.append("g").attr("transform","translate("+ (width - 100) +","+ legendGroupHeight +")")
          let legendHeight = 20
 
          legendBatchFit.selectAll(".legend")
@@ -184,8 +247,42 @@ export default {
                      .attr("transform",(d,i) => "translate(30,"+ (i * legendHeight + 15) +")")
                      .text(d => d)
 
+           // 右侧的图
+           let rightRectWidth = 50
+           let rightGroupStartX = leftWidth + padding.left + 20
+           let rightGroup = rectSvg.append("g").attr("transform","translate("+ rightGroupStartX +","+ padding.top +")")
+           var geneScale = d3.scaleLinear().domain([data.normGeneMin, data.normGeneMax]).range([height - padding.top - padding.bottom - lineChartHeight,0]).nice()
+           var geneAxis = d3.axisRight().scale(geneScale)
+           var yGene = rightGroup.append("g").call(geneAxis).attr("transform","translate("+ rightRectWidth +",0)")
+           rightGroup.append("rect")
+                     .attr("x", 0)
+                     .attr("y", 0)
+                     .attr("width", rightRectWidth)
+                     .attr("height", height - padding.top - padding.bottom - lineChartHeight)
+                     .attr("stroke", "black")
+                     .attr("fill", "none")
+           rightGroup.selectAll(".path")
+                     .data(data.sampleName)
+                     .enter()
+                     .append("path")
+                     .attr("d", d => {
+                       let temp = data.junctionSeqResultList.find(item => item.sampleName === d)
+                       return "M 0 " + geneScale(temp.normGene) + "L" + rightRectWidth + " " + geneScale(temp.normGene)
+                     })
+                     .attr("stroke", d => colorScale(d))
 
-           let xCoorScale = d3.scaleLinear().domain([data.coordMin, data.coordMax]).range([padding.left,width - padding.right])
+           // 左侧到右侧图的连线
+           rectSvg.selectAll(".path")
+                  .data(data.junctionSeqResultList.filter(k => k.geneFeature === xData[xData.length - 1]))
+                  .enter()
+                  .append("path")
+                  .attr("d", d => {
+                    return "M " + (padding.left + xScale(d.geneFeature) + xScale.bandwidth()) + " " + (padding.top + yScale(d.normCount)) + "L" + rightGroupStartX  + " " + (padding.top + geneScale(d.normGene))
+                  })
+                  .attr("stroke", d => colorScale(d.sampleGroup))
+                  .attr("stroke-dasharray", d => 3)
+
+           let xCoorScale = d3.scaleLinear().domain([data.coordMin, data.coordMax]).range([padding.left,leftWidth + padding.left])
            let xCoorAxis = d3.axisBottom().scale(xCoorScale)
            let xCoor = rectSvg.append("g")
                          .call(xCoorAxis)
@@ -197,15 +294,19 @@ export default {
           // intron path
           let intronPathY = height - padding.bottom - 50
           rectSvg.append("path")
-                 .attr("d", "M " + padding.left + " " + intronPathY + "L " + (width - padding.right) + " " + intronPathY)
+                 .attr("d", "M " + padding.left + " " + intronPathY + "L " + (leftWidth + padding.left) + " " + intronPathY)
                  .attr("stroke", "black")
 
           // exon rect
           let exonGroupStartY = height - padding.bottom - 70
           let exonGroup = rectSvg.append("g").attr("transform","translate("+ 0 +"," + exonGroupStartY +")")
           let exonRectHeight = 40
+
+          let exonGreyRectTemp = data.junctionSeqResultList.filter(d => d.featureType === "exonic_part")
+          let exonGreyRectData = exonGreyRectTemp.reduce((all, next) => all.some((item) => item['geneFeature'] == next['geneFeature']) ? all : [...all, next],[]);
+
           exonGroup.selectAll(".rect")
-                     .data(data.junctionSeqResultList.filter(d => d.featureType === "exonic_part"))
+                     .data(exonGreyRectData)
                      .enter()
                      .append("rect")
                      .attr("x", d => xCoorScale(d.start))
@@ -224,7 +325,8 @@ export default {
                      })
 
           // exon 之间的连线
-          let lineData = data.junctionSeqResultList.filter(d => d.featureType !== "exonic_part")
+          let tempLineData = data.junctionSeqResultList.filter(d => d.featureType !== "exonic_part")
+          let lineData = tempLineData.reduce((all, next) => all.some((item) => item['geneFeature'] == next['geneFeature']) ? all : [...all, next],[]);
           let lineStartY = exonGroupStartY - 30
           rectSvg.selectAll(".path")
                    .data(lineData)
@@ -236,7 +338,6 @@ export default {
                    })
                    .attr("stroke", "#d5d5d5")
                    .attr("fill", "none")
-
 
           // 横坐标与 exon 的连线
           let xAxisLineStartY = lineStartY - 50

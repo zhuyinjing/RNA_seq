@@ -58,14 +58,9 @@
           <table id="patients" width="100%" cellspacing="0" class="display table table-striped table-bordered">
               <thead>
               <tr>
-                <th>geneFeature</th>
                 <th>geneId</th>
                 <th>geneName</th>
-                <th>start</th>
-                <th>end</th>
-                <th>chrom</th>
-                <th>featurePadj</th>
-                <th>featureType</th>
+                <th>featureSignificance</th>
                 <th>操作</th>
               </tr>
               </thead>
@@ -119,21 +114,11 @@ export default {
               //通过ajax实现分页的url路径
               "sAjaxSource" : "/server/get_junction_seq_result_list?p=" + self.$store.state.projectId +  "&geneName=" + self.textareaGeneName.replace(/\s/g,'') +  "&geneId=" + self.textareaGeneId.replace(/\s/g,''),
               "aoColumns" : [{
-                  "mDataProp" : "geneFeature"
-              },{
                   "mDataProp" : "geneId"
               }, {
                   "mDataProp" : "geneName"
               }, {
-                  "mDataProp" : "start"
-              }, {
-                  "mDataProp" : "end"
-              }, {
-                  "mDataProp" : "chrom"
-              },{
-                  "mDataProp" : "featurePadj"
-              },{
-                  "mDataProp" : "featureType"
+                  "mDataProp" : "featureSignificance"
               },{
                   "mDataProp" : "geneId",
                   "mRender" : function(data, type, full) {
