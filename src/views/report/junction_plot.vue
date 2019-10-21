@@ -4,10 +4,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>junction_plot</el-breadcrumb-item>
+          <el-breadcrumb-item>可变剪切</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>junction_plot</h2>
+        <h2>可变剪切</h2>
 
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['junction_plot', 'rectContainer'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -56,6 +56,12 @@ export default {
     this.getTableHead()
   },
   methods: {
+    // 科学计数法
+    num2e(num) {
+      var p = Math.floor(Math.log(num) / Math.LN10)
+      var n = num * Math.pow(10, -p)
+      return n.toFixed(1) + 'e' + p
+    },
     getTableHead () {
       let gene = JSON.parse(sessionStorage.getItem('junction_data'))
       this.axios('/server/get_junction_seq_result_info?p=' + this.$store.state.projectId + '&geneId=' + gene.geneId + '&sEcho=1&iDisplayStart=0&iDisplayLength=1').then((res) => {
@@ -111,9 +117,10 @@ export default {
       var padding = {top:30,right:150,bottom:60,left:60}
       var xData = data.feature
       let leftWidth = width - padding.left - padding.right - 100
+      let leftHeight = height - padding.top - padding.bottom - lineChartHeight
       var xScale = d3.scaleBand().domain(xData).range([0,leftWidth]).padding(0.8)
-      var yScale = d3.scaleLinear().domain([data.normCountMin, data.normCountMax]).range([height - padding.top - padding.bottom - lineChartHeight,0]).nice()
-      var xAxis = d3.axisBottom().tickSize(-(height - padding.top - padding.bottom - lineChartHeight)).scale(xScale)
+      var yScale = d3.scaleLinear().domain([data.normCountMin, data.normCountMax]).range([leftHeight,0]).nice()
+      var xAxis = d3.axisBottom().tickSize(-(leftHeight)).scale(xScale)
       var yAxis = d3.axisLeft().scale(yScale)
       let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 
@@ -137,9 +144,20 @@ export default {
       // grid line style
       d3.selectAll(".tick line")
         .attr("stroke-dasharray", 3)
-        .attr("stroke", d => {
-          let temp = data.junctionSeqResultList.find(item => item.geneFeature === d).featureSignificance
-          if (temp === "yes") {
+        .attr("stroke", (d, i) => {
+          let temp = data.junctionSeqResultList.find(item => item.geneFeature === d)
+          if (temp.featureSignificance === "yes") {
+            // featurePadj
+            rectSvg.append("text")
+                   .attr("transform", d => {
+                     let yCoor = i % 2 === 0 ? padding.top : padding.top + 20
+                     return "translate(" + (padding.left + xScale(temp.geneFeature)) +"," + yCoor + ")"
+                   })
+                   .text(self.num2e(temp.featurePadj))
+                   .attr("stroke", "#f019ea")
+                   .style("text-anchor", "middle")
+                   .style("font-size", "12px")
+
             return "#f019ea"
           } else {
             return "lightgrey"
@@ -251,16 +269,18 @@ export default {
            let rightRectWidth = 50
            let rightGroupStartX = leftWidth + padding.left + 20
            let rightGroup = rectSvg.append("g").attr("transform","translate("+ rightGroupStartX +","+ padding.top +")")
-           var geneScale = d3.scaleLinear().domain([data.normGeneMin, data.normGeneMax]).range([height - padding.top - padding.bottom - lineChartHeight,0]).nice()
+           var geneScale = d3.scaleLinear().domain([data.normGeneMin, data.normGeneMax]).range([leftHeight,0]).nice()
            var geneAxis = d3.axisRight().scale(geneScale)
            var yGene = rightGroup.append("g").call(geneAxis).attr("transform","translate("+ rightRectWidth +",0)")
            rightGroup.append("rect")
                      .attr("x", 0)
                      .attr("y", 0)
                      .attr("width", rightRectWidth)
-                     .attr("height", height - padding.top - padding.bottom - lineChartHeight)
+                     .attr("height", leftHeight)
                      .attr("stroke", "black")
                      .attr("fill", "none")
+
+          // 右侧图里的线
            rightGroup.selectAll(".path")
                      .data(data.sampleName)
                      .enter()
@@ -269,7 +289,17 @@ export default {
                        let temp = data.junctionSeqResultList.find(item => item.sampleName === d)
                        return "M 0 " + geneScale(temp.normGene) + "L" + rightRectWidth + " " + geneScale(temp.normGene)
                      })
-                     .attr("stroke", d => colorScale(d))
+                     .attr("stroke", d => colorScale(d.split("_")[0]))
+                     .attr("stroke-dasharray", (d, i) => i)
+                     // .on('mouseover', function (d, i) {
+                     //   return tooltip.style('visibility', 'visible').text(d)
+                     // })
+                     // .on('mousemove', function (d, i) {
+                     //   return tooltip.style('top', (d3.event.pageY-20)+'px').style('left',(d3.event.pageX+10)+'px')
+                     // })
+                     // .on('mouseout', function (d, i) {
+                     //   return tooltip.style('visibility', 'hidden')
+                     // })
 
            // 左侧到右侧图的连线
            rectSvg.selectAll(".path")
@@ -280,7 +310,7 @@ export default {
                     return "M " + (padding.left + xScale(d.geneFeature) + xScale.bandwidth()) + " " + (padding.top + yScale(d.normCount)) + "L" + rightGroupStartX  + " " + (padding.top + geneScale(d.normGene))
                   })
                   .attr("stroke", d => colorScale(d.sampleGroup))
-                  .attr("stroke-dasharray", d => 3)
+                  .attr("stroke-dasharray", (d, i) => i)
 
            let xCoorScale = d3.scaleLinear().domain([data.coordMin, data.coordMax]).range([padding.left,leftWidth + padding.left])
            let xCoorAxis = d3.axisBottom().scale(xCoorScale)
@@ -367,6 +397,20 @@ export default {
                  .attr("transform", "translate(" + (padding.left - 5) +"," + (height - padding.bottom + 5) + ")")
                  .text(data.junctionSeqResultList[0]["chrom"])
                  .style("text-anchor", "end")
+
+        // y 轴文字 (左图)
+         rectSvg.append('text')
+           .text('Relative Coverage')
+           .attr('fill', '#000')
+           .attr('transform', 'translate(15, '+ leftHeight / 2 +') rotate(-90)')
+           .style("text-anchor", "middle")
+
+         // y 轴文字 (右图)
+          rectSvg.append('text')
+            .text('Read-Pairs per Sample, Gene-Level')
+            .attr('fill', '#000')
+            .attr('transform', 'translate('+ (width - 120) +', '+ leftHeight / 2 +') rotate(90)')
+            .style("text-anchor", "middle")
 
     },
   }

@@ -4,10 +4,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>时序性差异表达基因轨迹图</el-breadcrumb-item>
+          <el-breadcrumb-item>基因融合</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>时序性差异表达基因轨迹图</h2>
+        <h2>基因融合</h2>
 
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['gene_fusion', 'rectContainer'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>
@@ -71,7 +71,7 @@ export default {
         .style('font-weight', 'bold')
       	.text('')
 
-      // 染色体部分
+      // 染色体
       let chrData = this.data.chromInfo
       // let chrData = {9:{name:'chr1',length:138394717},10:{name:'chr5',length:138394717}}
       let chrGroup = rectSvg.append("g").attr("transform", "translate("+ padding.left +", "+ padding.top +")")
@@ -84,8 +84,8 @@ export default {
               .attr("y", 0)
               .attr("width", Object.keys(chrData).length === 1 ? width : width / 2)
               .attr("height", chrRectHeight)
-              .attr("fill", (d, i) => i === 0 ? "red" : "blue")
-              .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
+              .attr("stroke", (d, i) => "#9e9e9e")
+              .attr("fill", (d, i) => "none")
 
       chrGroup.selectAll(".text")
               .data(Object.values(chrData))
@@ -201,7 +201,7 @@ export default {
       }
 
       let chrRectMargin = 50
-      // 中间的 rect 对应染色体扩大范围
+      // 中间的 rect
       chrGroup.selectAll(".rect")
               .data(Object.keys(chrData))
               .enter()
@@ -210,10 +210,10 @@ export default {
               .attr("y", chrRectHeight + chrRectMargin)
               .attr("width", Object.keys(chrData).length === 1 ? width : width / 2)
               .attr("height", chrRectHeight)
-              .attr("fill", (d, i) => i === 0 ? "red" : "blue")
-              .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
+              .attr("fill", (d, i) => i === 0 ? "#FFC107" : "#ff9800")
+              .attr("stroke", (d, i) => i === 0 ? "#FFC107" : "#ff9800")
 
-      // chrRect 映射到染色体的区域
+      // 中间的 rect 映射到染色体的区域
       rectSvg.selectAll(".path")
                .data(Array.from(new Set(data.chromId)))
                .enter()
@@ -233,8 +233,7 @@ export default {
                    }
                  }
                })
-               .attr("stroke-width", "0.5")
-               .attr("stroke", (d, i) => i === 0 ? "red" : "blue")
+               .attr("stroke", (d, i) => i === 0 ? "#FFC107" : "#ff9800")
                .attr("fill", "none")
 
       // chrRect 对应的 coordinate
@@ -247,6 +246,16 @@ export default {
                .attr("transform", (d, i) => "translate("+ (i * width + padding.left) +"," + chrTextY+ ")")
                .text(d => d)
                .style('text-anchor', (d, i) => i === 0 ? "end" : "start")
+
+        // 染色体上的方块
+        rectSvg.append("rect")
+               .attr("x", chrScale(d3.min(xDomainData)))
+               .attr("y", padding.top)
+               .attr("width", chrScale(d3.max(xDomainData)) - chrScale(d3.min(xDomainData)))
+               .attr("height", chrRectHeight)
+               .attr("stroke", "#FFC107")
+               .attr("fill", "#FFC107")
+
       } else {
         var chrText = [d3.extent(xPreDomainData), d3.extent(xPostDomainData)].flat()
         rectSvg.selectAll(".text")
@@ -264,6 +273,18 @@ export default {
                })
                .text(d => d)
                .style('text-anchor', (d, i) => i < 2 ? "end" : "start")
+
+         // 染色体上的方块
+         rectSvg.selectAll(".rect")
+                .data([xPreDomainData, xPostDomainData])
+                .enter()
+                .append("rect")
+                .attr("x", d => chrScale(d3.min(d)))
+                .attr("y", padding.top)
+                .attr("width", chrScale(d3.max(d)) - chrScale(d3.min(d)))
+                .attr("height", chrRectHeight)
+                .attr("stroke", (d, i) => i === 0 ? "#FFC107" : "#ff9800")
+                .attr("fill", (d, i) => i === 0 ? "#FFC107" : "#ff9800")
       }
 
 
@@ -368,7 +389,7 @@ export default {
               return "M " + xScale(data.orfCoords[0]) + " " + marginTop1 + "L " + xScale(data.orfCoords[0]) + " " + (marginTop1 + h)
                       + "L " + xScale(data.orfCoords[1]) + " " + (marginTop1 + h) + "L " + xScale(data.orfCoords[1]) + " " + marginTop1
             })
-            .attr("stroke", "red")
+            .attr("stroke", "#000")
             .attr("fill", "none")
 
         rectGroupBottom
@@ -383,7 +404,7 @@ export default {
               return "M " + xScale(data.domainCoords[0]) + " " + marginTop2 + "L " + xScale(data.domainCoords[0]) + " " + (marginTop2 + h)
                       + "L " + xScale(data.domainCoords[1]) + " " + (marginTop2 + h) + "L " + xScale(data.domainCoords[1]) + " " + marginTop2
             })
-            .attr("stroke", "red")
+            .attr("stroke", "#000")
             .attr("fill", "none")
 
         rectGroupBottom
