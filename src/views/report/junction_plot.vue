@@ -139,8 +139,8 @@ export default {
                     .attr("transform","translate("+ padding.left +"," + (height - padding.bottom - lineChartHeight) +")")
                     .selectAll("text")
                     .style("font-size", "14px")
-                    .style("text-anchor", "start")
-                    .attr("transform", "rotate(45 -10 10)")
+                    .style("text-anchor", "middle")
+                    .attr("transform", "rotate(45 -20 10)")
       // grid line style
       d3.selectAll(".tick line")
         .attr("stroke-dasharray", 3)
@@ -312,6 +312,7 @@ export default {
                   .attr("stroke", d => colorScale(d.sampleGroup))
                   .attr("stroke-dasharray", (d, i) => i)
 
+          // 下边的图
            let xCoorScale = d3.scaleLinear().domain([data.coordMin, data.coordMax]).range([padding.left,leftWidth + padding.left])
            let xCoorAxis = d3.axisBottom().scale(xCoorScale)
            let xCoor = rectSvg.append("g")
@@ -386,7 +387,7 @@ export default {
                        endStartY = lineStartY
                      }
                      let middleY = endStartY - 5
-                      return "M " + (padding.left + xScale(d)) + " " + xAxisLineStartY + "L " + rectMiddleX + " " + middleY
+                      return "M " + (padding.left + xScale(d) + xScale.bandwidth() / 2) + " " + xAxisLineStartY + "L " + rectMiddleX + " " + middleY
                               + "L " + rectMiddleX + " " + exonGroupStartY
                    })
                    .attr("stroke", d => data.junctionSeqResultList.find(item => item.geneFeature === d).featureSignificance !== "yes" ? "#d5d5d5" : "#f019ea")
