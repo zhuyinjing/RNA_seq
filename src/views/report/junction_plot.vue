@@ -74,6 +74,7 @@ export default {
           })
         }
         this.data = res.data
+        this.initD3()
         this.initTable()
       })
     },
@@ -103,7 +104,6 @@ export default {
               "aoColumns" : [...self.listArr],
           });
         })
-        this.initD3()
       },
     initD3 () {
       let self = this
