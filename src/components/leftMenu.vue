@@ -44,18 +44,15 @@
           <span class="title-style">{{$t('leftMenu.asprofile')}}</span>
           <el-menu-item index="6-1" @click="menuItemClick('6-1', 'ASprofile')">{{$t('leftMenu.asprofile_number')}}</el-menu-item>
           <el-menu-item index="6-2" @click="menuItemClick('6-2', 'ASprofilePercent')">{{$t('leftMenu.asprofile_percent')}}</el-menu-item>
+          <el-menu-item index="6-3" @click="menuItemClick('6-3', 'junction_seq_result_list')">差异可变剪切分析</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group v-if="$store.state.projectType === 'Time_Series'">
           <span class="title-style">时序性差异表达分析</span>
           <el-menu-item index="7-1" @click="menuItemClick('7-1', 'time_series_table')">时序性差异表达分析</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
-          <span class="title-style">gene_fusion</span>
-          <el-menu-item index="8-1" @click="menuItemClick('8-1', 'gene_fusion_list')">基因融合</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group>
-          <span class="title-style">junction_seq_result</span>
-          <el-menu-item index="9-1" @click="menuItemClick('9-1', 'junction_seq_result_list')">可变剪切</el-menu-item>
+          <span class="title-style">基因融合鉴定与注释</span>
+          <el-menu-item index="8-1" @click="menuItemClick('8-1', 'gene_fusion_list')">基因融合鉴定与注释</el-menu-item>
         </el-menu-item-group>
     </el-menu>
   </div>
