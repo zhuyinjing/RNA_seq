@@ -4,10 +4,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>基因融合</el-breadcrumb-item>
+          <el-breadcrumb-item>基因融合鉴定与注释</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>基因融合</h2>
+        <h2>基因融合鉴定与注释</h2>
 
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['gene_fusion', 'rectContainer'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>

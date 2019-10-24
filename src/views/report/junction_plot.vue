@@ -4,10 +4,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>可变剪切</el-breadcrumb-item>
+          <el-breadcrumb-item>差异可变剪切分析</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>可变剪切</h2>
+        <h2>差异可变剪切分析</h2>
 
         <el-button type="primary" size="small" icon="el-icon-picture" @click="$store.commit('d3saveSVG', ['junction_plot', 'rectContainer'])">{{$t('button.svg')}}</el-button>
         <i class="el-icon-question cursor-pointer" style="font-size:16px" @click="$store.state.svgDescribeShow = true"></i>

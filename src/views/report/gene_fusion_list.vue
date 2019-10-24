@@ -5,10 +5,10 @@
 
         <el-breadcrumb separator="/" style="margin:5px 0 50px 0">
           <el-breadcrumb-item :to="{ path: 'report' }">{{$t('report.project')}} {{$store.state.projectName}}</el-breadcrumb-item>
-          <el-breadcrumb-item>gene_fusion_list</el-breadcrumb-item>
+          <el-breadcrumb-item>基因融合鉴定与注释</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <h2>gene_fusion_list</h2>
+        <h2>基因融合鉴定与注释</h2>
 
         <el-card class="" style="width:1300px;min-width:1300px" shadow="hover">
           <div class="" style="display:inline-block;vertical-align:top;">
@@ -49,9 +49,9 @@
         </el-card>
         <br>
 
-        <a :href="fileUrl" download ref="downloadA"></a>
+        <!-- <a :href="fileUrl" download ref="downloadA"></a>
 
-        <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br>
+        <el-button size="mini" type="primary" icon="el-icon-download" plain @click="exportTable()">导出</el-button> <br><br> -->
 
         <!-- <div class="overflow-auto"> -->
         <div class="">
