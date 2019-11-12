@@ -301,18 +301,18 @@ export default {
               }],
           });
           function format ( d ) {
-            return  "<div class='detailDiv'>classCode: " + d.classCode + "</div>" +
-                    "<div class='detailDiv'>exonNum: " + d.exonNum + "</div>" +
-                    "<div class='detailDiv'>gene: " + d.gene + "</div>" +
-                    "<div class='detailDiv'>referenceTranscriptId: " + d.referenceTranscriptId + "</div>" +
-                    "<div class='detailDiv'>transcriptId: " + d.transcriptId + "</div>" +
-                    "<div class='detailDiv'>codingProbability: " + d.cpc2Entry.codingProbability + "</div>" +
-                    "<div class='detailDiv'>fickettScore: " + d.cpc2Entry.fickettScore + "</div>" +
-                    "<div class='detailDiv'>coding: " + d.cpc2Entry.label + "</div>" +
-                    "<div class='detailDiv'>pI: " + d.cpc2Entry.pI + "</div>" +
-                    "<div class='detailDiv'>peptideLength: " + d.cpc2Entry.peptideLength + "</div>" +
-                    "<div class='detailDiv'>transcriptLength: " + d.cpc2Entry.transcriptLength + "</div>" +
-                    "<div class='detailDiv font-overflow'>sequence: " + d.sequence + "</div>"
+            return `<div class='detailDiv'>classCode: ${d.classCode}</div>
+                    <div class='detailDiv'>exonNum: ${d.exonNum}</div>
+                    <div class='detailDiv'>gene: ${d.gene}</div>
+                    <div class='detailDiv'>referenceTranscriptId: ${d.referenceTranscriptId}</div>
+                    <div class='detailDiv'>transcriptId: ${d.transcriptId}</div>
+                    <div class='detailDiv'>codingProbability: ${d.cpc2Entry.codingProbability}</div>
+                    <div class='detailDiv'>fickettScore: ${d.cpc2Entry.fickettScore}</div>
+                    <div class='detailDiv'>coding: ${d.cpc2Entry.label}</div>
+                    <div class='detailDiv'>pI: ${d.cpc2Entry.pI}</div>
+                    <div class='detailDiv'>peptideLength: ${d.cpc2Entry.peptideLength}</div>
+                    <div class='detailDiv'>transcriptLength: ${d.cpc2Entry.transcriptLength}</div>
+                    <div class='detailDiv font-overflow'>sequence: ${d.sequence}</div>`
           }
 
           var detailRows = [];
