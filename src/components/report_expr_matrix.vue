@@ -213,3 +213,9 @@ export default {
   font-size: 14px;
 }
 </style>
+<style>
+/* 去掉数学公式外面的蓝色框线 */
+.MathJax{
+  outline:0;
+}
+</style>
